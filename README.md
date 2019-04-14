@@ -48,7 +48,7 @@ To replicate analysis, clone (or download and extract the zip folder of) reposit
     * [<code>logitres_repu.doc</code>](out/logitres_repu.doc). Logistic regression table of treatment effect on mediator (damage to international reputation, 2p scale).
     * [<code>logitres_effi.doc</code>](out/logitres_effi.doc). Logistic regression table of treatment effect on mediator (aid un-efficacy, 2p scale).
     * [<code>dvmedplot_logit.png</code>](out/dvmedplot_logit.png). Summarized odds ratio plot of treatment effect on mediators in 2p scale.
-* <code>**analysis3_mediation.R**</code> ([Code](src/analysis2_ate.R); [Code/Output](src/analysis2_ate.md)). Contains the analysis of causal mediation analysis. Exports following results under <code>out</code> directory:
+* <code>**analysis3_mediation.R**</code> ([Code](src/analysis3_mediation.R); [Code/Output](src/analysis3_mediation.md)). Contains the analysis of causal mediation analysis. Exports following results under <code>out</code> directory:
     * [<code>med.out.main.plot.png</code>](out/med.out.main.plot.png). Causal mediation analysis plot with 2p mediators (Logit) and 9p outcome (OLS).
     * [<code>med.out.sub.plot.png</code>](out/med.out.main.plot.png). Causal mediation analysis plot with 5p mediators (OLS) and 9p outcome (OLS).
     * [<code>med.mod.out.main.1.plot.png</code>](out/med.mod.out.main.1.plot.png). Moderated causal mediation analysis plot with 2p moderator, 2p mediators (Logit) and 9p outcome (OLS).
