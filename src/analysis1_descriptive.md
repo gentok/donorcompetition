@@ -21,6 +21,7 @@ Preparation
 rm(list = ls())
 
 ## Set Working Directory (Automatically) ##
+require(rprojroot); require(rstudioapi)
 if (rstudioapi::isAvailable()==TRUE) {
   setwd(dirname(rstudioapi::getActiveDocumentContext()$path)); 
 } 
