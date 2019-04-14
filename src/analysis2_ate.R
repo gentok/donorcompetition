@@ -219,10 +219,6 @@ adjpval("out/mlogitres_onlyATE.doc")
 #+ results="asis", echo=FALSE
 cat(as.character(read_html(paste0(projdir,"/out/mlogitres_onlyATE.doc"))))
 
-#+ include=FALSE
-# Import pre-simulated data
-load(paste0(projdir,"/src/processing/simu.m1.mlogit.RData"))
-
 #+ eval=FALSE
 # This takes a while, so not executed in github output
 simu.m1.MMR.mlogit <- 
@@ -231,6 +227,15 @@ simu.m1.MMR.mlogit <-
 simu.m1.PHL.mlogit <- 
   simu_mlogit_ate(m1.PHL, cl.mlogit.vcov(m1.PHL,d.PHL.sub$id),
                   d.PHL.sub.mlogit, "treat_China")
+
+#+ eval=FALSE, echo=FALSE
+# Save This Relatively Heavy Simulations
+save(simu.m1.MMR.mlogit,simu.m1.PHL.mlogit,
+     file=paste0(projdir,"/src/processing/simu.m1.mlogit.RData"))
+
+#+ include=FALSE
+# Import pre-simulated data
+load(paste0(projdir,"/src/processing/simu.m1.mlogit.RData"))
 
 #+ 
 # Combine Data
@@ -260,10 +265,6 @@ p <- plot_simu(simu.m1.mlogit, "outcat",
 #+ eval=FALSE
 png_save(p,w=850,h=600,file="out/mlogitplot.png")
 
-#+ eval=FALSE, echo=FALSE
-# Save Relatively Heavy Simulations
-save(simu.m1.MMR.mlogit,simu.m1.PHL.mlogit,
-     file=paste0(projdir,"/src/processing/simu.m1.mlogit.RData"))
 
 #' ## The Effect of Treatment on Mediator (OLS)
 
