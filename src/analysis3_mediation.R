@@ -307,7 +307,7 @@ med.out.sub.plot <- genplot(med.out.sub.data,
 med.out.sub.plot
 
 med.out.sub.plot2 <- genplot(med.out.sub.data,
-                              "[Logit (Med/2cat) + OLS (Out/9cat)]",
+                              "[OLS (Med/5cat) + OLS (Out/9cat)]",
                               include.eff = c("Mediated","Direct"))
 p <- med.out.sub.plot2 + 
   theme(strip.text = element_text(size=12,face="bold"),

@@ -435,6 +435,7 @@ genplot <- function(med.out.v0.data, subtitle,
     }
     med.out.v0.data <- med.out.v0.data[med.out.v0.data$eff%in%include.eff,]
     med.out.v0.data$eff <- factor(med.out.v0.data$eff, levels=include.eff)
+    collen <- length(table(med.out.v0.data$med))
     p <- ggplot(med.out.v0.data, aes(x=eff,y=est)) + 
       geom_hline(yintercept=fixhline, linetype=2) + 
       geom_errorbar(aes(ymin=loCI,ymax=upCI,
@@ -445,7 +446,7 @@ genplot <- function(med.out.v0.data, subtitle,
                  size = 2, 
                  position = position_dodge(0.9)) + 
       scale_shape_discrete(name="Mediators") + 
-      scale_color_manual(name="Mediators", values=rep("Black",4)) + 
+      scale_color_manual(name="Mediators", values=rep("Black",collen)) + 
       scale_linetype_manual(name="Significance", values=pvallist) +
       guides( color = guide_legend(order = 1),
               shape = guide_legend(order = 1),
@@ -740,3 +741,73 @@ estrow <- function(m, meth="asis", at=2) {
   return(res)
 }
 
+#' # Function to Simplify the analysis of joint mediation analysis
+estrow2 <- function(m, meth="asis", at) {
+  a <- as.numeric(coeftest(m)[at,])
+  b <- as.numeric(coefci(m)[at,])
+  res <- c(a[1],b, a[4], (a[4]<.05)*1, (a[4]<.10)*1)
+  names(res) <- c("est","loCI","upCI","p","p05","p10")
+  if (meth == "odds") res[c(1,2,3)] <- exp(res[c(1,2,3)])
+  return(res)
+}
+
+#' # Function to export medflex moderation analysis results 
+modex <- function(m, cname, v=1) {
+  
+  v1comp <- c("treat_China1 = 0",
+              "treat_China0 = 0",
+              "treat_China0 + treat_China1 = 0",
+              "treat_China1 + treat_China1:threat.CHN = 0",
+              "treat_China0 + treat_China0:threat.CHN = 0",
+              "treat_China0 + treat_China0:threat.CHN + treat_China1 + treat_China1:threat.CHN = 0")
+  v2comp <- c("treat_China1 = 0",
+              "treat_China0 = 0",
+              "treat_China0 + treat_China1 = 0",
+              "treat_China1 + treat_China1:threat.CHN.3cat1 = 0",
+              "treat_China0 + treat_China0:threat.CHN.3cat1 = 0",
+              "treat_China0 + treat_China0:threat.CHN.3cat1 + treat_China1 + treat_China1:threat.CHN.3cat1 = 0",
+              "treat_China1 + treat_China1:threat.CHN.3cat2 = 0",
+              "treat_China0 + treat_China0:threat.CHN.3cat2 = 0",
+              "treat_China0 + treat_China0:threat.CHN.3cat2 + treat_China1 + treat_China1:threat.CHN.3cat2 = 0")
+  if (v==1) {
+    vcomp <- v1comp
+    effrep <- 2
+    g1n.MMR <- 1285
+    g0n.MMR <- 280
+    g1n.PHL <- 1283
+    g0n.PHL <- 331
+    t1 <- paste("Threatened \n  (N=", g1n.MMR, " for Myanmar) \n  (N=", g1n.PHL, " for Philippines)",sep="")
+    t0 <- paste("\nNot Threatened \n  (N=", g0n.MMR, " for Myanmar) \n  (N=", g0n.PHL, " for Philippines)",sep="")
+    tset <- c(t0,t1)
+  } else if (v==2) {
+    vcomp <- v2comp
+    effrep <- 3
+    g2n.MMR <- 789
+    g1n.MMR <- 496
+    g0n.MMR <- 280
+    g2n.PHL <- 749
+    g1n.PHL <- 534
+    g0n.PHL <- 331
+    t2 <- paste("High \n  (N=", g2n.MMR, " for Myanmar) \n  (N=", g2n.PHL, " for Philippines)",sep="")
+    t1 <- paste("\nModerate \n  (N=", g1n.MMR, " for Myanmar) \n  (N=", g1n.PHL, " for Philippines)",sep="")
+    t0 <- paste("\nLow/None \n  (N=", g0n.MMR, " for Myanmar) \n  (N=", g0n.PHL, " for Philippines)",sep="")
+    tset <- c(t0,t1,t2)
+  } else {
+    stop("invalid v")
+  }
+  
+  lht <- neLht(m,  linfct = vcomp)
+  a <- as.data.frame(cbind(coef(lht), coefci(lht),coeftest(lht)[,4]))
+  colnames(a) <- c("est","loCI","upCI","p")
+  rownames(a) <- seq(1, nrow(a), 1)
+  a$p05 <- ifelse(a$p<.05,1,0)
+  a$p10 <- ifelse(a$p<.1,1,0)
+  a$pcat <- ifelse(a$p10==0,"p >= .1", ifelse(a$p05==0,"p < .1","p < .05"))
+  a$pcat <- factor(a$pcat,levels=c("p < .05","p < .1", "p >= .1"))
+  a$med <- "Security"
+  a$eff <- factor(rep(c("Mediated","Direct","Total"),effrep), levels=c("Mediated","Direct","Total"))
+  a$country <- cname
+  a$tcond <- factor(rep(tset, each=3), levels=tset)
+
+  return(a)
+}
