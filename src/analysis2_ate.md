@@ -674,7 +674,7 @@ p <- plot_coef(list(m0.MMR,m1.MMR,m0.PHL,m1.PHL),
 
     ## Warning: Removed 26 rows containing missing values (geom_errorbar).
 
-![](analysis2_ate_files/figure-markdown_github/unnamed-chunk-5-1.png)
+![](analysis2_ate_files/figure-markdown_github/unnamed-chunk-6-1.png)
 
 ``` r
 png_save(p,w=800,h=600,file="out/olsplot.png")
@@ -1308,7 +1308,7 @@ p <- plot_coef(list(m0.MMR,m1.MMR,m0.PHL,m1.PHL),
 
     ## Warning: Removed 26 rows containing missing values (geom_errorbar).
 
-![](analysis2_ate_files/figure-markdown_github/unnamed-chunk-10-1.png)
+![](analysis2_ate_files/figure-markdown_github/unnamed-chunk-12-1.png)
 
 ``` r
 png_save(p,w=800,h=600,file="out/olsplot_std.png")
@@ -2543,7 +2543,7 @@ p <- plot_footnote(p, "Note: Lines represent 95% confidence intervals estimated 
 grid.draw(p)
 ```
 
-![](analysis2_ate_files/figure-markdown_github/unnamed-chunk-21-1.png)
+![](analysis2_ate_files/figure-markdown_github/unnamed-chunk-27-1.png)
 
 ``` r
 png_save(p,w=850,h=600,file="out/mlogitplot.png")
@@ -4847,7 +4847,7 @@ p <- plot_footnote(p, "Note: Lines represent 95% confidence intervals calculated
 grid.draw(p)
 ```
 
-![](analysis2_ate_files/figure-markdown_github/unnamed-chunk-36-1.png)
+![](analysis2_ate_files/figure-markdown_github/unnamed-chunk-47-1.png)
 
 ``` r
 png_save(p, w=850, h=500, file=c("out/dvmedplot_ols.png"))
@@ -7151,7 +7151,7 @@ p <- plot_footnote(p, "Note: Lines represent 95% confidence intervals calculated
 grid.draw(p)
 ```
 
-![](analysis2_ate_files/figure-markdown_github/unnamed-chunk-51-1.png)
+![](analysis2_ate_files/figure-markdown_github/unnamed-chunk-67-1.png)
 
 ``` r
 png_save(p, w=850, h=500, file=c("out/dvmedplot_logit.png"))

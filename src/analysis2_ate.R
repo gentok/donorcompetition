@@ -74,8 +74,8 @@ adjpval("out/olsres.doc")
 #+ results="asis", echo=FALSE
 cat(as.character(read_html(paste0(projdir,"/out/olsres.doc"))))
 
-#'
-#'
+#+
+#+
 # Export Coefficient Plot (Dropping Intercept)
 ftset <- paste0("Estimated by ordinary least square (OLS) regression with HC1 robust standard errors.",
                 " Intercept omitted from analysis.",
@@ -134,8 +134,8 @@ adjpval("out/olsres_std.doc")
 #+ results="asis", echo=FALSE
 cat(as.character(read_html(paste0(projdir,"/out/olsres_std.doc"))))
 
-#'
-#'
+#+
+#+
 # Export Coefficient Plot (Dropping Intercept)
 ftset <- paste0("Estimated by ordinary least square (OLS) regression with HC1 robust standard errors.",
                 " Intercept omitted from analysis.",
@@ -203,8 +203,8 @@ adjpval("out/mlogitres.doc")
 #+ results="asis", echo=FALSE
 cat(as.character(read_html(paste0(projdir,"/out/mlogitres.doc"))))
 
-#'
-#'
+#+
+#+
 #+ eval = FALSE
 table_coef(list(m0.MMR,m1.MMR,m0.PHL,m1.PHL), 
            vcov.est = list(cl.mlogit.vcov(m0.MMR,d.MMR.sub$id),
@@ -224,8 +224,8 @@ adjpval("out/mlogitres_onlyATE.doc")
 #+ results="asis", echo=FALSE
 cat(as.character(read_html(paste0(projdir,"/out/mlogitres_onlyATE.doc"))))
 
-#'
-#'
+#+
+#+
 #+ eval=FALSE
 
 # This takes a while, so not executed in github output
@@ -314,8 +314,8 @@ adjpval("out/olsres_secu.doc")
 #+ results="asis", echo=FALSE
 cat(as.character(read_html(paste0(projdir,"/out/olsres_secu.doc"))))
 
-#'
-#'
+#+
+#+
 # Analysis (econ)
 m0.MMR.econ <- lm(as.numeric(med_econ)~treat_China, data = d.MMR.sub)
 m1.MMR.econ <- lm(update(as.numeric(med_econ)~treat_China,fcv), data = d.MMR.sub)
@@ -337,8 +337,8 @@ adjpval("out/olsres_econ.doc")
 #+ results="asis", echo=FALSE
 cat(as.character(read_html(paste0(projdir,"/out/olsres_econ.doc"))))
 
-#'
-#'
+#+
+#+
 # Analysis (repu)
 m0.MMR.repu <- lm(as.numeric(med_repu)~treat_China, data = d.MMR.sub)
 m1.MMR.repu <- lm(update(as.numeric(med_repu)~treat_China,fcv), data = d.MMR.sub)
@@ -360,8 +360,8 @@ adjpval("out/olsres_repu.doc")
 #+ results="asis", echo=FALSE
 cat(as.character(read_html(paste0(projdir,"/out/olsres_repu.doc"))))
 
-#'
-#'
+#+
+#+
 # Analysis (effi)
 m0.MMR.effi <- lm(as.numeric(med_effi)~treat_China, data = d.MMR.sub)
 m1.MMR.effi <- lm(update(as.numeric(med_effi)~treat_China,fcv), data = d.MMR.sub)
@@ -383,11 +383,10 @@ adjpval("out/olsres_effi.doc")
 #+ results="asis", echo=FALSE
 cat(as.character(read_html(paste0(projdir,"/out/olsres_effi.doc"))))
 
-#'
+#+
+#+
 #'
 #' ### Plot the Treatment Effect on Mediator (OLS)
-#'
-#'
 
 # Data for Plotting
 estlist <- list(m1.MMR.secu,m1.MMR.econ,m1.MMR.repu,m1.MMR.effi,
@@ -449,8 +448,8 @@ adjpval("out/logitres_secu.doc")
 #+ results="asis", echo=FALSE
 cat(as.character(read_html(paste0(projdir,"/out/logitres_secu.doc"))))
 
-#'
-#'
+#+
+#+
 # Analysis (econ)
 m0.MMR.econ <- glm(as.numeric(med_econ)>3~treat_China, data = d.MMR.sub, family=binomial("logit"))
 m1.MMR.econ <- glm(update(as.numeric(med_econ)>3~treat_China,fcv), data = d.MMR.sub, family=binomial("logit"))
@@ -472,8 +471,8 @@ adjpval("out/logitres_econ.doc")
 #+ results="asis", echo=FALSE
 cat(as.character(read_html(paste0(projdir,"/out/logitres_econ.doc"))))
 
-#'
-#'
+#+
+#+
 # Analysis (repu)
 m0.MMR.repu <- glm(as.numeric(med_repu)>3~treat_China, data = d.MMR.sub, family=binomial("logit"))
 m1.MMR.repu <- glm(update(as.numeric(med_repu)>3~treat_China,fcv), data = d.MMR.sub, family=binomial("logit"))
@@ -495,8 +494,8 @@ adjpval("out/logitres_repu.doc")
 #+ results="asis", echo=FALSE
 cat(as.character(read_html(paste0(projdir,"/out/logitres_repu.doc"))))
 
-#'
-#'
+#+
+#+
 # Analysis (effi)
 m0.MMR.effi <- glm(as.numeric(med_effi)>3~treat_China, data = d.MMR.sub, family=binomial("logit"))
 m1.MMR.effi <- glm(update(as.numeric(med_effi)>3~treat_China,fcv), data = d.MMR.sub, family=binomial("logit"))
@@ -518,11 +517,10 @@ adjpval("out/logitres_effi.doc")
 #+ results="asis", echo=FALSE
 cat(as.character(read_html(paste0(projdir,"/out/logitres_effi.doc"))))
 
-#'
+#+
+#+
 #'
 #' ### Plot the Treatment Effect on Mediator (Logit)
-#'
-#'
 
 # Data for Plotting
 estlist <- list(m1.MMR.secu,m1.MMR.econ,m1.MMR.repu,m1.MMR.effi,
