@@ -2500,8 +2500,17 @@ p <- plot_simu(simu.m1.mlogit, "outcat",
           label.shape = "Treatment",
           label.color = "Treatment",
           label.y = "Predicted Probability\n (with 95% Confidence Interval)",
-          label.x = "Aid Cancellation Preference") 
+          label.x = "Aid Cancellation Preference") + 
+  scale_color_manual(name="Treatment",values=c("black","black"))
+p <- plot_footnote(p, "Note: Lines represent 95% confidence intervals estimated from quasi-Bayesian Monte Carlo method based on normal \n         approximation using robust standard errors. The model is estimated by Multinomial Logistic regression.",
+                   bottom.expand.rate = 3, align="left", caption=FALSE, show.plot = FALSE)
 ```
+
+``` r
+grid.draw(p)
+```
+
+![](analysis2_ate_files/figure-markdown_github/unnamed-chunk-20-1.png)
 
 ``` r
 png_save(p,w=850,h=600,file="out/mlogitplot.png")
@@ -4805,7 +4814,7 @@ p <- plot_footnote(p, "Note: Lines represent 95% confidence intervals calculated
 grid.draw(p)
 ```
 
-![](analysis2_ate_files/figure-markdown_github/unnamed-chunk-34-1.png)
+![](analysis2_ate_files/figure-markdown_github/unnamed-chunk-35-1.png)
 
 ``` r
 png_save(p, w=850, h=500, file=c("out/dvmedplot_ols.png"))
@@ -7109,7 +7118,7 @@ p <- plot_footnote(p, "Note: Lines represent 95% confidence intervals calculated
 grid.draw(p)
 ```
 
-![](analysis2_ate_files/figure-markdown_github/unnamed-chunk-49-1.png)
+![](analysis2_ate_files/figure-markdown_github/unnamed-chunk-50-1.png)
 
 ``` r
 png_save(p, w=850, h=500, file=c("out/dvmedplot_logit.png"))

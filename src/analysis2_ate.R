@@ -219,7 +219,9 @@ adjpval("out/mlogitres_onlyATE.doc")
 #+ results="asis", echo=FALSE
 cat(as.character(read_html(paste0(projdir,"/out/mlogitres_onlyATE.doc"))))
 
+
 #+ eval=FALSE
+
 # This takes a while, so not executed in github output
 simu.m1.MMR.mlogit <- 
   simu_mlogit_ate(m1.MMR, cl.mlogit.vcov(m1.MMR,d.MMR.sub$id),
@@ -260,7 +262,13 @@ p <- plot_simu(simu.m1.mlogit, "outcat",
           label.shape = "Treatment",
           label.color = "Treatment",
           label.y = "Predicted Probability\n (with 95% Confidence Interval)",
-          label.x = "Aid Cancellation Preference") 
+          label.x = "Aid Cancellation Preference") + 
+  scale_color_manual(name="Treatment",values=c("black","black"))
+p <- plot_footnote(p, "Note: Lines represent 95% confidence intervals estimated from quasi-Bayesian Monte Carlo method based on normal \n         approximation using robust standard errors. The model is estimated by Multinomial Logistic regression.",
+                   bottom.expand.rate = 3, align="left", caption=FALSE, show.plot = FALSE)
+
+#+ fig.width=8, fig.height=4
+grid.draw(p)
 
 #+ eval=FALSE
 png_save(p,w=850,h=600,file="out/mlogitplot.png")
