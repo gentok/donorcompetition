@@ -93,8 +93,9 @@ p <- plot_coef(list(m0.MMR,m1.MMR,m0.PHL,m1.PHL),
 #+ eval=FALSE
 png_save(p,w=800,h=600,file="out/olsplot.png")
 
+#'
 #' ## Simple OLS (with Standardized DV)
-
+#'
 
 # Define Outcome Variable and Drop Missing Values
 d.MMR$out <- d.MMR$cancel_aid
@@ -262,6 +263,10 @@ simu.m1.mlogit$outrec <-
   factor(rep(c("Myanmar","Philippines"),each=6),
          levels=c("Myanmar","Philippines"))
 
+#'
+#' ### Plot of Predicted Probabilities
+#'
+
 # Plot Predicted Probabilities
 p <- plot_simu(simu.m1.mlogit, "outcat", 
           type.est="point",
@@ -388,7 +393,7 @@ adjpval("out/olsres_effi.doc")
 cat(as.character(read_html(paste0(projdir,"/out/olsres_effi.doc"))))
 
 #'
-#' ### Plot the Treatment Effect on Mediator (OLS)
+#' Plot Data for the Treatment Effect on Mediator (OLS)
 #' 
 
 # Data for Plotting
@@ -401,6 +406,10 @@ dOLS$med <- rep(c("Security","Economy","Reputation","Efficacy"),2)
 dOLS$med <- factor(dOLS$med, levels=unique(dOLS$med))
 dOLS$eff <- "OLS (5p)"
 dOLS$country <- rep(c("Myanmar","Philippines"), each=4)
+
+#'
+#' ### Plot the Treatment Effect on Mediator (OLS)
+#' 
 
 p <- 
   genplot(dOLS, "", include.eff = c("OLS (5p)")) + 
@@ -524,7 +533,7 @@ adjpval("out/logitres_effi.doc")
 cat(as.character(read_html(paste0(projdir,"/out/logitres_effi.doc"))))
 
 #'
-#' ### Plot the Treatment Effect on Mediator (Logit)
+#' Plot Data for the Treatment Effect on Mediator (Logit)
 #' 
 
 # Data for Plotting
@@ -537,6 +546,10 @@ dLogit$med <- rep(c("Security","Economy","Reputation","Efficacy"),2)
 dLogit$med <- factor(dLogit$med, levels=unique(dLogit$med))
 dLogit$eff <- "Logit (2p)"
 dLogit$country <- rep(c("Myanmar","Philippines"), each=4)
+
+#'
+#' ### Plot the Treatment Effect on Mediator (Logit)
+#' 
 
 p <- 
   genplot(dLogit, "", include.eff = c("Logit (2p)"), odds = TRUE) + 

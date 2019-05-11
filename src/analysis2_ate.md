@@ -8,6 +8,7 @@ April 13, 2019
     -   [Simple OLS](#simple-ols)
     -   [Simple OLS (with Standardized DV)](#simple-ols-with-standardized-dv)
     -   [Multinomial Logit](#multinomial-logit)
+        -   [Plot of Predicted Probabilities](#plot-of-predicted-probabilities)
     -   [The Effect of Treatment on Mediator (OLS)](#the-effect-of-treatment-on-mediator-ols)
         -   [Plot the Treatment Effect on Mediator (OLS)](#plot-the-treatment-effect-on-mediator-ols)
     -   [The Effect of Treatment on Mediator (Logit)](#the-effect-of-treatment-on-mediator-logit)
@@ -2530,7 +2531,11 @@ simu.m1.mlogit$outcat <-
 simu.m1.mlogit$outrec <- 
   factor(rep(c("Myanmar","Philippines"),each=6),
          levels=c("Myanmar","Philippines"))
+```
 
+### Plot of Predicted Probabilities
+
+``` r
 # Plot Predicted Probabilities
 p <- plot_simu(simu.m1.mlogit, "outcat", 
           type.est="point",
@@ -2549,7 +2554,7 @@ p <- plot_footnote(p, "Note: Lines represent 95% confidence intervals estimated 
 grid.draw(p)
 ```
 
-![](analysis2_ate_files/figure-markdown_github/unnamed-chunk-21-1.png)
+![](analysis2_ate_files/figure-markdown_github/unnamed-chunk-22-1.png)
 
 ``` r
 png_save(p,w=850,h=600,file="out/mlogitplot.png")
@@ -4831,7 +4836,7 @@ RMSE
 </table>
 </body>
 </html>
-### Plot the Treatment Effect on Mediator (OLS)
+Plot Data for the Treatment Effect on Mediator (OLS)
 
 ``` r
 # Data for Plotting
@@ -4844,7 +4849,11 @@ dOLS$med <- rep(c("Security","Economy","Reputation","Efficacy"),2)
 dOLS$med <- factor(dOLS$med, levels=unique(dOLS$med))
 dOLS$eff <- "OLS (5p)"
 dOLS$country <- rep(c("Myanmar","Philippines"), each=4)
+```
 
+### Plot the Treatment Effect on Mediator (OLS)
+
+``` r
 p <- 
   genplot(dOLS, "", include.eff = c("OLS (5p)")) + 
   ylab("OLS Coefficient") + ggtitle(NULL) + xlab(NULL) + 
@@ -4859,7 +4868,7 @@ p <- plot_footnote(p, "Note: Lines represent 95% confidence intervals calculated
 grid.draw(p)
 ```
 
-![](analysis2_ate_files/figure-markdown_github/unnamed-chunk-37-1.png)
+![](analysis2_ate_files/figure-markdown_github/unnamed-chunk-39-1.png)
 
 ``` r
 png_save(p, w=850, h=500, file=c("out/dvmedplot_ols.png"))
@@ -7141,7 +7150,7 @@ Num. obs.
 </table>
 </body>
 </html>
-### Plot the Treatment Effect on Mediator (Logit)
+Plot Data for the Treatment Effect on Mediator (Logit)
 
 ``` r
 # Data for Plotting
@@ -7154,7 +7163,11 @@ dLogit$med <- rep(c("Security","Economy","Reputation","Efficacy"),2)
 dLogit$med <- factor(dLogit$med, levels=unique(dLogit$med))
 dLogit$eff <- "Logit (2p)"
 dLogit$country <- rep(c("Myanmar","Philippines"), each=4)
+```
 
+### Plot the Treatment Effect on Mediator (Logit)
+
+``` r
 p <- 
   genplot(dLogit, "", include.eff = c("Logit (2p)"), odds = TRUE) + 
   ylab("Odds Ratio") + ggtitle(NULL) + xlab(NULL) + 
@@ -7169,7 +7182,7 @@ p <- plot_footnote(p, "Note: Lines represent 95% confidence intervals calculated
 grid.draw(p)
 ```
 
-![](analysis2_ate_files/figure-markdown_github/unnamed-chunk-53-1.png)
+![](analysis2_ate_files/figure-markdown_github/unnamed-chunk-56-1.png)
 
 ``` r
 png_save(p, w=850, h=500, file=c("out/dvmedplot_logit.png"))
