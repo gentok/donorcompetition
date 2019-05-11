@@ -631,8 +631,9 @@ RMSE
 </table>
 </body>
 </html>
+Export Coefficient Plot (Dropping Intercept)
+
 ``` r
-# Export Coefficient Plot (Dropping Intercept)
 ftset <- paste0("Estimated by ordinary least square (OLS) regression with HC1 robust standard errors.",
                 " Intercept omitted from analysis.",
                 "\n Myanmar models N = ", nobs(m1.MMR), "and Philippines models N = ", nobs(m1.PHL), ".")
@@ -674,7 +675,7 @@ p <- plot_coef(list(m0.MMR,m1.MMR,m0.PHL,m1.PHL),
 
     ## Warning: Removed 26 rows containing missing values (geom_errorbar).
 
-![](analysis2_ate_files/figure-markdown_github/unnamed-chunk-6-1.png)
+![](analysis2_ate_files/figure-markdown_github/unnamed-chunk-5-1.png)
 
 ``` r
 png_save(p,w=800,h=600,file="out/olsplot.png")
@@ -1265,8 +1266,9 @@ RMSE
 </table>
 </body>
 </html>
+Export Coefficient Plot (Dropping Intercept)
+
 ``` r
-# Export Coefficient Plot (Dropping Intercept)
 ftset <- paste0("Estimated by ordinary least square (OLS) regression with HC1 robust standard errors.",
                 " Intercept omitted from analysis.",
                 "\n Myanmar models N = ", nobs(m1.MMR), "and Philippines models N = ", nobs(m1.PHL), ".")
@@ -1308,7 +1310,7 @@ p <- plot_coef(list(m0.MMR,m1.MMR,m0.PHL,m1.PHL),
 
     ## Warning: Removed 26 rows containing missing values (geom_errorbar).
 
-![](analysis2_ate_files/figure-markdown_github/unnamed-chunk-12-1.png)
+![](analysis2_ate_files/figure-markdown_github/unnamed-chunk-10-1.png)
 
 ``` r
 png_save(p,w=800,h=600,file="out/olsplot_std.png")
@@ -2334,6 +2336,8 @@ Num. obs.
 </table>
 </body>
 </html>
+Table with Only ATE
+
 ``` r
 table_coef(list(m0.MMR,m1.MMR,m0.PHL,m1.PHL), 
            vcov.est = list(cl.mlogit.vcov(m0.MMR,d.MMR.sub$id),
@@ -2500,6 +2504,8 @@ Num. obs.
 </table>
 </body>
 </html>
+Simulation of Predicted Probability
+
 ``` r
 # This takes a while, so not executed in github output
 simu.m1.MMR.mlogit <- 
@@ -2543,7 +2549,7 @@ p <- plot_footnote(p, "Note: Lines represent 95% confidence intervals estimated 
 grid.draw(p)
 ```
 
-![](analysis2_ate_files/figure-markdown_github/unnamed-chunk-27-1.png)
+![](analysis2_ate_files/figure-markdown_github/unnamed-chunk-21-1.png)
 
 ``` r
 png_save(p,w=850,h=600,file="out/mlogitplot.png")
@@ -2563,8 +2569,11 @@ vars <- c("out","cancel_aid",
           "med_econ","med_secu","med_repu","med_effi")
 d.MMR.sub <- na.omit(d.MMR[,vars])
 d.PHL.sub <- na.omit(d.PHL[,vars])
+```
 
-# Analysis (secu)
+Analysis (secu)
+
+``` r
 m0.MMR.secu <- lm(as.numeric(med_secu)~treat_China, data = d.MMR.sub)
 m1.MMR.secu <- lm(update(as.numeric(med_secu)~treat_China,fcv), data = d.MMR.sub)
 m0.PHL.secu <- lm(as.numeric(med_secu)~treat_China, data = d.PHL.sub)
@@ -3127,8 +3136,9 @@ RMSE
 </table>
 </body>
 </html>
+Analysis (econ)
+
 ``` r
-# Analysis (econ)
 m0.MMR.econ <- lm(as.numeric(med_econ)~treat_China, data = d.MMR.sub)
 m1.MMR.econ <- lm(update(as.numeric(med_econ)~treat_China,fcv), data = d.MMR.sub)
 m0.PHL.econ <- lm(as.numeric(med_econ)~treat_China, data = d.PHL.sub)
@@ -3691,8 +3701,9 @@ RMSE
 </table>
 </body>
 </html>
+Analysis (repu)
+
 ``` r
-# Analysis (repu)
 m0.MMR.repu <- lm(as.numeric(med_repu)~treat_China, data = d.MMR.sub)
 m1.MMR.repu <- lm(update(as.numeric(med_repu)~treat_China,fcv), data = d.MMR.sub)
 m0.PHL.repu <- lm(as.numeric(med_repu)~treat_China, data = d.PHL.sub)
@@ -4255,8 +4266,9 @@ RMSE
 </table>
 </body>
 </html>
+Analysis (effi)
+
 ``` r
-# Analysis (effi)
 m0.MMR.effi <- lm(as.numeric(med_effi)~treat_China, data = d.MMR.sub)
 m1.MMR.effi <- lm(update(as.numeric(med_effi)~treat_China,fcv), data = d.MMR.sub)
 m0.PHL.effi <- lm(as.numeric(med_effi)~treat_China, data = d.PHL.sub)
@@ -4847,7 +4859,7 @@ p <- plot_footnote(p, "Note: Lines represent 95% confidence intervals calculated
 grid.draw(p)
 ```
 
-![](analysis2_ate_files/figure-markdown_github/unnamed-chunk-47-1.png)
+![](analysis2_ate_files/figure-markdown_github/unnamed-chunk-37-1.png)
 
 ``` r
 png_save(p, w=850, h=500, file=c("out/dvmedplot_ols.png"))
@@ -4867,8 +4879,11 @@ vars <- c("out","cancel_aid",
           "med_econ","med_secu","med_repu","med_effi")
 d.MMR.sub <- na.omit(d.MMR[,vars])
 d.PHL.sub <- na.omit(d.PHL[,vars])
+```
 
-# Analysis (secu)
+Analysis (secu)
+
+``` r
 m0.MMR.secu <- glm(as.numeric(med_secu)>3~treat_China, data = d.MMR.sub, family=binomial("logit"))
 m1.MMR.secu <- glm(update(as.numeric(med_secu)>3~treat_China,fcv), data = d.MMR.sub, family=binomial("logit"))
 m0.PHL.secu <- glm(as.numeric(med_secu)>3~treat_China, data = d.PHL.sub, family=binomial("logit"))
@@ -5431,8 +5446,9 @@ Num. obs.
 </table>
 </body>
 </html>
+Analysis (econ)
+
 ``` r
-# Analysis (econ)
 m0.MMR.econ <- glm(as.numeric(med_econ)>3~treat_China, data = d.MMR.sub, family=binomial("logit"))
 m1.MMR.econ <- glm(update(as.numeric(med_econ)>3~treat_China,fcv), data = d.MMR.sub, family=binomial("logit"))
 m0.PHL.econ <- glm(as.numeric(med_econ)>3~treat_China, data = d.PHL.sub, family=binomial("logit"))
@@ -5995,8 +6011,9 @@ Num. obs.
 </table>
 </body>
 </html>
+Analysis (repu)
+
 ``` r
-# Analysis (repu)
 m0.MMR.repu <- glm(as.numeric(med_repu)>3~treat_China, data = d.MMR.sub, family=binomial("logit"))
 m1.MMR.repu <- glm(update(as.numeric(med_repu)>3~treat_China,fcv), data = d.MMR.sub, family=binomial("logit"))
 m0.PHL.repu <- glm(as.numeric(med_repu)>3~treat_China, data = d.PHL.sub, family=binomial("logit"))
@@ -6559,8 +6576,9 @@ Num. obs.
 </table>
 </body>
 </html>
+Analysis (effi)
+
 ``` r
-# Analysis (effi)
 m0.MMR.effi <- glm(as.numeric(med_effi)>3~treat_China, data = d.MMR.sub, family=binomial("logit"))
 m1.MMR.effi <- glm(update(as.numeric(med_effi)>3~treat_China,fcv), data = d.MMR.sub, family=binomial("logit"))
 m0.PHL.effi <- glm(as.numeric(med_effi)>3~treat_China, data = d.PHL.sub, family=binomial("logit"))
@@ -7151,7 +7169,7 @@ p <- plot_footnote(p, "Note: Lines represent 95% confidence intervals calculated
 grid.draw(p)
 ```
 
-![](analysis2_ate_files/figure-markdown_github/unnamed-chunk-67-1.png)
+![](analysis2_ate_files/figure-markdown_github/unnamed-chunk-53-1.png)
 
 ``` r
 png_save(p, w=850, h=500, file=c("out/dvmedplot_logit.png"))
