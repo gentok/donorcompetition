@@ -1265,7 +1265,40 @@ RMSE
 </table>
 </body>
 </html>
-Variable Manipulations: Category Dropped Original Final NA DROPPED (Intercept) <NA> NA KEPT treat\_China Treatment (Donor Competition) NA KEPT threat1 Recipient's Threat (Moderate) NA KEPT threat2 Recipient's Threat (High) NA KEPT imp1 Recipient's Importance (Moderate) NA KEPT imp2 Recipient's Importance (High) NA KEPT potential1 Recipient's Potential (Moderate) NA KEPT potential2 Recipient's Potential (High) NA KEPT issint1 Political Interest (Moderate) NA KEPT issint2 Political Interest (High) NA KEPT odaimp ODA Importance NA KEPT fem Gender (Female) NA KEPT age Age NA KEPT ide31 Ideology (Moderate) NA KEPT ide32 Ideology (Right)
+``` r
+# Export Coefficient Plot (Dropping Intercept)
+ftset <- paste0("Estimated by ordinary least square (OLS) regression with HC1 robust standard errors.",
+                " Intercept omitted from analysis.",
+                "\n Myanmar models N = ", nobs(m1.MMR), "and Philippines models N = ", nobs(m1.PHL), ".")
+p <- plot_coef(list(m0.MMR,m1.MMR,m0.PHL,m1.PHL), 
+               vcov.est = "robust", # Stata HC1 Robust SE
+               overlap.names = rep(c("Baseline","Full"),2),
+               overlap.linetype.index = c(2,1),
+               overlap.shape.index = c(17,19),
+               facet.names = rep(c("Myanmar","Philippines"), each=2),
+               drop.intercept = TRUE,
+               custom.variable.names = basevn[-1],
+               title = "Treatment Effect on the Support for Cancelling Aid",
+               custom.footnote = ftset, footnote.caption = TRUE)
+```
+
+    ## Variable Manipulations: 
+    ##    Category Dropped    Original                             Final
+    ##        NA DROPPED (Intercept)                              <NA>
+    ##        NA    KEPT treat_China     Treatment (Donor Competition)
+    ##        NA    KEPT     threat1     Recipient's Threat (Moderate)
+    ##        NA    KEPT     threat2         Recipient's Threat (High)
+    ##        NA    KEPT        imp1 Recipient's Importance (Moderate)
+    ##        NA    KEPT        imp2     Recipient's Importance (High)
+    ##        NA    KEPT  potential1  Recipient's Potential (Moderate)
+    ##        NA    KEPT  potential2      Recipient's Potential (High)
+    ##        NA    KEPT     issint1     Political Interest (Moderate)
+    ##        NA    KEPT     issint2         Political Interest (High)
+    ##        NA    KEPT      odaimp                    ODA Importance
+    ##        NA    KEPT         fem                   Gender (Female)
+    ##        NA    KEPT         age                               Age
+    ##        NA    KEPT       ide31               Ideology (Moderate)
+    ##        NA    KEPT       ide32                  Ideology (Right)
 
     ## Warning: position_dodge requires non-overlapping x intervals
 
@@ -1275,7 +1308,7 @@ Variable Manipulations: Category Dropped Original Final NA DROPPED (Intercept) <
 
     ## Warning: Removed 26 rows containing missing values (geom_errorbar).
 
-![](analysis2_ate_files/figure-markdown_github/unnamed-chunk-9-1.png)
+![](analysis2_ate_files/figure-markdown_github/unnamed-chunk-10-1.png)
 
 ``` r
 png_save(p,w=800,h=600,file="out/olsplot_std.png")
@@ -2510,7 +2543,7 @@ p <- plot_footnote(p, "Note: Lines represent 95% confidence intervals estimated 
 grid.draw(p)
 ```
 
-![](analysis2_ate_files/figure-markdown_github/unnamed-chunk-20-1.png)
+![](analysis2_ate_files/figure-markdown_github/unnamed-chunk-21-1.png)
 
 ``` r
 png_save(p,w=850,h=600,file="out/mlogitplot.png")
@@ -4814,7 +4847,7 @@ p <- plot_footnote(p, "Note: Lines represent 95% confidence intervals calculated
 grid.draw(p)
 ```
 
-![](analysis2_ate_files/figure-markdown_github/unnamed-chunk-35-1.png)
+![](analysis2_ate_files/figure-markdown_github/unnamed-chunk-36-1.png)
 
 ``` r
 png_save(p, w=850, h=500, file=c("out/dvmedplot_ols.png"))
@@ -7118,7 +7151,7 @@ p <- plot_footnote(p, "Note: Lines represent 95% confidence intervals calculated
 grid.draw(p)
 ```
 
-![](analysis2_ate_files/figure-markdown_github/unnamed-chunk-50-1.png)
+![](analysis2_ate_files/figure-markdown_github/unnamed-chunk-51-1.png)
 
 ``` r
 png_save(p, w=850, h=500, file=c("out/dvmedplot_logit.png"))
