@@ -1,6 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html><body><table cellspacing="0" align="center" style="border: none;">
-<caption align="top" style="margin-bottom:0.3em;">Table 2: Treatment Effect on the Support for Cancelling Aid</caption>
+<caption align="top" style="margin-bottom:0.3em;">Treatment Effect on the Support for Cancelling Aid</caption>
 <tr>
 <th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;"><b></b></th>
 <th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;"><b>Myanmar</b></th>
@@ -10,459 +10,249 @@
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">Neither: (Intercept)</td>
-<td style="padding-right: 12px; border: none;">0.496<sup style="vertical-align: 0px;">**</sup>
+<td style="padding-right: 12px; border: none;">0.496 (0.081)<sup style="vertical-align: 0px;">**</sup>
 </td>
-<td style="padding-right: 12px; border: none;">1.997<sup style="vertical-align: 0px;">**</sup>
+<td style="padding-right: 12px; border: none;">1.997 (0.389)<sup style="vertical-align: 0px;">**</sup>
 </td>
-<td style="padding-right: 12px; border: none;">0.357<sup style="vertical-align: 0px;">**</sup>
+<td style="padding-right: 12px; border: none;">0.357 (0.076)<sup style="vertical-align: 0px;">**</sup>
 </td>
-<td style="padding-right: 12px; border: none;">2.569<sup style="vertical-align: 0px;">**</sup>
+<td style="padding-right: 12px; border: none;">2.569 (0.434)<sup style="vertical-align: 0px;">**</sup>
 </td>
-</tr>
-<tr>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.081)</td>
-<td style="padding-right: 12px; border: none;">(0.389)</td>
-<td style="padding-right: 12px; border: none;">(0.076)</td>
-<td style="padding-right: 12px; border: none;">(0.434)</td>
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">Cancel: (Intercept)</td>
-<td style="padding-right: 12px; border: none;">-0.501<sup style="vertical-align: 0px;">**</sup>
+<td style="padding-right: 12px; border: none;">-0.501 (0.104)<sup style="vertical-align: 0px;">**</sup>
 </td>
-<td style="padding-right: 12px; border: none;">1.540<sup style="vertical-align: 0px;">**</sup>
+<td style="padding-right: 12px; border: none;">1.540 (0.476)<sup style="vertical-align: 0px;">**</sup>
 </td>
-<td style="padding-right: 12px; border: none;">-0.831<sup style="vertical-align: 0px;">**</sup>
+<td style="padding-right: 12px; border: none;">-0.831 (0.106)<sup style="vertical-align: 0px;">**</sup>
 </td>
-<td style="padding-right: 12px; border: none;">2.974<sup style="vertical-align: 0px;">**</sup>
+<td style="padding-right: 12px; border: none;">2.974 (0.571)<sup style="vertical-align: 0px;">**</sup>
 </td>
-</tr>
-<tr>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.104)</td>
-<td style="padding-right: 12px; border: none;">(0.476)</td>
-<td style="padding-right: 12px; border: none;">(0.106)</td>
-<td style="padding-right: 12px; border: none;">(0.571)</td>
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">Neither: Treatment (Donor Competition)</td>
-<td style="padding-right: 12px; border: none;">-0.079</td>
-<td style="padding-right: 12px; border: none;">-0.118</td>
-<td style="padding-right: 12px; border: none;">-0.058</td>
-<td style="padding-right: 12px; border: none;">-0.137</td>
-</tr>
-<tr>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.114)</td>
-<td style="padding-right: 12px; border: none;">(0.119)</td>
-<td style="padding-right: 12px; border: none;">(0.108)</td>
-<td style="padding-right: 12px; border: none;">(0.119)</td>
+<td style="padding-right: 12px; border: none;">-0.079 (0.114)</td>
+<td style="padding-right: 12px; border: none;">-0.118 (0.119)</td>
+<td style="padding-right: 12px; border: none;">-0.058 (0.108)</td>
+<td style="padding-right: 12px; border: none;">-0.137 (0.119)</td>
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">Cancel: Treatment (Donor Competition)</td>
-<td style="padding-right: 12px; border: none;">-0.268<sup style="vertical-align: 0px;">†</sup>
+<td style="padding-right: 12px; border: none;">-0.268 (0.152)<sup style="vertical-align: 0px;">†</sup>
 </td>
-<td style="padding-right: 12px; border: none;">-0.292<sup style="vertical-align: 0px;">†</sup>
+<td style="padding-right: 12px; border: none;">-0.292 (0.165)<sup style="vertical-align: 0px;">†</sup>
 </td>
-<td style="padding-right: 12px; border: none;">-0.351<sup style="vertical-align: 0px;">*</sup>
+<td style="padding-right: 12px; border: none;">-0.351 (0.161)<sup style="vertical-align: 0px;">*</sup>
 </td>
-<td style="padding-right: 12px; border: none;">-0.485<sup style="vertical-align: 0px;">*</sup>
+<td style="padding-right: 12px; border: none;">-0.485 (0.188)<sup style="vertical-align: 0px;">*</sup>
 </td>
-</tr>
-<tr>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.152)</td>
-<td style="padding-right: 12px; border: none;">(0.165)</td>
-<td style="padding-right: 12px; border: none;">(0.161)</td>
-<td style="padding-right: 12px; border: none;">(0.188)</td>
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">Neither: Recipient's Threat (Moderate)</td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">0.089</td>
+<td style="padding-right: 12px; border: none;">0.089 (0.144)</td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">0.178</td>
-</tr>
-<tr>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.144)</td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.138)</td>
+<td style="padding-right: 12px; border: none;">0.178 (0.138)</td>
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">Cancel: Recipient's Threat (Moderate)</td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">0.437<sup style="vertical-align: 0px;">*</sup>
+<td style="padding-right: 12px; border: none;">0.437 (0.190)<sup style="vertical-align: 0px;">*</sup>
 </td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">0.183</td>
-</tr>
-<tr>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.190)</td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.206)</td>
+<td style="padding-right: 12px; border: none;">0.183 (0.206)</td>
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">Neither: Recipient's Threat (High)</td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">0.528<sup style="vertical-align: 0px;">†</sup>
+<td style="padding-right: 12px; border: none;">0.528 (0.297)<sup style="vertical-align: 0px;">†</sup>
 </td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">0.518<sup style="vertical-align: 0px;">†</sup>
+<td style="padding-right: 12px; border: none;">0.518 (0.313)<sup style="vertical-align: 0px;">†</sup>
 </td>
-</tr>
-<tr>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.297)</td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.313)</td>
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">Cancel: Recipient's Threat (High)</td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">1.231<sup style="vertical-align: 0px;">**</sup>
+<td style="padding-right: 12px; border: none;">1.231 (0.340)<sup style="vertical-align: 0px;">**</sup>
 </td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">0.567</td>
-</tr>
-<tr>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.340)</td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.401)</td>
+<td style="padding-right: 12px; border: none;">0.567 (0.401)</td>
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">Neither: Recipient's Importance (Moderate)</td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">0.170</td>
+<td style="padding-right: 12px; border: none;">0.170 (0.214)</td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">-0.476</td>
-</tr>
-<tr>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.214)</td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.294)</td>
+<td style="padding-right: 12px; border: none;">-0.476 (0.294)</td>
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">Cancel: Recipient's Importance (Moderate)</td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">0.047</td>
+<td style="padding-right: 12px; border: none;">0.047 (0.270)</td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">-0.993<sup style="vertical-align: 0px;">**</sup>
+<td style="padding-right: 12px; border: none;">-0.993 (0.349)<sup style="vertical-align: 0px;">**</sup>
 </td>
-</tr>
-<tr>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.270)</td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.349)</td>
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">Neither: Recipient's Importance (High)</td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">0.155</td>
+<td style="padding-right: 12px; border: none;">0.155 (0.215)</td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">-0.890<sup style="vertical-align: 0px;">**</sup>
+<td style="padding-right: 12px; border: none;">-0.890 (0.293)<sup style="vertical-align: 0px;">**</sup>
 </td>
-</tr>
-<tr>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.215)</td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.293)</td>
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">Cancel: Recipient's Importance (High)</td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">-0.178</td>
+<td style="padding-right: 12px; border: none;">-0.178 (0.282)</td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">-1.473<sup style="vertical-align: 0px;">**</sup>
+<td style="padding-right: 12px; border: none;">-1.473 (0.347)<sup style="vertical-align: 0px;">**</sup>
 </td>
-</tr>
-<tr>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.282)</td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.347)</td>
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">Neither: Recipient's Potential (Moderate)</td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">-0.019</td>
+<td style="padding-right: 12px; border: none;">-0.019 (0.184)</td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">0.062</td>
-</tr>
-<tr>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.184)</td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.187)</td>
+<td style="padding-right: 12px; border: none;">0.062 (0.187)</td>
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">Cancel: Recipient's Potential (Moderate)</td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">-0.657<sup style="vertical-align: 0px;">**</sup>
+<td style="padding-right: 12px; border: none;">-0.657 (0.229)<sup style="vertical-align: 0px;">**</sup>
 </td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">-0.458<sup style="vertical-align: 0px;">†</sup>
+<td style="padding-right: 12px; border: none;">-0.458 (0.245)<sup style="vertical-align: 0px;">†</sup>
 </td>
-</tr>
-<tr>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.229)</td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.245)</td>
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">Neither: Recipient's Potential (High)</td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">-0.689<sup style="vertical-align: 0px;">**</sup>
+<td style="padding-right: 12px; border: none;">-0.689 (0.198)<sup style="vertical-align: 0px;">**</sup>
 </td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">-0.612<sup style="vertical-align: 0px;">**</sup>
+<td style="padding-right: 12px; border: none;">-0.612 (0.195)<sup style="vertical-align: 0px;">**</sup>
 </td>
-</tr>
-<tr>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.198)</td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.195)</td>
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">Cancel: Recipient's Potential (High)</td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">-1.188<sup style="vertical-align: 0px;">**</sup>
+<td style="padding-right: 12px; border: none;">-1.188 (0.256)<sup style="vertical-align: 0px;">**</sup>
 </td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">-0.940<sup style="vertical-align: 0px;">**</sup>
+<td style="padding-right: 12px; border: none;">-0.940 (0.275)<sup style="vertical-align: 0px;">**</sup>
 </td>
-</tr>
-<tr>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.256)</td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.275)</td>
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">Neither: Political Interest (Moderate)</td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">-0.197</td>
+<td style="padding-right: 12px; border: none;">-0.197 (0.172)</td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">-0.133</td>
-</tr>
-<tr>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.172)</td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.180)</td>
+<td style="padding-right: 12px; border: none;">-0.133 (0.180)</td>
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">Cancel: Political Interest (Moderate)</td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">0.396</td>
+<td style="padding-right: 12px; border: none;">0.396 (0.255)</td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">0.015</td>
-</tr>
-<tr>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.255)</td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.271)</td>
+<td style="padding-right: 12px; border: none;">0.015 (0.271)</td>
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">Neither: Political Interest (High)</td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">-0.898<sup style="vertical-align: 0px;">**</sup>
+<td style="padding-right: 12px; border: none;">-0.898 (0.195)<sup style="vertical-align: 0px;">**</sup>
 </td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">-0.845<sup style="vertical-align: 0px;">**</sup>
+<td style="padding-right: 12px; border: none;">-0.845 (0.198)<sup style="vertical-align: 0px;">**</sup>
 </td>
-</tr>
-<tr>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.195)</td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.198)</td>
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">Cancel: Political Interest (High)</td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">0.452</td>
+<td style="padding-right: 12px; border: none;">0.452 (0.280)</td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">-0.060</td>
+<td style="padding-right: 12px; border: none;">-0.060 (0.297)</td>
 </tr>
 <tr>
+<td style="padding-right: 12px; border: none;">Neither: ODA Important</td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.280)</td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.297)</td>
-</tr>
-<tr>
-<td style="padding-right: 12px; border: none;">Neither: ODA Importance</td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">-1.145<sup style="vertical-align: 0px;">**</sup>
+<td style="padding-right: 12px; border: none;">-1.145 (0.213)<sup style="vertical-align: 0px;">**</sup>
 </td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">-1.389<sup style="vertical-align: 0px;">**</sup>
+<td style="padding-right: 12px; border: none;">-1.389 (0.220)<sup style="vertical-align: 0px;">**</sup>
 </td>
 </tr>
 <tr>
+<td style="padding-right: 12px; border: none;">Cancel: ODA Important</td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.213)</td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.220)</td>
-</tr>
-<tr>
-<td style="padding-right: 12px; border: none;">Cancel: ODA Importance</td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">-2.462<sup style="vertical-align: 0px;">**</sup>
+<td style="padding-right: 12px; border: none;">-2.462 (0.231)<sup style="vertical-align: 0px;">**</sup>
 </td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">-3.282<sup style="vertical-align: 0px;">**</sup>
+<td style="padding-right: 12px; border: none;">-3.282 (0.249)<sup style="vertical-align: 0px;">**</sup>
 </td>
-</tr>
-<tr>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.231)</td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.249)</td>
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">Neither: Gender (Female)</td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">0.232<sup style="vertical-align: 0px;">†</sup>
+<td style="padding-right: 12px; border: none;">0.232 (0.122)<sup style="vertical-align: 0px;">†</sup>
 </td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">0.518<sup style="vertical-align: 0px;">**</sup>
+<td style="padding-right: 12px; border: none;">0.518 (0.121)<sup style="vertical-align: 0px;">**</sup>
 </td>
-</tr>
-<tr>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.122)</td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.121)</td>
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">Cancel: Gender (Female)</td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">0.254</td>
+<td style="padding-right: 12px; border: none;">0.254 (0.168)</td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">0.530<sup style="vertical-align: 0px;">**</sup>
+<td style="padding-right: 12px; border: none;">0.530 (0.188)<sup style="vertical-align: 0px;">**</sup>
 </td>
-</tr>
-<tr>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.168)</td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.188)</td>
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">Neither: Age</td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">-0.002</td>
+<td style="padding-right: 12px; border: none;">-0.002 (0.005)</td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">-0.005</td>
-</tr>
-<tr>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.005)</td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.004)</td>
+<td style="padding-right: 12px; border: none;">-0.005 (0.004)</td>
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">Cancel: Age</td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">0.002</td>
+<td style="padding-right: 12px; border: none;">0.002 (0.007)</td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">0.009</td>
-</tr>
-<tr>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.007)</td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.007)</td>
+<td style="padding-right: 12px; border: none;">0.009 (0.007)</td>
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">Neither: Ideology (Moderate)</td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">0.107</td>
+<td style="padding-right: 12px; border: none;">0.107 (0.167)</td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">0.611<sup style="vertical-align: 0px;">**</sup>
+<td style="padding-right: 12px; border: none;">0.611 (0.159)<sup style="vertical-align: 0px;">**</sup>
 </td>
-</tr>
-<tr>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.167)</td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.159)</td>
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">Cancel: Ideology (Moderate)</td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">-0.047</td>
+<td style="padding-right: 12px; border: none;">-0.047 (0.233)</td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">-0.180</td>
-</tr>
-<tr>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.233)</td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.233)</td>
+<td style="padding-right: 12px; border: none;">-0.180 (0.233)</td>
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">Neither: Ideology (Right)</td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">-0.217</td>
+<td style="padding-right: 12px; border: none;">-0.217 (0.152)</td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">-0.011</td>
-</tr>
-<tr>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.152)</td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.151)</td>
+<td style="padding-right: 12px; border: none;">-0.011 (0.151)</td>
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">Cancel: Ideology (Right)</td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">-0.046</td>
+<td style="padding-right: 12px; border: none;">-0.046 (0.208)</td>
 <td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">-0.649<sup style="vertical-align: 0px;">**</sup>
+<td style="padding-right: 12px; border: none;">-0.649 (0.230)<sup style="vertical-align: 0px;">**</sup>
 </td>
-</tr>
-<tr>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.208)</td>
-<td style="padding-right: 12px; border: none;"></td>
-<td style="padding-right: 12px; border: none;">(0.230)</td>
 </tr>
 <tr>
 <td style="border-top: 1px solid black;">AIC</td>
@@ -486,6 +276,6 @@
 <td style="border-bottom: 2px solid black;">1618</td>
 </tr>
 <tr>
-<td style="padding-right: 12px; border: none;" colspan="6"><span style="font-size:0.8em"><sup style="vertical-align: 0px;">**</sup>p &lt; 0.01, <sup style="vertical-align: 0px;">*</sup>p &lt; 0.05, <sup style="vertical-align: 0px;">†</sup>p &lt; 0.1 <br>  Estimated by ordinary least square (OLS) regression. Robust standard errors in parentheses.</span></td>
+<td style="padding-right: 12px; border: none;" colspan="6"><span style="font-size:0.8em"><sup style="vertical-align: 0px;">**</sup>p &lt; 0.01, <sup style="vertical-align: 0px;">*</sup>p &lt; 0.05, <sup style="vertical-align: 0px;">†</sup>p &lt; 0.1 <br>  Estimated by multinomial logit. Robust standard errors in parentheses.</span></td>
 </tr>
 </table></body></html>

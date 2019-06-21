@@ -1,10 +1,12 @@
 #' ---
 #' title: "Analysis 1: Descriptive Statistics"
 #' author: "Gento Kato"
-#' date: "April 13, 2019"
+#' date: "June 21, 2019"
 #' ---
 
+#'
 #' # Preparation
+#'
 
 ## Clear Workspace
 rm(list = ls())
@@ -46,16 +48,24 @@ vars <- c("out","treat_China","threat","imp","potential",
 d.MMR.sub <- na.omit(d.MMR[,vars])
 d.PHL.sub <- na.omit(d.PHL[,vars])
 
+#'
 #' # Variable Descriptions
+#'
 
-#' ## Original Treatment Ns
+#'
+#' ## Original Treatment Ns (for Table 1)
+#'
 table(do$treatment)
 
-#' ## Ns After NAs are dropped
+#'
+#' ## Ns After NAs are dropped (for Table 1)
+#'
 table(d.MMR.sub$treat_China) # Myanmar Cases
 table(d.PHL.sub$treat_China) # Philippines Cases
 
-#' ## Outcome Variable Distribution
+#'
+#' ## Outcome Variable Distribution (Figure 1)
+#' 
 pd <- data.frame(c = as.factor(rep(c("Myanmar","Philippines"),each=9)),
                  x = as.factor(rep(seq(1,9,1),2)),
                  y = c(table(d.MMR.sub$cancel_aid)/sum(table(d.MMR.sub$cancel_aid)),
@@ -72,8 +82,9 @@ p
 #+ eval=FALSE
 png_save(p, h=400, file="out/outdist.png")
 
-#' ## Selected Pre-treatment Covariates Distributions
-
+#'
+#' ## Selected Pre-treatment Covariates Distributions (Appendix)
+#'
 pd <- data.frame(c = as.factor(rep(c("Myanmar","Philippines"),each=9)),
                  t = factor(rep(rep(c("Threatening",
                                       "Important",
@@ -104,7 +115,9 @@ p
 #+ eval=FALSE
 png_save(p,h=500,file="out/perrecip.png")
 
-#' ## Moderator (China Threat) Distribution
+#'
+#' ## Moderator (China Threat) Distributions (Appendix)
+#'
 
 # Drop Cases with Missing Values in Relevant Variables
 vars <- c("out","treat_China","threat","imp","potential",  
@@ -137,7 +150,46 @@ p
 #+ eval=FALSE
 png_save(p,h=500,file="out/threatCHN.png")
 
+#'
+#' # Mediator Distributions (Figure 3)
+#'
+
+td <- data.frame(c = factor(c(rep("Myanmar",nrow(d.MMR.sub)*4),
+                              rep("Philippines",nrow(d.PHL.sub)*4)),
+                            levels=c("Myanmar","Philippines")),
+                 out = c(rep(as.numeric(d.MMR.sub$out),4),
+                         rep(as.numeric(d.PHL.sub$out),4)),
+                 medname = factor(c(rep(c("Economy","Security","Reputation","Efficacy"), 
+                                        each=nrow(d.MMR.sub)),
+                                    rep(c("Economy","Security","Reputation","Efficacy"), 
+                                        each=nrow(d.PHL.sub))),
+                                  levels=c("Security","Economy","Reputation","Efficacy")),
+                 medval = factor(c(d.MMR.sub$med_econ,
+                                   d.MMR.sub$med_secu,
+                                   d.MMR.sub$med_repu,
+                                   d.MMR.sub$med_effi,
+                                   d.PHL.sub$med_econ,
+                                   d.PHL.sub$med_secu,
+                                   d.PHL.sub$med_repu,
+                                   d.PHL.sub$med_effi)))
+
+p <- ggplot(td, aes(medval)) + geom_bar(aes(y=..prop.., group=1)) + 
+  facet_grid(c~medname) + theme_bw() + 
+  ylab("Proportion") + 
+  xlab("The Influence of Cancelling Aid on Given Interests\n(1=Positive; 3=Neutral; 5=Negative)") + 
+  theme(axis.text.x = element_text(face="bold"),
+        strip.text = element_text(face="bold",size=11))
+
+#+ fig.width=8, fig.height=6
+p
+
+#+ eval=FALSE
+png_save(p,h=500,file="out/meddist.png")
+
+#'
 #' # Relationship b/w Mediator and Outcome
+#' 
+
 td <- data.frame(c = factor(c(rep("Myanmar",nrow(d.MMR.sub)*4),
                               rep("Philippines",nrow(d.PHL.sub)*4)),
                             levels=c("Myanmar","Philippines")),
@@ -174,7 +226,9 @@ p
 #+ eval=FALSE
 png_save(p,h=500,file="out/medoutrel.png")
 
-#' # Covariate Balance Between Treatment Groups
+#'
+#' # Covariate Balance Between Treatment Groups (Appendix)
+#' 
 pbal <- checkbal(dtlist =list(d.MMR.sub,d.PHL.sub),
                   dtnames = c("Myanmar","Philippines"))
 

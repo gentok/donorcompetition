@@ -2,8 +2,10 @@
 
 # File locations
 src_v2/
+src_old/
 draft/
 data/private/
+out/old/
 src/processing/*.RData
 
 # File extensions

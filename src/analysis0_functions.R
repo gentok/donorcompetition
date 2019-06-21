@@ -23,6 +23,7 @@ library(texreg)
 library(ggpubr)
 library(mlogit)
 library(xml2)
+library(multcomp)
 
 #' # Set Formulas
 
@@ -51,10 +52,10 @@ fm.mod.econ <- formula(med_econ ~ treat_China * mod)
 fm.mod.secu <- formula(med_secu ~ treat_China * mod)
 fm.mod.repu <- formula(med_repu ~ treat_China * mod)
 fm.mod.effi <- formula(med_effi ~ treat_China * mod)
-fo.mod.econ <- formula(out ~ med_econ + treat_China * mod)
-fo.mod.secu <- formula(out ~ med_secu + treat_China * mod)
-fo.mod.repu <- formula(out ~ med_repu + treat_China * mod)
-fo.mod.effi <- formula(out ~ med_effi + treat_China * mod)
+fo.mod.econ <- formula(out ~ med_econ * mod + treat_China * mod)
+fo.mod.secu <- formula(out ~ med_secu * mod + treat_China * mod)
+fo.mod.repu <- formula(out ~ med_repu * mod + treat_China * mod)
+fo.mod.effi <- formula(out ~ med_effi * mod + treat_China * mod)
 
 ## Variable Names
 basevn <- c("(Intercept)",
@@ -67,7 +68,7 @@ basevn <- c("(Intercept)",
             "Recipient's Potential (High)",
             "Political Interest (Moderate)",
             "Political Interest (High)",
-            "ODA Importance",
+            "ODA Important",
             "Gender (Female)",
             "Age",
             "Ideology (Moderate)",
@@ -213,200 +214,468 @@ gen.med.out <- function(d.sub, outvar, simsn, filename,
   }
   
   
-  return(med.out.list)
+  return(list(med.out=med.out.list, med=med.list[chosen_med], out=out.list[chosen_med]))
 }
 
 #' # Generating Data from Mediation Analysis Object
-gendata <- function(med.out.MMR.v0,med.out.PHL.v0,
-                    ologit=FALSE,odds=FALSE){
-  if (ologit==FALSE){
-    med.out.v0.data <- 
-      data.frame(med=rep(rep(c("Economy","Security","Reputation","Efficacy"),each=3),2),
-                 eff=rep(c("Mediated","Direct","Total"),8),
-                 country=rep(c("Myammar","Philippines"),each=12))
-  } else if (ologit==TRUE) {
-    catn <- length(med.out.MMR.v0[[1]]$d1)
-    med.out.v0.data <- 
-      data.frame(med=rep(rep(c("Economy","Security","Reputation","Efficacy"),each=3*catn),2),
-                 eff=rep(rep(c("Mediated","Direct","Total"),each=catn),8),
-                 country=rep(c("Myammar","Philippines"),each=12*catn),
-                 catname=rep(seq(1,catn,1),3*8))
-    med.out.v0.data$catname <- as.factor(med.out.v0.data$catname)
+gendata <- function(med.out.MMR,med.out.PHL,mod=FALSE,modN=NULL,modval=NULL) {
+  
+  gendata1 <- function(med.out,country,mod,modN,modval) {
+    
+    # Initiate Data
+    res <- data.frame(est=numeric(),loCI=numeric(),upCI=numeric(),p=numeric(),
+                      med=character(),eff=character())
+    
+    ## Treatment -> Mediator ##
+    # Securirty
+    tmp <- coeftest(med.out$med[[2]], vcov.=vcovHC(med.out$med[[2]]))[2,]
+    if (mod==TRUE) {
+      if (modN==2 & modval==1) {
+        tmp <- coeftest(glht(med.out$med[[2]],
+                            linfct = c("treat_China + treat_China:mod = 0"),
+                            vcov.=vcovHC(med.out$med[[2]])))[1,]
+      } else if (modN>=3 & modval>=1) {
+        tmp <- coeftest(glht(med.out$med[[2]],
+                             linfct = c(paste0("treat_China + treat_China:mod", modval, " = 0")),
+                             vcov.=vcovHC(med.out$med[[2]])))[1,]      
+      }
+    }
+    res <- rbind(res,
+                 data.frame(est=tmp[1],
+                            loCI=tmp[1]+qnorm(0.025)*tmp[2],
+                            upCI=tmp[1]+qnorm(0.975)*tmp[2],
+                            p=tmp[4],
+                            med="Security",
+                            eff="Treatment ¨ Mediator"))
+    # Economy
+    tmp <- coeftest(med.out$med[[1]], vcov.=vcovHC(med.out$med[[1]]))[2,]
+    if (mod==TRUE) {
+      if (modN==2 & modval==1) {
+        tmp <- coeftest(glht(med.out$med[[1]],
+                             linfct = c("treat_China + treat_China:mod = 0"),
+                             vcov.=vcovHC(med.out$med[[1]])))[1,]
+      } else if (modN>=3 & modval>=1) {
+        tmp <- coeftest(glht(med.out$med[[1]],
+                             linfct = c(paste0("treat_China + treat_China:mod", modval, " = 0")),
+                             vcov.=vcovHC(med.out$med[[1]])))[1,]      
+      }
+    }
+    res <- rbind(res,
+                 data.frame(est=tmp[1],
+                            loCI=tmp[1]+qnorm(0.025)*tmp[2],
+                            upCI=tmp[1]+qnorm(0.975)*tmp[2],
+                            p=tmp[4],
+                            med="Economy",
+                            eff="Treatment ¨ Mediator"))
+    # Reputation
+    tmp <- coeftest(med.out$med[[3]], vcov.=vcovHC(med.out$med[[3]]))[2,]
+    if (mod==TRUE) {
+      if (modN==2 & modval==1) {
+        tmp <- coeftest(glht(med.out$med[[3]],
+                             linfct = c("treat_China + treat_China:mod = 0"),
+                             vcov.=vcovHC(med.out$med[[3]])))[1,]
+      } else if (modN>=3 & modval>=1) {
+        tmp <- coeftest(glht(med.out$med[[3]],
+                             linfct = c(paste0("treat_China + treat_China:mod", modval, " = 0")),
+                             vcov.=vcovHC(med.out$med[[3]])))[1,]      
+      }
+    }
+    res <- rbind(res,
+                 data.frame(est=tmp[1],
+                            loCI=tmp[1]+qnorm(0.025)*tmp[2],
+                            upCI=tmp[1]+qnorm(0.975)*tmp[2],
+                            p=tmp[4],
+                            med="Reputation",
+                            eff="Treatment ¨ Mediator"))
+    # Efficacy
+    tmp <- coeftest(med.out$med[[4]], vcov.=vcovHC(med.out$med[[4]]))[2,]
+    if (mod==TRUE) {
+      if (modN==2 & modval==1) {
+        tmp <- coeftest(glht(med.out$med[[4]],
+                             linfct = c("treat_China + treat_China:mod = 0"),
+                             vcov.=vcovHC(med.out$med[[4]])))[1,]
+      } else if (modN>=3 & modval>=1) {
+        tmp <- coeftest(glht(med.out$med[[4]],
+                             linfct = c(paste0("treat_China + treat_China:mod", modval, " = 0")),
+                             vcov.=vcovHC(med.out$med[[4]])))[1,]      
+      }
+    }
+    res <- rbind(res,
+                 data.frame(est=tmp[1],
+                            loCI=tmp[1]+qnorm(0.025)*tmp[2],
+                            upCI=tmp[1]+qnorm(0.975)*tmp[2],
+                            p=tmp[4],
+                            med="Efficacy",
+                            eff="Treatment ¨ Mediator"))
+    
+    ## Mediator -> Outcome ##
+    # Security
+    tmp <- coeftest(med.out$out[[2]], vcov.=vcovHC(med.out$out[[2]]))[2,]
+    if (mod==TRUE) {
+      if (modN==2 & modval==1) {
+        tmp <- coeftest(glht(med.out$out[[2]],
+                             linfct = c("med_secu + med_secu:mod = 0"),
+                             vcov.=vcovHC(med.out$out[[2]])))[1,]
+      } else if (modN>=3 & modval>=1) {
+        tmp <- coeftest(glht(med.out$out[[2]],
+                             linfct = c(paste0("med_secu + med_secu:mod", modval, " = 0")),
+                             vcov.=vcovHC(med.out$out[[2]])))[1,]      
+      }
+    }
+    res <- rbind(res,
+                 data.frame(est=tmp[1],
+                            loCI=tmp[1]+qnorm(0.025)*tmp[2],
+                            upCI=tmp[1]+qnorm(0.975)*tmp[2],
+                            p=tmp[4],
+                            med="Security",
+                            eff="Mediator ¨ Outcome"))
+    # Economy
+    tmp <- coeftest(med.out$out[[1]], vcov.=vcovHC(med.out$out[[1]]))[2,]
+    if (mod==TRUE) {
+      if (modN==2 & modval==1) {
+        tmp <- coeftest(glht(med.out$out[[1]],
+                             linfct = c("med_econ + med_econ:mod = 0"),
+                             vcov.=vcovHC(med.out$out[[1]])))[1,]
+      } else if (modN>=3 & modval>=1) {
+        tmp <- coeftest(glht(med.out$out[[1]],
+                             linfct = c(paste0("med_econ + med_econ:mod", modval, " = 0")),
+                             vcov.=vcovHC(med.out$out[[1]])))[1,]      
+      }
+    }
+    res <- rbind(res,
+                 data.frame(est=tmp[1],
+                            loCI=tmp[1]+qnorm(0.025)*tmp[2],
+                            upCI=tmp[1]+qnorm(0.975)*tmp[2],
+                            p=tmp[4],
+                            med="Economy",
+                            eff="Mediator ¨ Outcome"))
+    # Reputation
+    tmp <- coeftest(med.out$out[[3]], vcov.=vcovHC(med.out$out[[3]]))[2,]
+    if (mod==TRUE) {
+      if (modN==2 & modval==1) {
+        tmp <- coeftest(glht(med.out$out[[3]],
+                             linfct = c("med_repu + med_repu:mod = 0"),
+                             vcov.=vcovHC(med.out$out[[3]])))[1,]
+      } else if (modN>=3 & modval>=1) {
+        tmp <- coeftest(glht(med.out$out[[3]],
+                             linfct = c(paste0("med_repu + med_repu:mod", modval, " = 0")),
+                             vcov.=vcovHC(med.out$out[[3]])))[1,]      
+      }
+    }
+    res <- rbind(res,
+                 data.frame(est=tmp[1],
+                            loCI=tmp[1]+qnorm(0.025)*tmp[2],
+                            upCI=tmp[1]+qnorm(0.975)*tmp[2],
+                            p=tmp[4],
+                            med="Reputation",
+                            eff="Mediator ¨ Outcome"))
+    # Efficacy
+    tmp <- coeftest(med.out$out[[4]], vcov.=vcovHC(med.out$out[[4]]))[2,]
+    if (mod==TRUE) {
+      if (modN==2 & modval==1) {
+        tmp <- coeftest(glht(med.out$out[[4]],
+                             linfct = c("med_effi + med_effi:mod = 0"),
+                             vcov.=vcovHC(med.out$out[[4]])))[1,]
+      } else if (modN>=3 & modval>=1) {
+        tmp <- coeftest(glht(med.out$out[[4]],
+                             linfct = c(paste0("med_effi + med_effi:mod", modval, " = 0")),
+                             vcov.=vcovHC(med.out$out[[4]])))[1,]      
+      }
+    }
+    res <- rbind(res,
+                 data.frame(est=tmp[1],
+                            loCI=tmp[1]+qnorm(0.025)*tmp[2],
+                            upCI=tmp[1]+qnorm(0.975)*tmp[2],
+                            p=tmp[4],
+                            med="Efficacy",
+                            eff="Mediator ¨ Outcome"))
+    
+    ## Mediated Effect ##
+    # Security
+    tmp <- with(med.out$med.out[[2]], data.frame(d1,t(d1.ci),d1.p))
+    names(tmp) <- c("est","loCI","upCI","p")
+    tmp$med <- "Security"; tmp$eff <- "Treatment ¨ Med. ¨ Out."
+    res <- rbind(res,tmp)
+    # Economy
+    tmp <- with(med.out$med.out[[1]], data.frame(d1,t(d1.ci),d1.p))
+    names(tmp) <- c("est","loCI","upCI","p")
+    tmp$med <- "Economy"; tmp$eff <- "Treatment ¨ Med. ¨ Out."
+    res <- rbind(res,tmp)
+    # Reputation
+    tmp <- with(med.out$med.out[[3]], data.frame(d1,t(d1.ci),d1.p))
+    names(tmp) <- c("est","loCI","upCI","p")
+    tmp$med <- "Reputation"; tmp$eff <- "Treatment ¨ Med. ¨ Out."
+    res <- rbind(res,tmp)
+    # Efficacy
+    tmp <- with(med.out$med.out[[4]], data.frame(d1,t(d1.ci),d1.p))
+    names(tmp) <- c("est","loCI","upCI","p")
+    tmp$med <- "Efficacy"; tmp$eff <- "Treatment ¨ Med. ¨ Out."
+    res <- rbind(res,tmp)
+    
+    ## Direct Effect ##
+    # Security
+    tmp <- with(med.out$med.out[[2]], data.frame(z1,t(z1.ci),z1.p))
+    names(tmp) <- c("est","loCI","upCI","p")
+    tmp$med <- "Security"; tmp$eff <- "Treatment ¨ Outcome"
+    res <- rbind(res,tmp)
+    # Economy
+    tmp <- with(med.out$med.out[[1]], data.frame(z1,t(z1.ci),z1.p))
+    names(tmp) <- c("est","loCI","upCI","p")
+    tmp$med <- "Economy"; tmp$eff <- "Treatment ¨ Outcome"
+    res <- rbind(res,tmp)
+    # Reputation
+    tmp <- with(med.out$med.out[[3]], data.frame(z1,t(z1.ci),z1.p))
+    names(tmp) <- c("est","loCI","upCI","p")
+    tmp$med <- "Reputation"; tmp$eff <- "Treatment ¨ Outcome"
+    res <- rbind(res,tmp)
+    # Efficacy
+    tmp <- with(med.out$med.out[[4]], data.frame(z1,t(z1.ci),z1.p))
+    names(tmp) <- c("est","loCI","upCI","p")
+    tmp$med <- "Efficacy"; tmp$eff <- "Treatment ¨ Outcome"
+    res <- rbind(res,tmp)
+    
+    ## Total Effect ##
+    # Security
+    tmp <- with(med.out$med.out[[2]], data.frame(tau.coef,t(tau.ci),tau.p))
+    names(tmp) <- c("est","loCI","upCI","p")
+    tmp$med <- "Security"; tmp$eff <- "Total"
+    res <- rbind(res,tmp)
+    # Economy
+    tmp <- with(med.out$med.out[[1]], data.frame(tau.coef,t(tau.ci),tau.p))
+    names(tmp) <- c("est","loCI","upCI","p")
+    tmp$med <- "Economy"; tmp$eff <- "Total"
+    res <- rbind(res,tmp)
+    # Reputation
+    tmp <- with(med.out$med.out[[3]], data.frame(tau.coef,t(tau.ci),tau.p))
+    names(tmp) <- c("est","loCI","upCI","p")
+    tmp$med <- "Reputation"; tmp$eff <- "Total"
+    res <- rbind(res,tmp)
+    # Efficacy
+    tmp <- with(med.out$med.out[[4]], data.frame(tau.coef,t(tau.ci),tau.p))
+    names(tmp) <- c("est","loCI","upCI","p")
+    tmp$med <- "Efficacy"; tmp$eff <- "Total"
+    res <- rbind(res,tmp)
+    
+    # Convert Character into Factor
+    res$med <- factor(res$med,levels=rev(c("Security","Economy","Reputation","Efficacy")))
+    res$eff <- factor(res$eff,levels=unique(res$eff))
+    
+    # P-value Variable
+    res$p05 <- ifelse(res$p <= 0.05,1,0)
+    res$p10 <- ifelse(res$p <= 0.1,1,0)
+    res$pcat <- "p >= .1"
+    res$pcat[res$p10==1] <- "p < .1"
+    res$pcat[res$p05==1] <- "p < .05"
+    res$pcat <- factor(res$pcat,levels=c("p < .05","p < .1", "p >= .1"))
+    
+    # Country
+    res$country <- country
+    
+    return(res)
+    
   }
   
-  med.out.v0.data$med <- factor(med.out.v0.data$med,levels=c("Security","Economy",
-                                                             "Reputation","Efficacy"))
-  med.out.v0.data$eff <- factor(med.out.v0.data$eff,levels=unique(med.out.v0.data$eff))
-  med.out.v0.data$country <- factor(med.out.v0.data$country,levels=unique(med.out.v0.data$country))
-  med.out.v0.data$est <- 
-    c(med.out.MMR.v0[[1]]$d1,med.out.MMR.v0[[1]]$z1,med.out.MMR.v0[[1]]$tau.coef,
-      med.out.MMR.v0[[2]]$d1,med.out.MMR.v0[[2]]$z1,med.out.MMR.v0[[2]]$tau.coef,
-      med.out.MMR.v0[[3]]$d1,med.out.MMR.v0[[3]]$z1,med.out.MMR.v0[[3]]$tau.coef,
-      med.out.MMR.v0[[4]]$d1,med.out.MMR.v0[[4]]$z1,med.out.MMR.v0[[4]]$tau.coef,
-      med.out.PHL.v0[[1]]$d1,med.out.PHL.v0[[1]]$z1,med.out.PHL.v0[[1]]$tau.coef,
-      med.out.PHL.v0[[2]]$d1,med.out.PHL.v0[[2]]$z1,med.out.PHL.v0[[2]]$tau.coef,
-      med.out.PHL.v0[[3]]$d1,med.out.PHL.v0[[3]]$z1,med.out.PHL.v0[[3]]$tau.coef,
-      med.out.PHL.v0[[4]]$d1,med.out.PHL.v0[[4]]$z1,med.out.PHL.v0[[4]]$tau.coef)
-  if (ologit==FALSE) {
-    med.out.v0.data$loCI <- 
-      c(med.out.MMR.v0[[1]]$d1.ci[1],med.out.MMR.v0[[1]]$z1.ci[1],med.out.MMR.v0[[1]]$tau.ci[1],
-        med.out.MMR.v0[[2]]$d1.ci[1],med.out.MMR.v0[[2]]$z1.ci[1],med.out.MMR.v0[[2]]$tau.ci[1],
-        med.out.MMR.v0[[3]]$d1.ci[1],med.out.MMR.v0[[3]]$z1.ci[1],med.out.MMR.v0[[3]]$tau.ci[1],
-        med.out.MMR.v0[[4]]$d1.ci[1],med.out.MMR.v0[[4]]$z1.ci[1],med.out.MMR.v0[[4]]$tau.ci[1],
-        med.out.PHL.v0[[1]]$d1.ci[1],med.out.PHL.v0[[1]]$z1.ci[1],med.out.PHL.v0[[1]]$tau.ci[1],
-        med.out.PHL.v0[[2]]$d1.ci[1],med.out.PHL.v0[[2]]$z1.ci[1],med.out.PHL.v0[[2]]$tau.ci[1],
-        med.out.PHL.v0[[3]]$d1.ci[1],med.out.PHL.v0[[3]]$z1.ci[1],med.out.PHL.v0[[3]]$tau.ci[1],
-        med.out.PHL.v0[[4]]$d1.ci[1],med.out.PHL.v0[[4]]$z1.ci[1],med.out.PHL.v0[[4]]$tau.ci[1])
-    med.out.v0.data$upCI <- 
-      c(med.out.MMR.v0[[1]]$d1.ci[2],med.out.MMR.v0[[1]]$z1.ci[2],med.out.MMR.v0[[1]]$tau.ci[2],
-        med.out.MMR.v0[[2]]$d1.ci[2],med.out.MMR.v0[[2]]$z1.ci[2],med.out.MMR.v0[[2]]$tau.ci[2],
-        med.out.MMR.v0[[3]]$d1.ci[2],med.out.MMR.v0[[3]]$z1.ci[2],med.out.MMR.v0[[3]]$tau.ci[2],
-        med.out.MMR.v0[[4]]$d1.ci[2],med.out.MMR.v0[[4]]$z1.ci[2],med.out.MMR.v0[[4]]$tau.ci[2],
-        med.out.PHL.v0[[1]]$d1.ci[2],med.out.PHL.v0[[1]]$z1.ci[2],med.out.PHL.v0[[1]]$tau.ci[2],
-        med.out.PHL.v0[[2]]$d1.ci[2],med.out.PHL.v0[[2]]$z1.ci[2],med.out.PHL.v0[[2]]$tau.ci[2],
-        med.out.PHL.v0[[3]]$d1.ci[2],med.out.PHL.v0[[3]]$z1.ci[2],med.out.PHL.v0[[3]]$tau.ci[2],
-        med.out.PHL.v0[[4]]$d1.ci[2],med.out.PHL.v0[[4]]$z1.ci[2],med.out.PHL.v0[[4]]$tau.ci[2])
-  } else if (ologit==TRUE) {
-    med.out.v0.data$loCI <- 
-      c(med.out.MMR.v0[[1]]$d1.ci[1,],med.out.MMR.v0[[1]]$z1.ci[1,],med.out.MMR.v0[[1]]$tau.ci[1,],
-        med.out.MMR.v0[[2]]$d1.ci[1,],med.out.MMR.v0[[2]]$z1.ci[1,],med.out.MMR.v0[[2]]$tau.ci[1,],
-        med.out.MMR.v0[[3]]$d1.ci[1,],med.out.MMR.v0[[3]]$z1.ci[1,],med.out.MMR.v0[[3]]$tau.ci[1,],
-        med.out.MMR.v0[[4]]$d1.ci[1,],med.out.MMR.v0[[4]]$z1.ci[1,],med.out.MMR.v0[[4]]$tau.ci[1,],
-        med.out.PHL.v0[[1]]$d1.ci[1,],med.out.PHL.v0[[1]]$z1.ci[1,],med.out.PHL.v0[[1]]$tau.ci[1,],
-        med.out.PHL.v0[[2]]$d1.ci[1,],med.out.PHL.v0[[2]]$z1.ci[1,],med.out.PHL.v0[[2]]$tau.ci[1,],
-        med.out.PHL.v0[[3]]$d1.ci[1,],med.out.PHL.v0[[3]]$z1.ci[1,],med.out.PHL.v0[[3]]$tau.ci[1,],
-        med.out.PHL.v0[[4]]$d1.ci[1,],med.out.PHL.v0[[4]]$z1.ci[1,],med.out.PHL.v0[[4]]$tau.ci[1,])
-    med.out.v0.data$upCI <- 
-      c(med.out.MMR.v0[[1]]$d1.ci[2,],med.out.MMR.v0[[1]]$z1.ci[2,],med.out.MMR.v0[[1]]$tau.ci[2,],
-        med.out.MMR.v0[[2]]$d1.ci[2,],med.out.MMR.v0[[2]]$z1.ci[2,],med.out.MMR.v0[[2]]$tau.ci[2,],
-        med.out.MMR.v0[[3]]$d1.ci[2,],med.out.MMR.v0[[3]]$z1.ci[2,],med.out.MMR.v0[[3]]$tau.ci[2,],
-        med.out.MMR.v0[[4]]$d1.ci[2,],med.out.MMR.v0[[4]]$z1.ci[2,],med.out.MMR.v0[[4]]$tau.ci[2,],
-        med.out.PHL.v0[[1]]$d1.ci[2,],med.out.PHL.v0[[1]]$z1.ci[2,],med.out.PHL.v0[[1]]$tau.ci[2,],
-        med.out.PHL.v0[[2]]$d1.ci[2,],med.out.PHL.v0[[2]]$z1.ci[2,],med.out.PHL.v0[[2]]$tau.ci[2,],
-        med.out.PHL.v0[[3]]$d1.ci[2,],med.out.PHL.v0[[3]]$z1.ci[2,],med.out.PHL.v0[[3]]$tau.ci[2,],
-        med.out.PHL.v0[[4]]$d1.ci[2,],med.out.PHL.v0[[4]]$z1.ci[2,],med.out.PHL.v0[[4]]$tau.ci[2,])
-  }
+  res <- rbind(gendata1(med.out.MMR, "Myanmar",mod,modN,modval),
+               gendata1(med.out.PHL, "Philippines",mod,modN,modval))
+  
+  res$country <- factor(res$country,levels=unique(res$country))
+  
+  return(res)
   
   
-  if (odds==TRUE) {
-    med.out.v0.data$est <- exp(med.out.v0.data$est)
-    med.out.v0.data$loCI <- exp(med.out.v0.data$loCI)
-    med.out.v0.data$upCI <- exp(med.out.v0.data$upCI)
-  }
-  med.out.v0.data$p <- 
-    c(med.out.MMR.v0[[1]]$d1.p,med.out.MMR.v0[[1]]$z1.p,med.out.MMR.v0[[1]]$tau.p,
-      med.out.MMR.v0[[2]]$d1.p,med.out.MMR.v0[[2]]$z1.p,med.out.MMR.v0[[2]]$tau.p,
-      med.out.MMR.v0[[3]]$d1.p,med.out.MMR.v0[[3]]$z1.p,med.out.MMR.v0[[3]]$tau.p,
-      med.out.MMR.v0[[4]]$d1.p,med.out.MMR.v0[[4]]$z1.p,med.out.MMR.v0[[4]]$tau.p,
-      med.out.PHL.v0[[1]]$d1.p,med.out.PHL.v0[[1]]$z1.p,med.out.PHL.v0[[1]]$tau.p,
-      med.out.PHL.v0[[2]]$d1.p,med.out.PHL.v0[[2]]$z1.p,med.out.PHL.v0[[2]]$tau.p,
-      med.out.PHL.v0[[3]]$d1.p,med.out.PHL.v0[[3]]$z1.p,med.out.PHL.v0[[3]]$tau.p,
-      med.out.PHL.v0[[4]]$d1.p,med.out.PHL.v0[[4]]$z1.p,med.out.PHL.v0[[4]]$tau.p)
-  med.out.v0.data$p05 <- ifelse(med.out.v0.data$p <= 0.05,1,0)
-  med.out.v0.data$p10 <- ifelse(med.out.v0.data$p <= 0.1,1,0)
-  med.out.v0.data$pcat <- "p >= .1"
-  med.out.v0.data$pcat[med.out.v0.data$p10==1] <- "p < .1"
-  med.out.v0.data$pcat[med.out.v0.data$p05==1] <- "p < .05"
-  med.out.v0.data$pcat <- factor(med.out.v0.data$pcat,
-                                 levels=c("p < .05","p < .1", "p >= .1"))
-  return(med.out.v0.data)
 }
 
+# #
+# gendata <- function(med.out.MMR.v0,med.out.PHL.v0,
+#                     ologit=FALSE,odds=FALSE){
+#   if (ologit==FALSE){
+#     med.out.v0.data <-
+#       data.frame(med=rep(rep(c("Economy","Security","Reputation","Efficacy"),each=3),2),
+#                  eff=rep(c("Mediated","Direct","Total"),8),
+#                  country=rep(c("Myanmar","Philippines"),each=12))
+#   } else if (ologit==TRUE) {
+#     catn <- length(med.out.MMR.v0[[1]]$d1)
+#     med.out.v0.data <-
+#       data.frame(med=rep(rep(c("Economy","Security","Reputation","Efficacy"),each=3*catn),2),
+#                  eff=rep(rep(c("Mediated","Direct","Total"),each=catn),8),
+#                  country=rep(c("Myanmar","Philippines"),each=12*catn),
+#                  catname=rep(seq(1,catn,1),3*8))
+#     med.out.v0.data$catname <- as.factor(med.out.v0.data$catname)
+#   }
+# 
+#   med.out.v0.data$med <- factor(med.out.v0.data$med,levels=c("Security","Economy",
+#                                                              "Reputation","Efficacy"))
+#   med.out.v0.data$eff <- factor(med.out.v0.data$eff,levels=unique(med.out.v0.data$eff))
+#   med.out.v0.data$country <- factor(med.out.v0.data$country,levels=unique(med.out.v0.data$country))
+#   med.out.v0.data$est <-
+#     c(med.out.MMR.v0[[1]]$d1,med.out.MMR.v0[[1]]$z1,med.out.MMR.v0[[1]]$tau.coef,
+#       med.out.MMR.v0[[2]]$d1,med.out.MMR.v0[[2]]$z1,med.out.MMR.v0[[2]]$tau.coef,
+#       med.out.MMR.v0[[3]]$d1,med.out.MMR.v0[[3]]$z1,med.out.MMR.v0[[3]]$tau.coef,
+#       med.out.MMR.v0[[4]]$d1,med.out.MMR.v0[[4]]$z1,med.out.MMR.v0[[4]]$tau.coef,
+#       med.out.PHL.v0[[1]]$d1,med.out.PHL.v0[[1]]$z1,med.out.PHL.v0[[1]]$tau.coef,
+#       med.out.PHL.v0[[2]]$d1,med.out.PHL.v0[[2]]$z1,med.out.PHL.v0[[2]]$tau.coef,
+#       med.out.PHL.v0[[3]]$d1,med.out.PHL.v0[[3]]$z1,med.out.PHL.v0[[3]]$tau.coef,
+#       med.out.PHL.v0[[4]]$d1,med.out.PHL.v0[[4]]$z1,med.out.PHL.v0[[4]]$tau.coef)
+#   if (ologit==FALSE) {
+#     med.out.v0.data$loCI <-
+#       c(med.out.MMR.v0[[1]]$d1.ci[1],med.out.MMR.v0[[1]]$z1.ci[1],med.out.MMR.v0[[1]]$tau.ci[1],
+#         med.out.MMR.v0[[2]]$d1.ci[1],med.out.MMR.v0[[2]]$z1.ci[1],med.out.MMR.v0[[2]]$tau.ci[1],
+#         med.out.MMR.v0[[3]]$d1.ci[1],med.out.MMR.v0[[3]]$z1.ci[1],med.out.MMR.v0[[3]]$tau.ci[1],
+#         med.out.MMR.v0[[4]]$d1.ci[1],med.out.MMR.v0[[4]]$z1.ci[1],med.out.MMR.v0[[4]]$tau.ci[1],
+#         med.out.PHL.v0[[1]]$d1.ci[1],med.out.PHL.v0[[1]]$z1.ci[1],med.out.PHL.v0[[1]]$tau.ci[1],
+#         med.out.PHL.v0[[2]]$d1.ci[1],med.out.PHL.v0[[2]]$z1.ci[1],med.out.PHL.v0[[2]]$tau.ci[1],
+#         med.out.PHL.v0[[3]]$d1.ci[1],med.out.PHL.v0[[3]]$z1.ci[1],med.out.PHL.v0[[3]]$tau.ci[1],
+#         med.out.PHL.v0[[4]]$d1.ci[1],med.out.PHL.v0[[4]]$z1.ci[1],med.out.PHL.v0[[4]]$tau.ci[1])
+#     med.out.v0.data$upCI <-
+#       c(med.out.MMR.v0[[1]]$d1.ci[2],med.out.MMR.v0[[1]]$z1.ci[2],med.out.MMR.v0[[1]]$tau.ci[2],
+#         med.out.MMR.v0[[2]]$d1.ci[2],med.out.MMR.v0[[2]]$z1.ci[2],med.out.MMR.v0[[2]]$tau.ci[2],
+#         med.out.MMR.v0[[3]]$d1.ci[2],med.out.MMR.v0[[3]]$z1.ci[2],med.out.MMR.v0[[3]]$tau.ci[2],
+#         med.out.MMR.v0[[4]]$d1.ci[2],med.out.MMR.v0[[4]]$z1.ci[2],med.out.MMR.v0[[4]]$tau.ci[2],
+#         med.out.PHL.v0[[1]]$d1.ci[2],med.out.PHL.v0[[1]]$z1.ci[2],med.out.PHL.v0[[1]]$tau.ci[2],
+#         med.out.PHL.v0[[2]]$d1.ci[2],med.out.PHL.v0[[2]]$z1.ci[2],med.out.PHL.v0[[2]]$tau.ci[2],
+#         med.out.PHL.v0[[3]]$d1.ci[2],med.out.PHL.v0[[3]]$z1.ci[2],med.out.PHL.v0[[3]]$tau.ci[2],
+#         med.out.PHL.v0[[4]]$d1.ci[2],med.out.PHL.v0[[4]]$z1.ci[2],med.out.PHL.v0[[4]]$tau.ci[2])
+#   } else if (ologit==TRUE) {
+#     med.out.v0.data$loCI <-
+#       c(med.out.MMR.v0[[1]]$d1.ci[1,],med.out.MMR.v0[[1]]$z1.ci[1,],med.out.MMR.v0[[1]]$tau.ci[1,],
+#         med.out.MMR.v0[[2]]$d1.ci[1,],med.out.MMR.v0[[2]]$z1.ci[1,],med.out.MMR.v0[[2]]$tau.ci[1,],
+#         med.out.MMR.v0[[3]]$d1.ci[1,],med.out.MMR.v0[[3]]$z1.ci[1,],med.out.MMR.v0[[3]]$tau.ci[1,],
+#         med.out.MMR.v0[[4]]$d1.ci[1,],med.out.MMR.v0[[4]]$z1.ci[1,],med.out.MMR.v0[[4]]$tau.ci[1,],
+#         med.out.PHL.v0[[1]]$d1.ci[1,],med.out.PHL.v0[[1]]$z1.ci[1,],med.out.PHL.v0[[1]]$tau.ci[1,],
+#         med.out.PHL.v0[[2]]$d1.ci[1,],med.out.PHL.v0[[2]]$z1.ci[1,],med.out.PHL.v0[[2]]$tau.ci[1,],
+#         med.out.PHL.v0[[3]]$d1.ci[1,],med.out.PHL.v0[[3]]$z1.ci[1,],med.out.PHL.v0[[3]]$tau.ci[1,],
+#         med.out.PHL.v0[[4]]$d1.ci[1,],med.out.PHL.v0[[4]]$z1.ci[1,],med.out.PHL.v0[[4]]$tau.ci[1,])
+#     med.out.v0.data$upCI <-
+#       c(med.out.MMR.v0[[1]]$d1.ci[2,],med.out.MMR.v0[[1]]$z1.ci[2,],med.out.MMR.v0[[1]]$tau.ci[2,],
+#         med.out.MMR.v0[[2]]$d1.ci[2,],med.out.MMR.v0[[2]]$z1.ci[2,],med.out.MMR.v0[[2]]$tau.ci[2,],
+#         med.out.MMR.v0[[3]]$d1.ci[2,],med.out.MMR.v0[[3]]$z1.ci[2,],med.out.MMR.v0[[3]]$tau.ci[2,],
+#         med.out.MMR.v0[[4]]$d1.ci[2,],med.out.MMR.v0[[4]]$z1.ci[2,],med.out.MMR.v0[[4]]$tau.ci[2,],
+#         med.out.PHL.v0[[1]]$d1.ci[2,],med.out.PHL.v0[[1]]$z1.ci[2,],med.out.PHL.v0[[1]]$tau.ci[2,],
+#         med.out.PHL.v0[[2]]$d1.ci[2,],med.out.PHL.v0[[2]]$z1.ci[2,],med.out.PHL.v0[[2]]$tau.ci[2,],
+#         med.out.PHL.v0[[3]]$d1.ci[2,],med.out.PHL.v0[[3]]$z1.ci[2,],med.out.PHL.v0[[3]]$tau.ci[2,],
+#         med.out.PHL.v0[[4]]$d1.ci[2,],med.out.PHL.v0[[4]]$z1.ci[2,],med.out.PHL.v0[[4]]$tau.ci[2,])
+#   }
+# 
+# 
+#   if (odds==TRUE) {
+#     med.out.v0.data$est <- exp(med.out.v0.data$est)
+#     med.out.v0.data$loCI <- exp(med.out.v0.data$loCI)
+#     med.out.v0.data$upCI <- exp(med.out.v0.data$upCI)
+#   }
+#   med.out.v0.data$p <-
+#     c(med.out.MMR.v0[[1]]$d1.p,med.out.MMR.v0[[1]]$z1.p,med.out.MMR.v0[[1]]$tau.p,
+#       med.out.MMR.v0[[2]]$d1.p,med.out.MMR.v0[[2]]$z1.p,med.out.MMR.v0[[2]]$tau.p,
+#       med.out.MMR.v0[[3]]$d1.p,med.out.MMR.v0[[3]]$z1.p,med.out.MMR.v0[[3]]$tau.p,
+#       med.out.MMR.v0[[4]]$d1.p,med.out.MMR.v0[[4]]$z1.p,med.out.MMR.v0[[4]]$tau.p,
+#       med.out.PHL.v0[[1]]$d1.p,med.out.PHL.v0[[1]]$z1.p,med.out.PHL.v0[[1]]$tau.p,
+#       med.out.PHL.v0[[2]]$d1.p,med.out.PHL.v0[[2]]$z1.p,med.out.PHL.v0[[2]]$tau.p,
+#       med.out.PHL.v0[[3]]$d1.p,med.out.PHL.v0[[3]]$z1.p,med.out.PHL.v0[[3]]$tau.p,
+#       med.out.PHL.v0[[4]]$d1.p,med.out.PHL.v0[[4]]$z1.p,med.out.PHL.v0[[4]]$tau.p)
+#   med.out.v0.data$p05 <- ifelse(med.out.v0.data$p <= 0.05,1,0)
+#   med.out.v0.data$p10 <- ifelse(med.out.v0.data$p <= 0.1,1,0)
+#   med.out.v0.data$pcat <- "p >= .1"
+#   med.out.v0.data$pcat[med.out.v0.data$p10==1] <- "p < .1"
+#   med.out.v0.data$pcat[med.out.v0.data$p05==1] <- "p < .05"
+#   med.out.v0.data$pcat <- factor(med.out.v0.data$pcat,
+#                                  levels=c("p < .05","p < .1", "p >= .1"))
+#   return(med.out.v0.data)
+# }
+
 #' # Generating Data from Mediation Analysis Object (control group)
-gendata_t0 <- function(med.out.MMR.v0,med.out.PHL.v0,
-                       ologit=FALSE,odds=FALSE){
-  if (ologit==FALSE){
-    med.out.v0.data <- 
-      data.frame(med=rep(rep(c("Economy","Security","Reputation","Efficacy"),each=3),2),
-                 eff=rep(c("Mediated","Direct","Total"),8),
-                 country=rep(c("Myammar","Philippines"),each=12))
-  } else if (ologit==TRUE) {
-    catn <- length(med.out.MMR.v0[[1]]$d0)
-    med.out.v0.data <- 
-      data.frame(med=rep(rep(c("Economy","Security","Reputation","Efficacy"),each=3*catn),2),
-                 eff=rep(rep(c("Mediated","Direct","Total"),each=catn),8),
-                 country=rep(c("Myammar","Philippines"),each=12*catn),
-                 catname=rep(seq(1,catn,1),3*8))
-    med.out.v0.data$catname <- as.factor(med.out.v0.data$catname)
-  }
-  
-  med.out.v0.data$med <- factor(med.out.v0.data$med,levels=c("Security","Economy",
-                                                             "Reputation","Efficacy"))
-  med.out.v0.data$eff <- factor(med.out.v0.data$eff,levels=unique(med.out.v0.data$eff))
-  med.out.v0.data$country <- factor(med.out.v0.data$country,levels=unique(med.out.v0.data$country))
-  med.out.v0.data$est <- 
-    c(med.out.MMR.v0[[1]]$d0,med.out.MMR.v0[[1]]$z0,med.out.MMR.v0[[1]]$tau.coef,
-      med.out.MMR.v0[[2]]$d0,med.out.MMR.v0[[2]]$z0,med.out.MMR.v0[[2]]$tau.coef,
-      med.out.MMR.v0[[3]]$d0,med.out.MMR.v0[[3]]$z0,med.out.MMR.v0[[3]]$tau.coef,
-      med.out.MMR.v0[[4]]$d0,med.out.MMR.v0[[4]]$z0,med.out.MMR.v0[[4]]$tau.coef,
-      med.out.PHL.v0[[1]]$d0,med.out.PHL.v0[[1]]$z0,med.out.PHL.v0[[1]]$tau.coef,
-      med.out.PHL.v0[[2]]$d0,med.out.PHL.v0[[2]]$z0,med.out.PHL.v0[[2]]$tau.coef,
-      med.out.PHL.v0[[3]]$d0,med.out.PHL.v0[[3]]$z0,med.out.PHL.v0[[3]]$tau.coef,
-      med.out.PHL.v0[[4]]$d0,med.out.PHL.v0[[4]]$z0,med.out.PHL.v0[[4]]$tau.coef)
-  if (ologit==FALSE) {
-    med.out.v0.data$loCI <- 
-      c(med.out.MMR.v0[[1]]$d0.ci[1],med.out.MMR.v0[[1]]$z0.ci[1],med.out.MMR.v0[[1]]$tau.ci[1],
-        med.out.MMR.v0[[2]]$d0.ci[1],med.out.MMR.v0[[2]]$z0.ci[1],med.out.MMR.v0[[2]]$tau.ci[1],
-        med.out.MMR.v0[[3]]$d0.ci[1],med.out.MMR.v0[[3]]$z0.ci[1],med.out.MMR.v0[[3]]$tau.ci[1],
-        med.out.MMR.v0[[4]]$d0.ci[1],med.out.MMR.v0[[4]]$z0.ci[1],med.out.MMR.v0[[4]]$tau.ci[1],
-        med.out.PHL.v0[[1]]$d0.ci[1],med.out.PHL.v0[[1]]$z0.ci[1],med.out.PHL.v0[[1]]$tau.ci[1],
-        med.out.PHL.v0[[2]]$d0.ci[1],med.out.PHL.v0[[2]]$z0.ci[1],med.out.PHL.v0[[2]]$tau.ci[1],
-        med.out.PHL.v0[[3]]$d0.ci[1],med.out.PHL.v0[[3]]$z0.ci[1],med.out.PHL.v0[[3]]$tau.ci[1],
-        med.out.PHL.v0[[4]]$d0.ci[1],med.out.PHL.v0[[4]]$z0.ci[1],med.out.PHL.v0[[4]]$tau.ci[1])
-    med.out.v0.data$upCI <- 
-      c(med.out.MMR.v0[[1]]$d0.ci[2],med.out.MMR.v0[[1]]$z0.ci[2],med.out.MMR.v0[[1]]$tau.ci[2],
-        med.out.MMR.v0[[2]]$d0.ci[2],med.out.MMR.v0[[2]]$z0.ci[2],med.out.MMR.v0[[2]]$tau.ci[2],
-        med.out.MMR.v0[[3]]$d0.ci[2],med.out.MMR.v0[[3]]$z0.ci[2],med.out.MMR.v0[[3]]$tau.ci[2],
-        med.out.MMR.v0[[4]]$d0.ci[2],med.out.MMR.v0[[4]]$z0.ci[2],med.out.MMR.v0[[4]]$tau.ci[2],
-        med.out.PHL.v0[[1]]$d0.ci[2],med.out.PHL.v0[[1]]$z0.ci[2],med.out.PHL.v0[[1]]$tau.ci[2],
-        med.out.PHL.v0[[2]]$d0.ci[2],med.out.PHL.v0[[2]]$z0.ci[2],med.out.PHL.v0[[2]]$tau.ci[2],
-        med.out.PHL.v0[[3]]$d0.ci[2],med.out.PHL.v0[[3]]$z0.ci[2],med.out.PHL.v0[[3]]$tau.ci[2],
-        med.out.PHL.v0[[4]]$d0.ci[2],med.out.PHL.v0[[4]]$z0.ci[2],med.out.PHL.v0[[4]]$tau.ci[2])
-  } else if (ologit==TRUE) {
-    med.out.v0.data$loCI <- 
-      c(med.out.MMR.v0[[1]]$d0.ci[1,],med.out.MMR.v0[[1]]$z0.ci[1,],med.out.MMR.v0[[1]]$tau.ci[1,],
-        med.out.MMR.v0[[2]]$d0.ci[1,],med.out.MMR.v0[[2]]$z0.ci[1,],med.out.MMR.v0[[2]]$tau.ci[1,],
-        med.out.MMR.v0[[3]]$d0.ci[1,],med.out.MMR.v0[[3]]$z0.ci[1,],med.out.MMR.v0[[3]]$tau.ci[1,],
-        med.out.MMR.v0[[4]]$d0.ci[1,],med.out.MMR.v0[[4]]$z0.ci[1,],med.out.MMR.v0[[4]]$tau.ci[1,],
-        med.out.PHL.v0[[1]]$d0.ci[1,],med.out.PHL.v0[[1]]$z0.ci[1,],med.out.PHL.v0[[1]]$tau.ci[1,],
-        med.out.PHL.v0[[2]]$d0.ci[1,],med.out.PHL.v0[[2]]$z0.ci[1,],med.out.PHL.v0[[2]]$tau.ci[1,],
-        med.out.PHL.v0[[3]]$d0.ci[1,],med.out.PHL.v0[[3]]$z0.ci[1,],med.out.PHL.v0[[3]]$tau.ci[1,],
-        med.out.PHL.v0[[4]]$d0.ci[1,],med.out.PHL.v0[[4]]$z0.ci[1,],med.out.PHL.v0[[4]]$tau.ci[1,])
-    med.out.v0.data$upCI <- 
-      c(med.out.MMR.v0[[1]]$d0.ci[2,],med.out.MMR.v0[[1]]$z0.ci[2,],med.out.MMR.v0[[1]]$tau.ci[2,],
-        med.out.MMR.v0[[2]]$d0.ci[2,],med.out.MMR.v0[[2]]$z0.ci[2,],med.out.MMR.v0[[2]]$tau.ci[2,],
-        med.out.MMR.v0[[3]]$d0.ci[2,],med.out.MMR.v0[[3]]$z0.ci[2,],med.out.MMR.v0[[3]]$tau.ci[2,],
-        med.out.MMR.v0[[4]]$d0.ci[2,],med.out.MMR.v0[[4]]$z0.ci[2,],med.out.MMR.v0[[4]]$tau.ci[2,],
-        med.out.PHL.v0[[1]]$d0.ci[2,],med.out.PHL.v0[[1]]$z0.ci[2,],med.out.PHL.v0[[1]]$tau.ci[2,],
-        med.out.PHL.v0[[2]]$d0.ci[2,],med.out.PHL.v0[[2]]$z0.ci[2,],med.out.PHL.v0[[2]]$tau.ci[2,],
-        med.out.PHL.v0[[3]]$d0.ci[2,],med.out.PHL.v0[[3]]$z0.ci[2,],med.out.PHL.v0[[3]]$tau.ci[2,],
-        med.out.PHL.v0[[4]]$d0.ci[2,],med.out.PHL.v0[[4]]$z0.ci[2,],med.out.PHL.v0[[4]]$tau.ci[2,])
-  }
-  
-  
-  if (odds==TRUE) {
-    med.out.v0.data$est <- exp(med.out.v0.data$est)
-    med.out.v0.data$loCI <- exp(med.out.v0.data$loCI)
-    med.out.v0.data$upCI <- exp(med.out.v0.data$upCI)
-  }
-  med.out.v0.data$p <- 
-    c(med.out.MMR.v0[[1]]$d0.p,med.out.MMR.v0[[1]]$z0.p,med.out.MMR.v0[[1]]$tau.p,
-      med.out.MMR.v0[[2]]$d0.p,med.out.MMR.v0[[2]]$z0.p,med.out.MMR.v0[[2]]$tau.p,
-      med.out.MMR.v0[[3]]$d0.p,med.out.MMR.v0[[3]]$z0.p,med.out.MMR.v0[[3]]$tau.p,
-      med.out.MMR.v0[[4]]$d0.p,med.out.MMR.v0[[4]]$z0.p,med.out.MMR.v0[[4]]$tau.p,
-      med.out.PHL.v0[[1]]$d0.p,med.out.PHL.v0[[1]]$z0.p,med.out.PHL.v0[[1]]$tau.p,
-      med.out.PHL.v0[[2]]$d0.p,med.out.PHL.v0[[2]]$z0.p,med.out.PHL.v0[[2]]$tau.p,
-      med.out.PHL.v0[[3]]$d0.p,med.out.PHL.v0[[3]]$z0.p,med.out.PHL.v0[[3]]$tau.p,
-      med.out.PHL.v0[[4]]$d0.p,med.out.PHL.v0[[4]]$z0.p,med.out.PHL.v0[[4]]$tau.p)
-  med.out.v0.data$p05 <- ifelse(med.out.v0.data$p <= 0.05,1,0)
-  med.out.v0.data$p10 <- ifelse(med.out.v0.data$p <= 0.1,1,0)
-  med.out.v0.data$pcat <- "p >= .1"
-  med.out.v0.data$pcat[med.out.v0.data$p10==1] <- "p < .1"
-  med.out.v0.data$pcat[med.out.v0.data$p05==1] <- "p < .05"
-  med.out.v0.data$pcat <- factor(med.out.v0.data$pcat,
-                                 levels=c("p < .05","p < .1", "p >= .1"))
-  return(med.out.v0.data)
-}
+# gendata_t0 <- function(med.out.MMR.v0,med.out.PHL.v0,
+#                        ologit=FALSE,odds=FALSE){
+#   if (ologit==FALSE){
+#     med.out.v0.data <-
+#       data.frame(med=rep(rep(c("Economy","Security","Reputation","Efficacy"),each=3),2),
+#                  eff=rep(c("Mediated","Direct","Total"),8),
+#                  country=rep(c("Myanmar","Philippines"),each=12))
+#   } else if (ologit==TRUE) {
+#     catn <- length(med.out.MMR.v0[[1]]$d0)
+#     med.out.v0.data <-
+#       data.frame(med=rep(rep(c("Economy","Security","Reputation","Efficacy"),each=3*catn),2),
+#                  eff=rep(rep(c("Mediated","Direct","Total"),each=catn),8),
+#                  country=rep(c("Myanmar","Philippines"),each=12*catn),
+#                  catname=rep(seq(1,catn,1),3*8))
+#     med.out.v0.data$catname <- as.factor(med.out.v0.data$catname)
+#   }
+# 
+#   med.out.v0.data$med <- factor(med.out.v0.data$med,levels=c("Security","Economy",
+#                                                              "Reputation","Efficacy"))
+#   med.out.v0.data$eff <- factor(med.out.v0.data$eff,levels=unique(med.out.v0.data$eff))
+#   med.out.v0.data$country <- factor(med.out.v0.data$country,levels=unique(med.out.v0.data$country))
+#   med.out.v0.data$est <-
+#     c(med.out.MMR.v0[[1]]$d0,med.out.MMR.v0[[1]]$z0,med.out.MMR.v0[[1]]$tau.coef,
+#       med.out.MMR.v0[[2]]$d0,med.out.MMR.v0[[2]]$z0,med.out.MMR.v0[[2]]$tau.coef,
+#       med.out.MMR.v0[[3]]$d0,med.out.MMR.v0[[3]]$z0,med.out.MMR.v0[[3]]$tau.coef,
+#       med.out.MMR.v0[[4]]$d0,med.out.MMR.v0[[4]]$z0,med.out.MMR.v0[[4]]$tau.coef,
+#       med.out.PHL.v0[[1]]$d0,med.out.PHL.v0[[1]]$z0,med.out.PHL.v0[[1]]$tau.coef,
+#       med.out.PHL.v0[[2]]$d0,med.out.PHL.v0[[2]]$z0,med.out.PHL.v0[[2]]$tau.coef,
+#       med.out.PHL.v0[[3]]$d0,med.out.PHL.v0[[3]]$z0,med.out.PHL.v0[[3]]$tau.coef,
+#       med.out.PHL.v0[[4]]$d0,med.out.PHL.v0[[4]]$z0,med.out.PHL.v0[[4]]$tau.coef)
+#   if (ologit==FALSE) {
+#     med.out.v0.data$loCI <-
+#       c(med.out.MMR.v0[[1]]$d0.ci[1],med.out.MMR.v0[[1]]$z0.ci[1],med.out.MMR.v0[[1]]$tau.ci[1],
+#         med.out.MMR.v0[[2]]$d0.ci[1],med.out.MMR.v0[[2]]$z0.ci[1],med.out.MMR.v0[[2]]$tau.ci[1],
+#         med.out.MMR.v0[[3]]$d0.ci[1],med.out.MMR.v0[[3]]$z0.ci[1],med.out.MMR.v0[[3]]$tau.ci[1],
+#         med.out.MMR.v0[[4]]$d0.ci[1],med.out.MMR.v0[[4]]$z0.ci[1],med.out.MMR.v0[[4]]$tau.ci[1],
+#         med.out.PHL.v0[[1]]$d0.ci[1],med.out.PHL.v0[[1]]$z0.ci[1],med.out.PHL.v0[[1]]$tau.ci[1],
+#         med.out.PHL.v0[[2]]$d0.ci[1],med.out.PHL.v0[[2]]$z0.ci[1],med.out.PHL.v0[[2]]$tau.ci[1],
+#         med.out.PHL.v0[[3]]$d0.ci[1],med.out.PHL.v0[[3]]$z0.ci[1],med.out.PHL.v0[[3]]$tau.ci[1],
+#         med.out.PHL.v0[[4]]$d0.ci[1],med.out.PHL.v0[[4]]$z0.ci[1],med.out.PHL.v0[[4]]$tau.ci[1])
+#     med.out.v0.data$upCI <-
+#       c(med.out.MMR.v0[[1]]$d0.ci[2],med.out.MMR.v0[[1]]$z0.ci[2],med.out.MMR.v0[[1]]$tau.ci[2],
+#         med.out.MMR.v0[[2]]$d0.ci[2],med.out.MMR.v0[[2]]$z0.ci[2],med.out.MMR.v0[[2]]$tau.ci[2],
+#         med.out.MMR.v0[[3]]$d0.ci[2],med.out.MMR.v0[[3]]$z0.ci[2],med.out.MMR.v0[[3]]$tau.ci[2],
+#         med.out.MMR.v0[[4]]$d0.ci[2],med.out.MMR.v0[[4]]$z0.ci[2],med.out.MMR.v0[[4]]$tau.ci[2],
+#         med.out.PHL.v0[[1]]$d0.ci[2],med.out.PHL.v0[[1]]$z0.ci[2],med.out.PHL.v0[[1]]$tau.ci[2],
+#         med.out.PHL.v0[[2]]$d0.ci[2],med.out.PHL.v0[[2]]$z0.ci[2],med.out.PHL.v0[[2]]$tau.ci[2],
+#         med.out.PHL.v0[[3]]$d0.ci[2],med.out.PHL.v0[[3]]$z0.ci[2],med.out.PHL.v0[[3]]$tau.ci[2],
+#         med.out.PHL.v0[[4]]$d0.ci[2],med.out.PHL.v0[[4]]$z0.ci[2],med.out.PHL.v0[[4]]$tau.ci[2])
+#   } else if (ologit==TRUE) {
+#     med.out.v0.data$loCI <-
+#       c(med.out.MMR.v0[[1]]$d0.ci[1,],med.out.MMR.v0[[1]]$z0.ci[1,],med.out.MMR.v0[[1]]$tau.ci[1,],
+#         med.out.MMR.v0[[2]]$d0.ci[1,],med.out.MMR.v0[[2]]$z0.ci[1,],med.out.MMR.v0[[2]]$tau.ci[1,],
+#         med.out.MMR.v0[[3]]$d0.ci[1,],med.out.MMR.v0[[3]]$z0.ci[1,],med.out.MMR.v0[[3]]$tau.ci[1,],
+#         med.out.MMR.v0[[4]]$d0.ci[1,],med.out.MMR.v0[[4]]$z0.ci[1,],med.out.MMR.v0[[4]]$tau.ci[1,],
+#         med.out.PHL.v0[[1]]$d0.ci[1,],med.out.PHL.v0[[1]]$z0.ci[1,],med.out.PHL.v0[[1]]$tau.ci[1,],
+#         med.out.PHL.v0[[2]]$d0.ci[1,],med.out.PHL.v0[[2]]$z0.ci[1,],med.out.PHL.v0[[2]]$tau.ci[1,],
+#         med.out.PHL.v0[[3]]$d0.ci[1,],med.out.PHL.v0[[3]]$z0.ci[1,],med.out.PHL.v0[[3]]$tau.ci[1,],
+#         med.out.PHL.v0[[4]]$d0.ci[1,],med.out.PHL.v0[[4]]$z0.ci[1,],med.out.PHL.v0[[4]]$tau.ci[1,])
+#     med.out.v0.data$upCI <-
+#       c(med.out.MMR.v0[[1]]$d0.ci[2,],med.out.MMR.v0[[1]]$z0.ci[2,],med.out.MMR.v0[[1]]$tau.ci[2,],
+#         med.out.MMR.v0[[2]]$d0.ci[2,],med.out.MMR.v0[[2]]$z0.ci[2,],med.out.MMR.v0[[2]]$tau.ci[2,],
+#         med.out.MMR.v0[[3]]$d0.ci[2,],med.out.MMR.v0[[3]]$z0.ci[2,],med.out.MMR.v0[[3]]$tau.ci[2,],
+#         med.out.MMR.v0[[4]]$d0.ci[2,],med.out.MMR.v0[[4]]$z0.ci[2,],med.out.MMR.v0[[4]]$tau.ci[2,],
+#         med.out.PHL.v0[[1]]$d0.ci[2,],med.out.PHL.v0[[1]]$z0.ci[2,],med.out.PHL.v0[[1]]$tau.ci[2,],
+#         med.out.PHL.v0[[2]]$d0.ci[2,],med.out.PHL.v0[[2]]$z0.ci[2,],med.out.PHL.v0[[2]]$tau.ci[2,],
+#         med.out.PHL.v0[[3]]$d0.ci[2,],med.out.PHL.v0[[3]]$z0.ci[2,],med.out.PHL.v0[[3]]$tau.ci[2,],
+#         med.out.PHL.v0[[4]]$d0.ci[2,],med.out.PHL.v0[[4]]$z0.ci[2,],med.out.PHL.v0[[4]]$tau.ci[2,])
+#   }
+# 
+# 
+#   if (odds==TRUE) {
+#     med.out.v0.data$est <- exp(med.out.v0.data$est)
+#     med.out.v0.data$loCI <- exp(med.out.v0.data$loCI)
+#     med.out.v0.data$upCI <- exp(med.out.v0.data$upCI)
+#   }
+#   med.out.v0.data$p <-
+#     c(med.out.MMR.v0[[1]]$d0.p,med.out.MMR.v0[[1]]$z0.p,med.out.MMR.v0[[1]]$tau.p,
+#       med.out.MMR.v0[[2]]$d0.p,med.out.MMR.v0[[2]]$z0.p,med.out.MMR.v0[[2]]$tau.p,
+#       med.out.MMR.v0[[3]]$d0.p,med.out.MMR.v0[[3]]$z0.p,med.out.MMR.v0[[3]]$tau.p,
+#       med.out.MMR.v0[[4]]$d0.p,med.out.MMR.v0[[4]]$z0.p,med.out.MMR.v0[[4]]$tau.p,
+#       med.out.PHL.v0[[1]]$d0.p,med.out.PHL.v0[[1]]$z0.p,med.out.PHL.v0[[1]]$tau.p,
+#       med.out.PHL.v0[[2]]$d0.p,med.out.PHL.v0[[2]]$z0.p,med.out.PHL.v0[[2]]$tau.p,
+#       med.out.PHL.v0[[3]]$d0.p,med.out.PHL.v0[[3]]$z0.p,med.out.PHL.v0[[3]]$tau.p,
+#       med.out.PHL.v0[[4]]$d0.p,med.out.PHL.v0[[4]]$z0.p,med.out.PHL.v0[[4]]$tau.p)
+#   med.out.v0.data$p05 <- ifelse(med.out.v0.data$p <= 0.05,1,0)
+#   med.out.v0.data$p10 <- ifelse(med.out.v0.data$p <= 0.1,1,0)
+#   med.out.v0.data$pcat <- "p >= .1"
+#   med.out.v0.data$pcat[med.out.v0.data$p10==1] <- "p < .1"
+#   med.out.v0.data$pcat[med.out.v0.data$p05==1] <- "p < .05"
+#   med.out.v0.data$pcat <- factor(med.out.v0.data$pcat,
+#                                  levels=c("p < .05","p < .1", "p >= .1"))
+#   return(med.out.v0.data)
+# }
 
 #' # Generating Plots
 
@@ -418,145 +687,273 @@ guides_merge <- function(gdefs) {
 environment(guides_merge) <- environment(ggplot)
 assignInNamespace("guides_merge", guides_merge, pos = "package:ggplot2")
 
-genplot <- function(med.out.v0.data, subtitle,
-                    ologit=FALSE, odds=FALSE, interact=FALSE,
-                    include.eff = c("Mediated","Direct","Total")){
-  pvallist <- which(as.vector(table(med.out.v0.data$pcat))>0)
-  if (ologit==FALSE) {
-    facet_formula <- formula(.~country)
-    if (interact==TRUE) {
-      facet_formula <- formula(tcond~country)
-    }
-    ylabtxt <- "Average Treatment Effect"
-    fixhline <- 0
-    if (odds==TRUE) {
-      ylabtxt <- "Average Treatment Effect (Odds Ratio)"
-      fixhline <- 1
-    }
-    med.out.v0.data <- med.out.v0.data[med.out.v0.data$eff%in%include.eff,]
-    med.out.v0.data$eff <- factor(med.out.v0.data$eff, levels=include.eff)
-    collen <- length(table(med.out.v0.data$med))
-    p <- ggplot(med.out.v0.data, aes(x=eff,y=est)) + 
-      geom_hline(yintercept=fixhline, linetype=2) + 
-      geom_errorbar(aes(ymin=loCI,ymax=upCI,
-                        color=med, linetype=pcat),
-                    size = 0.7, width=0.3,
-                    position = position_dodge(0.9)) + 
-      geom_point(aes(shape=med),
-                 size = 2, 
-                 position = position_dodge(0.9)) + 
-      scale_shape_discrete(name="Mediators") + 
-      scale_color_manual(name="Mediators", values=rep("Black",collen)) + 
-      scale_linetype_manual(name="Significance", values=pvallist) +
-      guides( color = guide_legend(order = 1),
-              shape = guide_legend(order = 1),
-              linetype = guide_legend(order = 2)) +
-      facet_grid(facet_formula) + theme_bw() + 
-      xlab("(Lines Represent 95% Confidence Intervals)") + 
-      ylab(ylabtxt) + 
-      ggtitle(paste("Treatment Effect on Support for Cancelling Aid\n",
-                    subtitle, sep="")) + 
-      theme(plot.title=element_text(hjust=0.5))
-  } else if (ologit==TRUE) {
-    catnum <- nrow(med.out.v0.data)/24
-    if (catnum==9){
-      shapeval <- c(16,17,15,18,4,5,0,2,1)
-    } else if (catnum==3) {
-      shapeval <- c(16,4,1)
-    }
-    p <- ggplot(med.out.v0.data, aes(x=eff,y=est)) + 
-      geom_hline(yintercept=0, linetype=2) + 
-      geom_errorbar(aes(ymin=loCI,ymax=upCI,
-                        color=catname, linetype=pcat),
-                    size = 0.7, width=0.3,
-                    position = position_dodge(0.7)) + 
-      geom_point(aes(shape=catname),
-                 size = 2, 
-                 position = position_dodge(0.7)) + 
-      scale_shape_manual(name="Outcome Category",values=shapeval) + 
-      scale_color_manual(name="Outcome Category", values=rep("Black",catnum)) + 
-      scale_linetype_manual(name="Significance", values=c(1,2,3)) +
-      guides( color = guide_legend(order = 1),
-              shape = guide_legend(order = 1),
-              linetype = guide_legend(order = 2)) +
-      facet_grid(med~country) + theme_bw() + 
-      xlab("(Lines Represent 95% Confidence Intervals)") + 
-      ylab("Average Treatment Effect (Prob.)") + 
-      ggtitle(paste("Treatment Effect on Support for Cancelling Aid\n",
-                    subtitle, sep="")) + 
-      theme(plot.title=element_text(hjust=0.5))
+# genplot <- function(med.out.v0.data, subtitle,
+#                     ologit=FALSE, odds=FALSE, interact=FALSE,
+#                     include.eff = c("Mediated","Direct","Total")){
+#   pvallist <- which(as.vector(table(med.out.v0.data$pcat))>0)
+#   if (ologit==FALSE) {
+#     facet_formula <- formula(.~country)
+#     if (interact==TRUE) {
+#       facet_formula <- formula(tcond~country)
+#     }
+#     ylabtxt <- "Average Treatment Effect"
+#     fixhline <- 0
+#     if (odds==TRUE) {
+#       ylabtxt <- "Average Treatment Effect (Odds Ratio)"
+#       fixhline <- 1
+#     }
+#     med.out.v0.data <- med.out.v0.data[med.out.v0.data$eff%in%include.eff,]
+#     med.out.v0.data$eff <- factor(med.out.v0.data$eff, levels=include.eff)
+#     collen <- length(table(med.out.v0.data$med))
+#     p <- ggplot(med.out.v0.data, aes(x=eff,y=est)) + 
+#       geom_hline(yintercept=fixhline, linetype=2) + 
+#       geom_errorbar(aes(ymin=loCI,ymax=upCI,
+#                         color=med, linetype=pcat),
+#                     size = 0.7, width=0.3,
+#                     position = position_dodge(0.9)) + 
+#       geom_point(aes(shape=med),
+#                  size = 2, 
+#                  position = position_dodge(0.9)) + 
+#       scale_shape_discrete(name="Mediators") + 
+#       scale_color_manual(name="Mediators", values=rep("Black",collen)) + 
+#       scale_linetype_manual(name="Significance", values=pvallist) +
+#       guides( color = guide_legend(order = 1),
+#               shape = guide_legend(order = 1),
+#               linetype = guide_legend(order = 2)) +
+#       facet_grid(facet_formula) + theme_bw() + 
+#       xlab("(Lines Represent 95% Confidence Intervals)") + 
+#       ylab(ylabtxt) + 
+#       ggtitle(paste("Treatment Effect on Support for Cancelling Aid\n",
+#                     subtitle, sep="")) + 
+#       theme(plot.title=element_text(hjust=0.5))
+#   } else if (ologit==TRUE) {
+#     catnum <- nrow(med.out.v0.data)/24
+#     if (catnum==9){
+#       shapeval <- c(16,17,15,18,4,5,0,2,1)
+#     } else if (catnum==3) {
+#       shapeval <- c(16,4,1)
+#     }
+#     p <- ggplot(med.out.v0.data, aes(x=eff,y=est)) + 
+#       geom_hline(yintercept=0, linetype=2) + 
+#       geom_errorbar(aes(ymin=loCI,ymax=upCI,
+#                         color=catname, linetype=pcat),
+#                     size = 0.7, width=0.3,
+#                     position = position_dodge(0.7)) + 
+#       geom_point(aes(shape=catname),
+#                  size = 2, 
+#                  position = position_dodge(0.7)) + 
+#       scale_shape_manual(name="Outcome Category",values=shapeval) + 
+#       scale_color_manual(name="Outcome Category", values=rep("Black",catnum)) + 
+#       scale_linetype_manual(name="Significance", values=c(1,2,3)) +
+#       guides( color = guide_legend(order = 1),
+#               shape = guide_legend(order = 1),
+#               linetype = guide_legend(order = 2)) +
+#       facet_grid(med~country) + theme_bw() + 
+#       xlab("(Lines Represent 95% Confidence Intervals)") + 
+#       ylab("Average Treatment Effect (Prob.)") + 
+#       ggtitle(paste("Treatment Effect on Support for Cancelling Aid\n",
+#                     subtitle, sep="")) + 
+#       theme(plot.title=element_text(hjust=0.5))
+#   }
+#   return(p)
+# } 
+genplot <- function(med.out.v0.data, 
+                    titletxt=NULL,
+                    captiontxt=NULL,
+                    odds=FALSE, #interact=FALSE,
+                    include.eff = c("Treatment ¨ Mediator",
+                                    "Mediator ¨ Outcome",
+                                    "Treatment ¨ Med. ¨ Out."),
+                    est.type = c("Logit Coefficient",
+                                 "OLS Coefficient",
+                                            "Av. Causal Mediation Effect")){
+  
+  if(length(include.eff)!=length(est.type)) stop("include.eff and est.type must have the same length!")
+  
+  facet_formula <- formula(.~country)
+  # if (interact==TRUE) {
+  #   facet_formula <- formula(tcond~country)
+  # }
+  fixhline <- 0
+  if (odds==TRUE) {
+    fixhline <- 1
   }
+  med.out.v0.data <- med.out.v0.data[med.out.v0.data$eff%in%include.eff,]
+  pvallist <- which(as.vector(table(med.out.v0.data$pcat))>0)
+  med.out.v0.data$efflab <- as.character(med.out.v0.data$eff)
+  for (i in 1:length(include.eff)) {
+    med.out.v0.data$efflab[med.out.v0.data$eff==include.eff[i]] <- 
+      paste0(include.eff[i],"\n(",est.type[i],")")
+  }
+  med.out.v0.data$efflab <- factor(med.out.v0.data$efflab, levels=paste0(include.eff,"\n(",est.type,")"))
+  collen <- length(table(med.out.v0.data$med))
+  p <- ggplot(med.out.v0.data, aes(x=med,y=est)) + 
+    geom_hline(yintercept=fixhline, linetype=2) + 
+    geom_errorbar(aes(ymin=loCI,ymax=upCI,
+                      color=med, linetype=pcat),
+                  size = 0.7, width=0.3,
+                  position = position_dodge(0.9)) + 
+    geom_point(aes(shape=med),
+               size = 2, 
+               position = position_dodge(0.9)) + 
+    scale_shape_manual(name="Mediators",values=rev(c(16,17,15,3,7,8)[seq(1,length(unique(med.out.v0.data$med)),1)])) + 
+    scale_color_manual(name="Mediators", values=rep("Black",collen)) + 
+    scale_linetype_manual(name="Significance", values=pvallist) +
+    guides( color = guide_legend(order = 1, reverse=TRUE,nrow=2,byrow=TRUE),
+            shape = guide_legend(order = 1, reverse=TRUE,nrow=2,byrow=TRUE),
+            linetype = guide_legend(order = 2,nrow=2,byrow=TRUE)) +
+    theme_bw() + 
+    ylab("(Lines Represent 95% Confidence Intervals)") + 
+    xlab(NULL) + 
+    ggtitle(titletxt) + 
+    facet_grid(country~efflab, scales="free", switch="y") + coord_flip() +
+    theme(plot.title=element_text(hjust=0.5),
+          strip.text.x = element_text(face="bold"),
+          strip.text.y = element_text(angle=270,hjust=0.5,face="bold",size=11),
+          axis.text.y = element_blank(),
+          axis.ticks.y = element_blank(),
+          strip.background.y = element_blank(),
+          panel.border = element_rect(colour = "black"),
+          legend.position="top") + 
+    labs(caption=captiontxt) + 
+    theme(plot.caption = element_text(hjust=0))
+  
   return(p)
 } 
 
 #' # Generating Plots (for only plotting security plots)
-genplot2 <- function(med.out.v0.data, subtitle,
-                    ologit=FALSE, odds=FALSE, interact=FALSE,
-                    include.eff = c("Mediated","Direct","Total")){
-  pvallist <- which(as.vector(table(med.out.v0.data$pcat))>0)
-  if (ologit==FALSE) {
-    facet_formula <- formula(.~country)
-    if (interact==TRUE) {
-      facet_formula <- formula(~country)
-    }
-    ylabtxt <- "Average Treatment Effect"
-    fixhline <- 0
-    if (odds==TRUE) {
-      ylabtxt <- "Average Treatment Effect (Odds Ratio)"
-      fixhline <- 1
-    }
-    med.out.v0.data <- med.out.v0.data[med.out.v0.data$eff%in%include.eff,]
-    med.out.v0.data$eff <- factor(med.out.v0.data$eff, levels=include.eff)
-    p <- ggplot(med.out.v0.data, aes(x=eff,y=est)) + 
-      geom_hline(yintercept=fixhline, linetype=2) + 
-      geom_errorbar(aes(ymin=loCI,ymax=upCI,
-                        color=tcond, linetype=pcat),
-                    size = 0.7, width=0.3,
-                    position = position_dodge(0.9)) + 
-      geom_point(aes(shape=tcond),
-                 size = 2, 
-                 position = position_dodge(0.9)) + 
-      scale_shape_discrete(name="Moderator \n(Threat Posed by China)") + 
-      scale_color_manual(name="Moderator \n(Threat Posed by China)", values=rep("Black",4)) + 
-      scale_linetype_manual(name="Significance", values=pvallist) +
-      guides( color = guide_legend(order = 1),
-              shape = guide_legend(order = 1),
-              linetype = guide_legend(order = 2)) +
-      facet_grid(facet_formula) + theme_bw() + 
-      xlab("(Lines Represent 95% Confidence Intervals)") + 
-      ylab(ylabtxt) + 
-      ggtitle(paste("Treatment Effect on Support for Cancelling Aid\n",
-                    subtitle, sep="")) + 
-      theme(plot.title=element_text(hjust=0.5))
-  } else if (ologit==TRUE) {
-    catnum <- nrow(med.out.v0.data)/24
-    if (catnum==9){
-      shapeval <- c(16,17,15,18,4,5,0,2,1)
-    } else if (catnum==3) {
-      shapeval <- c(16,4,1)
-    }
-    p <- ggplot(med.out.v0.data, aes(x=eff,y=est)) + 
-      geom_hline(yintercept=0, linetype=2) + 
-      geom_errorbar(aes(ymin=loCI,ymax=upCI,
-                        color=catname, linetype=pcat),
-                    size = 0.7, width=0.3,
-                    position = position_dodge(0.7)) + 
-      geom_point(aes(shape=catname),
-                 size = 2, 
-                 position = position_dodge(0.7)) + 
-      scale_shape_manual(name="Outcome Category",values=shapeval) + 
-      scale_color_manual(name="Outcome Category", values=rep("Black",catnum)) + 
-      scale_linetype_manual(name="Significance", values=c(1,2,3)) +
-      guides( color = guide_legend(order = 1),
-              shape = guide_legend(order = 1),
-              linetype = guide_legend(order = 2)) +
-      facet_grid(med~country) + theme_bw() + 
-      xlab("(Lines Represent 95% Confidence Intervals)") + 
-      ylab("Average Treatment Effect (Prob.)") + 
-      ggtitle(paste("Treatment Effect on Support for Cancelling Aid\n",
-                    subtitle, sep="")) + 
-      theme(plot.title=element_text(hjust=0.5))
+# # genplot2 <- function(med.out.v0.data, subtitle,
+#                     ologit=FALSE, odds=FALSE, interact=FALSE,
+#                     include.eff = c("Mediated","Direct","Total")){
+#   pvallist <- which(as.vector(table(med.out.v0.data$pcat))>0)
+#   if (ologit==FALSE) {
+#     facet_formula <- formula(.~country)
+#     if (interact==TRUE) {
+#       facet_formula <- formula(~country)
+#     }
+#     ylabtxt <- "Average Treatment Effect"
+#     fixhline <- 0
+#     if (odds==TRUE) {
+#       ylabtxt <- "Average Treatment Effect (Odds Ratio)"
+#       fixhline <- 1
+#     }
+#     med.out.v0.data <- med.out.v0.data[med.out.v0.data$eff%in%include.eff,]
+#     med.out.v0.data$eff <- factor(med.out.v0.data$eff, levels=include.eff)
+#     p <- ggplot(med.out.v0.data, aes(x=eff,y=est)) + 
+#       geom_hline(yintercept=fixhline, linetype=2) + 
+#       geom_errorbar(aes(ymin=loCI,ymax=upCI,
+#                         color=tcond, linetype=pcat),
+#                     size = 0.7, width=0.3,
+#                     position = position_dodge(0.9)) + 
+#       geom_point(aes(shape=tcond),
+#                  size = 2, 
+#                  position = position_dodge(0.9)) + 
+#       scale_shape_discrete(name="Moderator \n(Threat Posed by China)") + 
+#       scale_color_manual(name="Moderator \n(Threat Posed by China)", values=rep("Black",4)) + 
+#       scale_linetype_manual(name="Significance", values=pvallist) +
+#       guides( color = guide_legend(order = 1),
+#               shape = guide_legend(order = 1),
+#               linetype = guide_legend(order = 2)) +
+#       facet_grid(facet_formula) + theme_bw() + 
+#       xlab("(Lines Represent 95% Confidence Intervals)") + 
+#       ylab(ylabtxt) + 
+#       ggtitle(paste("Treatment Effect on Support for Cancelling Aid\n",
+#                     subtitle, sep="")) + 
+#       theme(plot.title=element_text(hjust=0.5))
+#   } else if (ologit==TRUE) {
+#     catnum <- nrow(med.out.v0.data)/24
+#     if (catnum==9){
+#       shapeval <- c(16,17,15,18,4,5,0,2,1)
+#     } else if (catnum==3) {
+#       shapeval <- c(16,4,1)
+#     }
+#     p <- ggplot(med.out.v0.data, aes(x=eff,y=est)) + 
+#       geom_hline(yintercept=0, linetype=2) + 
+#       geom_errorbar(aes(ymin=loCI,ymax=upCI,
+#                         color=catname, linetype=pcat),
+#                     size = 0.7, width=0.3,
+#                     position = position_dodge(0.7)) + 
+#       geom_point(aes(shape=catname),
+#                  size = 2, 
+#                  position = position_dodge(0.7)) + 
+#       scale_shape_manual(name="Outcome Category",values=shapeval) + 
+#       scale_color_manual(name="Outcome Category", values=rep("Black",catnum)) + 
+#       scale_linetype_manual(name="Significance", values=c(1,2,3)) +
+#       guides( color = guide_legend(order = 1),
+#               shape = guide_legend(order = 1),
+#               linetype = guide_legend(order = 2)) +
+#       facet_grid(med~country) + theme_bw() + 
+#       xlab("(Lines Represent 95% Confidence Intervals)") + 
+#       ylab("Average Treatment Effect (Prob.)") + 
+#       ggtitle(paste("Treatment Effect on Support for Cancelling Aid\n",
+#                     subtitle, sep="")) + 
+#       theme(plot.title=element_text(hjust=0.5))
+#   }
+#   return(p)
+# } 
+
+genplot2 <- function(med.out.v0.data, 
+                     titletxt=NULL,
+                     captiontxt=NULL,
+                     legendrow=2,
+                     odds=FALSE, #interact=FALSE,
+                    include.eff = c("Treatment ¨ Mediator",
+                                    "Mediator ¨ Outcome",
+                                    "Treatment ¨ Med. ¨ Out."),
+                    est.type = c("Logit Coefficient",
+                                 "OLS Coefficient",
+                                 "Av. Causal Mediation Effect")){
+  
+  if(length(include.eff)!=length(est.type)) stop("include.eff and est.type must have the same length!")
+  
+  facet_formula <- formula(.~country)
+  # if (interact==TRUE) {
+  #   facet_formula <- formula(tcond~country)
+  # }
+  fixhline <- 0
+  if (odds==TRUE) {
+    fixhline <- 1
   }
+  med.out.v0.data <- med.out.v0.data[med.out.v0.data$eff%in%include.eff,]
+  pvallist <- which(as.vector(table(med.out.v0.data$pcat))>0)
+  med.out.v0.data$efflab <- as.character(med.out.v0.data$eff)
+  for (i in 1:length(include.eff)) {
+    med.out.v0.data$efflab[med.out.v0.data$eff==include.eff[i]] <- 
+      paste0(include.eff[i],"\n(",est.type[i],")")
+  }
+  med.out.v0.data$efflab <- factor(med.out.v0.data$efflab, levels=paste0(include.eff,"\n(",est.type,")"))
+  collen <- length(table(med.out.v0.data$tcond))
+  p <- ggplot(med.out.v0.data, aes(x=med,y=est)) + 
+    geom_hline(yintercept=fixhline, linetype=2) + 
+    geom_errorbar(aes(ymin=loCI,ymax=upCI,
+                      color=tcond, linetype=pcat),
+                  size = 0.7, width=0.3,
+                  position = position_dodge(0.9)) + 
+    geom_point(aes(shape=tcond),
+               size = 2, 
+               position = position_dodge(0.9)) + 
+    scale_shape_manual(name="China\nThreat",values=rev(c(16,17,15,3,7,8)[seq(1,length(unique(med.out.v0.data$tcond)),1)])) + 
+    scale_color_manual(name="China\nThreat", values=rep("Black",collen)) + 
+    scale_linetype_manual(name="Significance", values=pvallist) +
+    guides( color = guide_legend(order = 1, reverse=TRUE,nrow=legendrow,byrow=TRUE),
+            shape = guide_legend(order = 1, reverse=TRUE,nrow=legendrow,byrow=TRUE),
+            linetype = guide_legend(order = 2,nrow=legendrow,byrow=TRUE)) +
+    theme_bw() + 
+    ylab("(Lines Represent 95% Confidence Intervals)") + 
+    xlab(NULL) + 
+    ggtitle(titletxt) + 
+    facet_grid(country~efflab, scales="free", switch="y") + coord_flip() +
+    theme(plot.title=element_text(hjust=0.5),
+          strip.text.x = element_text(face="bold"),
+          strip.text.y = element_text(angle=270,hjust=0.5,face="bold",size=11),
+          axis.text.y = element_blank(),
+          axis.ticks.y = element_blank(),
+          strip.background.y = element_blank(),
+          panel.border = element_rect(colour = "black"),
+          legend.position="top") + 
+    labs(caption=captiontxt) + 
+    theme(plot.caption = element_text(hjust=0))
+  
   return(p)
 } 
 
@@ -752,62 +1149,62 @@ estrow2 <- function(m, meth="asis", at) {
 }
 
 #' # Function to export medflex moderation analysis results 
-modex <- function(m, cname, v=1) {
-  
-  v1comp <- c("treat_China1 = 0",
-              "treat_China0 = 0",
-              "treat_China0 + treat_China1 = 0",
-              "treat_China1 + treat_China1:threat.CHN = 0",
-              "treat_China0 + treat_China0:threat.CHN = 0",
-              "treat_China0 + treat_China0:threat.CHN + treat_China1 + treat_China1:threat.CHN = 0")
-  v2comp <- c("treat_China1 = 0",
-              "treat_China0 = 0",
-              "treat_China0 + treat_China1 = 0",
-              "treat_China1 + treat_China1:threat.CHN.3cat1 = 0",
-              "treat_China0 + treat_China0:threat.CHN.3cat1 = 0",
-              "treat_China0 + treat_China0:threat.CHN.3cat1 + treat_China1 + treat_China1:threat.CHN.3cat1 = 0",
-              "treat_China1 + treat_China1:threat.CHN.3cat2 = 0",
-              "treat_China0 + treat_China0:threat.CHN.3cat2 = 0",
-              "treat_China0 + treat_China0:threat.CHN.3cat2 + treat_China1 + treat_China1:threat.CHN.3cat2 = 0")
-  if (v==1) {
-    vcomp <- v1comp
-    effrep <- 2
-    g1n.MMR <- 1285
-    g0n.MMR <- 280
-    g1n.PHL <- 1283
-    g0n.PHL <- 331
-    t1 <- paste("Threatened \n  (N=", g1n.MMR, " for Myanmar) \n  (N=", g1n.PHL, " for Philippines)",sep="")
-    t0 <- paste("\nNot Threatened \n  (N=", g0n.MMR, " for Myanmar) \n  (N=", g0n.PHL, " for Philippines)",sep="")
-    tset <- c(t0,t1)
-  } else if (v==2) {
-    vcomp <- v2comp
-    effrep <- 3
-    g2n.MMR <- 789
-    g1n.MMR <- 496
-    g0n.MMR <- 280
-    g2n.PHL <- 749
-    g1n.PHL <- 534
-    g0n.PHL <- 331
-    t2 <- paste("High \n  (N=", g2n.MMR, " for Myanmar) \n  (N=", g2n.PHL, " for Philippines)",sep="")
-    t1 <- paste("\nModerate \n  (N=", g1n.MMR, " for Myanmar) \n  (N=", g1n.PHL, " for Philippines)",sep="")
-    t0 <- paste("\nLow/None \n  (N=", g0n.MMR, " for Myanmar) \n  (N=", g0n.PHL, " for Philippines)",sep="")
-    tset <- c(t0,t1,t2)
-  } else {
-    stop("invalid v")
-  }
-  
-  lht <- neLht(m,  linfct = vcomp)
-  a <- as.data.frame(cbind(coef(lht), coefci(lht),coeftest(lht)[,4]))
-  colnames(a) <- c("est","loCI","upCI","p")
-  rownames(a) <- seq(1, nrow(a), 1)
-  a$p05 <- ifelse(a$p<.05,1,0)
-  a$p10 <- ifelse(a$p<.1,1,0)
-  a$pcat <- ifelse(a$p10==0,"p >= .1", ifelse(a$p05==0,"p < .1","p < .05"))
-  a$pcat <- factor(a$pcat,levels=c("p < .05","p < .1", "p >= .1"))
-  a$med <- "Security"
-  a$eff <- factor(rep(c("Mediated","Direct","Total"),effrep), levels=c("Mediated","Direct","Total"))
-  a$country <- cname
-  a$tcond <- factor(rep(tset, each=3), levels=tset)
-
-  return(a)
-}
+# modex <- function(m, cname, v=1) {
+#   
+#   v1comp <- c("treat_China1 = 0",
+#               "treat_China0 = 0",
+#               "treat_China0 + treat_China1 = 0",
+#               "treat_China1 + treat_China1:threat.CHN = 0",
+#               "treat_China0 + treat_China0:threat.CHN = 0",
+#               "treat_China0 + treat_China0:threat.CHN + treat_China1 + treat_China1:threat.CHN = 0")
+#   v2comp <- c("treat_China1 = 0",
+#               "treat_China0 = 0",
+#               "treat_China0 + treat_China1 = 0",
+#               "treat_China1 + treat_China1:threat.CHN.3cat1 = 0",
+#               "treat_China0 + treat_China0:threat.CHN.3cat1 = 0",
+#               "treat_China0 + treat_China0:threat.CHN.3cat1 + treat_China1 + treat_China1:threat.CHN.3cat1 = 0",
+#               "treat_China1 + treat_China1:threat.CHN.3cat2 = 0",
+#               "treat_China0 + treat_China0:threat.CHN.3cat2 = 0",
+#               "treat_China0 + treat_China0:threat.CHN.3cat2 + treat_China1 + treat_China1:threat.CHN.3cat2 = 0")
+#   if (v==1) {
+#     vcomp <- v1comp
+#     effrep <- 2
+#     g1n.MMR <- 1285
+#     g0n.MMR <- 280
+#     g1n.PHL <- 1283
+#     g0n.PHL <- 331
+#     t1 <- paste("Threatened \n  (N=", g1n.MMR, " for Myanmar) \n  (N=", g1n.PHL, " for Philippines)",sep="")
+#     t0 <- paste("\nNot Threatened \n  (N=", g0n.MMR, " for Myanmar) \n  (N=", g0n.PHL, " for Philippines)",sep="")
+#     tset <- c(t0,t1)
+#   } else if (v==2) {
+#     vcomp <- v2comp
+#     effrep <- 3
+#     g2n.MMR <- 789
+#     g1n.MMR <- 496
+#     g0n.MMR <- 280
+#     g2n.PHL <- 749
+#     g1n.PHL <- 534
+#     g0n.PHL <- 331
+#     t2 <- paste("High \n  (N=", g2n.MMR, " for Myanmar) \n  (N=", g2n.PHL, " for Philippines)",sep="")
+#     t1 <- paste("\nModerate \n  (N=", g1n.MMR, " for Myanmar) \n  (N=", g1n.PHL, " for Philippines)",sep="")
+#     t0 <- paste("\nLow/None \n  (N=", g0n.MMR, " for Myanmar) \n  (N=", g0n.PHL, " for Philippines)",sep="")
+#     tset <- c(t0,t1,t2)
+#   } else {
+#     stop("invalid v")
+#   }
+#   
+#   lht <- neLht(m,  linfct = vcomp)
+#   a <- as.data.frame(cbind(coef(lht), coefci(lht),coeftest(lht)[,4]))
+#   colnames(a) <- c("est","loCI","upCI","p")
+#   rownames(a) <- seq(1, nrow(a), 1)
+#   a$p05 <- ifelse(a$p<.05,1,0)
+#   a$p10 <- ifelse(a$p<.1,1,0)
+#   a$pcat <- ifelse(a$p10==0,"p >= .1", ifelse(a$p05==0,"p < .1","p < .05"))
+#   a$pcat <- factor(a$pcat,levels=c("p < .05","p < .1", "p >= .1"))
+#   a$med <- "Security"
+#   a$eff <- factor(rep(c("Mediated","Direct","Total"),effrep), levels=c("Mediated","Direct","Total"))
+#   a$country <- cname
+#   a$tcond <- factor(rep(tset, each=3), levels=tset)
+# 
+#   return(a)
+# }

@@ -1,7 +1,7 @@
 #' ---
-#' title: "Analysis 4: Joint Causal Mediation Analysis Using medflex Package"
+#' title: "Analysis 4: Causal Mediation Analysis Using medflex Package"
 #' author: "Gento Kato"
-#' date: "April 13, 2019"
+#' date: "June 21, 2019"
 #' ---
 
 #' # Preparation
@@ -123,6 +123,7 @@ di.MMR.sub.effi <- neImpute(update(cancel_aid ~ treat_China + med_effi, fcv),
 m.MMR.sub.effi <- neModel(update(cancel_aid ~ treat_China0 + treat_China1, fcv), 
                       family = "gaussian", expData = di.MMR.sub.effi, se = "robust")
 
+#'
 #' ### Philippines
 #' 
 
@@ -174,7 +175,9 @@ di.PHL.sub.effi <- neImpute(update(cancel_aid ~ treat_China + med_effi, fcv),
 m.PHL.sub.effi <- neModel(update(cancel_aid ~ treat_China0 + treat_China1, fcv), 
                           family = "gaussian", expData = di.PHL.sub.effi, se = "robust")
 
+#'
 #' ## Joint Causal Mediation Analysis
+#'
 
 # 2p Mediator and 9p Outcome
 di.MMR.main <- neImpute(update(cancel_aid ~ treat_China + med_secu_2cat * med_econ_2cat * med_repu_2cat * med_effi_2cat, fcv),
@@ -200,7 +203,9 @@ m.PHL.sub <- neModel(update(cancel_aid ~ treat_China0 + treat_China1, fcv),
                       family = "gaussian", expData = di.PHL.sub, se = "robust")
 summary(m.PHL.sub)
 
-#' ## Plotting Mediation Analysis Results
+#'
+#' ## Plotting Mediation Analysis Results (Appendix)
+#'
 
 # 2p Mediator and 9p Outcome
 mainls <- list(m.MMR.main.secu,m.MMR.main.econ,m.MMR.main.repu,m.MMR.main.effi,m.MMR.main,
@@ -212,23 +217,29 @@ dmain$pcat <- ifelse(dmain$p10==0,"p >= .1", ifelse(dmain$p05==0,"p < .1","p < .
 dmain$pcat <- factor(dmain$pcat,levels=c("p < .05","p < .1", "p >= .1"))
 dmain$med <- rep(c("Security","Economy","Reputation","Efficacy","JOINT"),4)
 dmain$med <- factor(dmain$med, levels=unique(dmain$med))
-dmain$eff <- rep(c("Direct","Mediated"), each = 10)
-dmain$eff <- factor(dmain$eff, levels=c("Mediated","Direct","Total"))
+dmain$eff <- rep(c("Treatment → Outcome",
+                   "Treatment → Med. → Out."), each = 10)
+dmain$eff <- factor(dmain$eff, levels=c("Treatment → Med. → Out.",
+                                        "Treatment → Outcome"))
 dmain$country <- rep(rep(c("Myanmar","Philippines"), each=5),2)
 
-p <- genplot(dmain, "", include.eff = c("Mediated","Direct")) + 
-  theme(strip.text = element_text(size=12,face="bold"),
-        axis.text.x = element_text(size=11,face="bold"),
-        axis.title.x = element_text(vjust=-0.5)) + 
-  ggtitle(NULL) + xlab("The Decomposition of Total Effect")
-p <- plot_footnote(p, "Note: Lines represent 95% confidence intervals calculated using robust standard errors. The mediator model\n         are estimated with binary mediators and the outcome model is estimated with linear regression through\n         imputation-based apporach in 'medflex' R package. 'JOINT' is the joint mediation effect of all mediators.",
-                   bottom.expand.rate = 11, align="left", caption=FALSE, show.plot = FALSE)
+captiontxt <- 
+  "Note: Lines represent 95% confidence intervals calculated using robust standard errors. The mediator models
+are estimated with binary mediators and the outcome model is estimated with linear regression through the
+imputation-based apporach used in the 'medflex' R package. 'JOINT' is the joint mediation effect of all mediators."
 
-#+ fig.width=8, fig.height=4
-grid.draw(p)
+p <- genplot(dmain, 
+             captiontxt = captiontxt,
+             include.eff = c("Treatment → Med. → Out.",
+                             "Treatment → Outcome"), 
+             est.type=c("Av. Mediation Effect",
+                        "Av. Direct Effect"))
+
+#+ fig.width=8, fig.height=5.5
+p
 
 #+ eval=FALSE
-png_save(p, w=850, h=500, file=c("out/medflex.med.out.main.plot.png"))
+png_save(p, w=850, h=550, file=c("out/medflex.med.out.main.plot.png"))
 
 #+
 # 5p Mediator and 9p Outcome
@@ -241,226 +252,29 @@ dsub$pcat <- ifelse(dsub$p10==0,"p >= .1", ifelse(dsub$p05==0,"p < .1","p < .05"
 dsub$pcat <- factor(dsub$pcat,levels=c("p < .05","p < .1", "p >= .1"))
 dsub$med <- rep(c("Security","Economy","Reputation","Efficacy","JOINT"),4)
 dsub$med <- factor(dsub$med, levels=unique(dsub$med))
-dsub$eff <- rep(c("Direct","Mediated"), each = 10)
-dsub$eff <- factor(dsub$eff, levels=c("Mediated","Direct","Total"))
+dsub$eff <- rep(c("Treatment → Outcome",
+                   "Treatment → Med. → Out."), each = 10)
+dsub$eff <- factor(dsub$eff, levels=c("Treatment → Med. → Out.",
+                                        "Treatment → Outcome"))
 dsub$country <- rep(rep(c("Myanmar","Philippines"), each=5),2)
 
-p <- genplot(dsub, "", include.eff = c("Mediated","Direct")) + 
-  theme(strip.text = element_text(size=12,face="bold"),
-        axis.text.x = element_text(size=11,face="bold"),
-        axis.title.x = element_text(vjust=-0.5)) + 
-  ggtitle(NULL) + xlab("The Decomposition of Total Effect")
-p <- plot_footnote(p, "Note: Lines represent 95% confidence intervals calculated using robust standard errors. The mediator model\n         are estimated with 5p mediators and the outcome model is estimated with linear regression through\n         imputation-based apporach in 'medflex' R package. 'JOINT' is the joint mediation effect of all mediators.",
-                   bottom.expand.rate = 11, align="left", caption=FALSE, show.plot = FALSE)
+captiontxt <- 
+  "Note: Lines represent 95% confidence intervals calculated using robust standard errors. The mediator models
+are estimated with 5p mediators and the outcome model is estimated with linear regression through the
+imputation-based apporach used in the 'medflex' R package. 'JOINT' is the joint mediation effect of all mediators."
 
-#+ fig.width=8, fig.height=4
-grid.draw(p)
+p <- genplot(dsub, 
+             captiontxt = captiontxt,
+             include.eff = c("Treatment → Med. → Out.",
+                             "Treatment → Outcome"), 
+             est.type=c("Av. Mediation Effect",
+                        "Av. Direct Effect"))
 
-#+ eval=FALSE
-png_save(p, w=850, h=500, file=c("out/medflex.med.out.sub.plot.png"))
-
-#' ## Moderated Mediation of Security Mediator
-
-# Drop Cases with Missing Values in Relevant Variables
-vars <- c("cancel_aid","treat_China","threat","imp","potential",  
-          "issint","odaimp","fem","age","ide3",
-          "threat.CHN","threat.CHN.3cat",
-          "med_econ","med_secu","med_repu","med_effi",
-          "med_econ_2cat","med_secu_2cat","med_repu_2cat","med_effi_2cat")
-d.MMR.sub <- na.omit(d.MMR[,vars])
-d.PHL.sub <- na.omit(d.PHL[,vars])
-
-#' ### 2p Moderator, 2p Mediator and 9p Outcome
-di.MMR.main <- neImpute(update(cancel_aid ~ treat_China + med_secu_2cat + treat_China:threat.CHN + med_secu_2cat:threat.CHN, fcv),
-                        family = "gaussian", nMed = 1, data = d.MMR.sub)
-m.MMR.main <- neModel(update(cancel_aid ~ treat_China0 + treat_China1 + treat_China0:threat.CHN + treat_China1:threat.CHN, fcv), 
-                      family = "gaussian", expData = di.MMR.main, se = "robust")
-di.PHL.main <- neImpute(update(cancel_aid ~ treat_China + med_secu_2cat + treat_China:threat.CHN + med_secu_2cat:threat.CHN, fcv),
-                        family = "gaussian", nMed = 1, data = d.PHL.sub)
-m.PHL.main <- neModel(update(cancel_aid ~ treat_China0 + treat_China1 + treat_China0:threat.CHN + treat_China1:threat.CHN, fcv), 
-                      family = "gaussian", expData = di.PHL.main, se = "robust")
-
-# Data
-de.main <- rbind(modex(m.MMR.main, "Myanmar", v=1),
-                 modex(m.PHL.main, "Philippines", v=1))
-
-# Plot (with Total Effect)
-p <- genplot2(de.main,"(Mediator: Security Interests)",interact=TRUE) + 
-  theme(strip.text = element_text(size=12,face="bold"),
-        axis.text.x = element_text(size=11,face="bold"),
-        axis.title.x = element_text(vjust=-0.5)) + 
-  ggtitle(NULL) + xlab("The Decomposition of Total Effect")
-p <- plot_footnote(p, "Note: Lines represent 95% confidence intervals calculated using robust standard errors. The mediator model\n         are estimated with binary mediator and the outcome model is estimated with linear regression through\n         imputation-based apporach in 'medflex' R package.",
-                   bottom.expand.rate = 11, align="left", caption=FALSE, show.plot = FALSE)
-
-#+ fig.width=8.5, fig.height=5
-grid.draw(p)
+#+ fig.width=8, fig.height=5.5
+p
 
 #+ eval=FALSE
-png_save(p, w=850, h=500, dpi=300, file=c("out/medflex.med.mod.out.main.1.secu.wtotal.plot.png"))
-
-#+
-# Data
-de.main.wototal <- de.main[de.main$eff != "Total",]
-
-# Plot (without Total Effect)
-p <- genplot2(de.main.wototal,"(Mediator: Security Interests)",interact=TRUE) + 
-  theme(strip.text = element_text(size=12,face="bold"),
-        axis.text.x = element_text(size=11,face="bold"),
-        axis.title.x = element_text(vjust=-0.5)) + 
-  ggtitle(NULL) + xlab("The Decomposition of Total Effect")
-p <- plot_footnote(p, "Note: Lines represent 95% confidence intervals calculated using robust standard errors. The mediator model\n         are estimated with binary mediator and the outcome model is estimated with linear regression through\n         imputation-based apporach in 'medflex' R package.",
-                   bottom.expand.rate = 11, align="left", caption=FALSE, show.plot = FALSE)
-
-#+ fig.width=8.5, fig.height=5
-grid.draw(p)
-
-#+ eval=FALSE
-png_save(p, w=850, h=500, dpi=300, file=c("out/medflex.med.mod.out.main.1.secu.wototal.plot.png"))
-
-#' ### 3p Moderator, 2p Mediator and 9p Outcome
-di.MMR.main2 <- neImpute(update(cancel_aid ~ treat_China + med_secu_2cat + treat_China:threat.CHN.3cat + med_secu_2cat:threat.CHN.3cat, fcv),
-                        family = "gaussian", nMed = 1, data = d.MMR.sub)
-m.MMR.main2 <- neModel(update(cancel_aid ~ treat_China0 + treat_China1 + treat_China0:threat.CHN.3cat + treat_China1:threat.CHN.3cat, fcv), 
-                      family = "gaussian", expData = di.MMR.main2, se = "robust")
-di.PHL.main2 <- neImpute(update(cancel_aid ~ treat_China + med_secu_2cat + treat_China:threat.CHN.3cat + med_secu_2cat:threat.CHN.3cat, fcv),
-                        family = "gaussian", nMed = 1, data = d.PHL.sub)
-m.PHL.main2 <- neModel(update(cancel_aid ~ treat_China0 + treat_China1 + treat_China0:threat.CHN.3cat + treat_China1:threat.CHN.3cat, fcv), 
-                      family = "gaussian", expData = di.PHL.main2, se = "robust")
-
-# Data
-de.main2 <- rbind(modex(m.MMR.main2, "Myanmar", v=2),
-                 modex(m.PHL.main2, "Philippines", v=2))
-
-# Plot (with Total Effect)
-p <- genplot2(de.main2,"(Mediator: Security Interests)",interact=TRUE) + 
-  theme(strip.text = element_text(size=12,face="bold"),
-        axis.text.x = element_text(size=11,face="bold"),
-        axis.title.x = element_text(vjust=-0.5)) + 
-  ggtitle(NULL) + xlab("The Decomposition of Total Effect")
-p <- plot_footnote(p, "Note: Lines represent 95% confidence intervals calculated using robust standard errors. The mediator model\n         are estimated with binary mediator and the outcome model is estimated with linear regression through\n         imputation-based apporach in 'medflex' R package.",
-                   bottom.expand.rate = 11, align="left", caption=FALSE, show.plot = FALSE)
-
-#+ fig.width=8.5, fig.height=5
-grid.draw(p)
-
-#+ eval=FALSE
-png_save(p, w=850, h=500, dpi=300, file=c("out/medflex.med.mod.out.main.3.secu.wtotal.plot.png"))
-
-#+
-# Data
-de.main2.wototal <- de.main2[de.main2$eff != "Total",]
-
-# Plot (without Total Effect)
-p <- genplot2(de.main2.wototal,"(Mediator: Security Interests)",interact=TRUE) + 
-  theme(strip.text = element_text(size=12,face="bold"),
-        axis.text.x = element_text(size=11,face="bold"),
-        axis.title.x = element_text(vjust=-0.5)) + 
-  ggtitle(NULL) + xlab("The Decomposition of Total Effect")
-p <- plot_footnote(p, "Note: Lines represent 95% confidence intervals calculated using robust standard errors. The mediator model\n         are estimated with binary mediator and the outcome model is estimated with linear regression through\n         imputation-based apporach in 'medflex' R package.",
-                   bottom.expand.rate = 11, align="left", caption=FALSE, show.plot = FALSE)
-
-#+ fig.width=8.5, fig.height=5
-grid.draw(p)
-
-#+ eval=FALSE
-png_save(p, w=850, h=500, dpi=300, file=c("out/medflex.med.mod.out.main.3.secu.wototal.plot.png"))
-
-#' ### 2p Moderator, 5p Mediator and 9p Outcome
-di.MMR.sub <- neImpute(update(cancel_aid ~ treat_China + med_secu + treat_China:threat.CHN + med_secu:threat.CHN, fcv),
-                        family = "gaussian", nMed = 1, data = d.MMR.sub)
-m.MMR.sub <- neModel(update(cancel_aid ~ treat_China0 + treat_China1 + treat_China0:threat.CHN + treat_China1:threat.CHN, fcv), 
-                      family = "gaussian", expData = di.MMR.sub, se = "robust")
-di.PHL.sub <- neImpute(update(cancel_aid ~ treat_China + med_secu + treat_China:threat.CHN + med_secu:threat.CHN, fcv),
-                        family = "gaussian", nMed = 1, data = d.PHL.sub)
-m.PHL.sub <- neModel(update(cancel_aid ~ treat_China0 + treat_China1 + treat_China0:threat.CHN + treat_China1:threat.CHN, fcv), 
-                      family = "gaussian", expData = di.PHL.sub, se = "robust")
-
-# Data
-de.sub <- rbind(modex(m.MMR.sub, "Myanmar", v=1),
-                 modex(m.PHL.sub, "Philippines", v=1))
-
-# Plot (with Total Effect)
-p <- genplot2(de.sub,"(Mediator: Security Interests)",interact=TRUE) + 
-  theme(strip.text = element_text(size=12,face="bold"),
-        axis.text.x = element_text(size=11,face="bold"),
-        axis.title.x = element_text(vjust=-0.5)) + 
-  ggtitle(NULL) + xlab("The Decomposition of Total Effect")
-p <- plot_footnote(p, "Note: Lines represent 95% confidence intervals calculated using robust standard errors. The mediator model\n         are estimated with 5p mediators and the outcome model is estimated with linear regression through\n         imputation-based apporach in 'medflex' R package.",
-                   bottom.expand.rate = 11, align="left", caption=FALSE, show.plot = FALSE)
-
-#+ fig.width=8.5, fig.height=5
-grid.draw(p)
-
-#+ eval=FALSE
-png_save(p, w=850, h=500, dpi=300, file=c("out/medflex.med.mod.out.sub.1.secu.wtotal.plot.png"))
-
-#+
-# Data
-de.sub.wototal <- de.sub[de.sub$eff != "Total",]
-
-# Plot (without Total Effect)
-p <- genplot2(de.sub.wototal,"(Mediator: Security Interests)",interact=TRUE) + 
-  theme(strip.text = element_text(size=12,face="bold"),
-        axis.text.x = element_text(size=11,face="bold"),
-        axis.title.x = element_text(vjust=-0.5)) + 
-  ggtitle(NULL) + xlab("The Decomposition of Total Effect")
-p <- plot_footnote(p, "Note: Lines represent 95% confidence intervals calculated using robust standard errors. The mediator model\n         are estimated with 5p mediators and the outcome model is estimated with linear regression through\n         imputation-based apporach in 'medflex' R package.",
-                   bottom.expand.rate = 11, align="left", caption=FALSE, show.plot = FALSE)
-
-#+ fig.width=8.5, fig.height=5
-grid.draw(p)
-
-#+ eval=FALSE
-png_save(p, w=850, h=500, dpi=300, file=c("out/medflex.med.mod.out.sub.1.secu.wototal.plot.png"))
-
-#' ### 3p Moderator, 5p Mediator and 9p Outcome
-di.MMR.sub2 <- neImpute(update(cancel_aid ~ treat_China + med_secu + treat_China:threat.CHN.3cat + med_secu:threat.CHN.3cat, fcv),
-                         family = "gaussian", nMed = 1, data = d.MMR.sub)
-m.MMR.sub2 <- neModel(update(cancel_aid ~ treat_China0 + treat_China1 + treat_China0:threat.CHN.3cat + treat_China1:threat.CHN.3cat, fcv), 
-                       family = "gaussian", expData = di.MMR.sub2, se = "robust")
-di.PHL.sub2 <- neImpute(update(cancel_aid ~ treat_China + med_secu + treat_China:threat.CHN.3cat + med_secu:threat.CHN.3cat, fcv),
-                         family = "gaussian", nMed = 1, data = d.PHL.sub)
-m.PHL.sub2 <- neModel(update(cancel_aid ~ treat_China0 + treat_China1 + treat_China0:threat.CHN.3cat + treat_China1:threat.CHN.3cat, fcv), 
-                       family = "gaussian", expData = di.PHL.sub2, se = "robust")
-
-# Data
-de.sub2 <- rbind(modex(m.MMR.sub2, "Myanmar", v=2),
-                  modex(m.PHL.sub2, "Philippines", v=2))
-
-# Plot (with Total Effect)
-p <- genplot2(de.sub2,"(Mediator: Security Interests)",interact=TRUE) + 
-  theme(strip.text = element_text(size=12,face="bold"),
-        axis.text.x = element_text(size=11,face="bold"),
-        axis.title.x = element_text(vjust=-0.5)) + 
-  ggtitle(NULL) + xlab("The Decomposition of Total Effect")
-p <- plot_footnote(p, "Note: Lines represent 95% confidence intervals calculated using robust standard errors. The mediator model\n         are estimated with 5p mediators and the outcome model is estimated with linear regression through\n         imputation-based apporach in 'medflex' R package.",
-                   bottom.expand.rate = 11, align="left", caption=FALSE, show.plot = FALSE)
-
-#+ fig.width=8.5, fig.height=5
-grid.draw(p)
-
-#+ eval=FALSE
-png_save(p, w=850, h=500, dpi=300, file=c("out/medflex.med.mod.out.sub.3.secu.wtotal.plot.png"))
-
-#+
-# Data
-de.sub2.wototal <- de.sub2[de.sub2$eff != "Total",]
-
-# Plot (without Total Effect)
-p <- genplot2(de.sub2.wototal,"(Mediator: Security Interests)",interact=TRUE) + 
-  theme(strip.text = element_text(size=12,face="bold"),
-        axis.text.x = element_text(size=11,face="bold"),
-        axis.title.x = element_text(vjust=-0.5)) + 
-  ggtitle(NULL) + xlab("The Decomposition of Total Effect")
-p <- plot_footnote(p, "Note: Lines represent 95% confidence intervals calculated using robust standard errors. The mediator model\n         are estimated with 5p mediators and the outcome model is estimated with linear regression through\n         imputation-based apporach in 'medflex' R package.",
-                   bottom.expand.rate = 11, align="left", caption=FALSE, show.plot = FALSE)
-
-#+ fig.width=8.5, fig.height=5
-grid.draw(p)
-
-#+ eval=FALSE
-png_save(p, w=850, h=500, dpi=300, file=c("out/medflex.med.mod.out.sub.3.secu.wototal.plot.png"))
+png_save(p, w=850, h=550, file=c("out/medflex.med.out.sub.plot.png"))
 
 #+ eval=FALSE, echo=FALSE
 # Exporting HTML File
