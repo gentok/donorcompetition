@@ -90,7 +90,7 @@ adjpval <- function(filename) {
 
 gen.med.out <- function(d.sub, outvar, simsn, filename,
                         chosen_med = c(1,2,3,4),
-                        models = c("ologit","ologit"),
+                        models = c("logit","gaussian"),
                         medcats = 5, # or 3 or 2
                         interaction = FALSE,
                         moderated = FALSE, 
@@ -218,7 +218,8 @@ gen.med.out <- function(d.sub, outvar, simsn, filename,
 }
 
 #' # Generating Data from Mediation Analysis Object
-gendata <- function(med.out.MMR,med.out.PHL,mod=FALSE,modN=NULL,modval=NULL) {
+gendata <- function(med.out.MMR,med.out.PHL,mod=FALSE,modN=NULL,modval=NULL,
+                    treated = TRUE) {
   
   gendata1 <- function(med.out,country,mod,modN,modval) {
     
@@ -390,50 +391,96 @@ gendata <- function(med.out.MMR,med.out.PHL,mod=FALSE,modN=NULL,modval=NULL) {
                             med="Efficacy",
                             eff="Mediator ¨ Outcome"))
     
-    ## Mediated Effect ##
-    # Security
-    tmp <- with(med.out$med.out[[2]], data.frame(d1,t(d1.ci),d1.p))
-    names(tmp) <- c("est","loCI","upCI","p")
-    tmp$med <- "Security"; tmp$eff <- "Treatment ¨ Med. ¨ Out."
-    res <- rbind(res,tmp)
-    # Economy
-    tmp <- with(med.out$med.out[[1]], data.frame(d1,t(d1.ci),d1.p))
-    names(tmp) <- c("est","loCI","upCI","p")
-    tmp$med <- "Economy"; tmp$eff <- "Treatment ¨ Med. ¨ Out."
-    res <- rbind(res,tmp)
-    # Reputation
-    tmp <- with(med.out$med.out[[3]], data.frame(d1,t(d1.ci),d1.p))
-    names(tmp) <- c("est","loCI","upCI","p")
-    tmp$med <- "Reputation"; tmp$eff <- "Treatment ¨ Med. ¨ Out."
-    res <- rbind(res,tmp)
-    # Efficacy
-    tmp <- with(med.out$med.out[[4]], data.frame(d1,t(d1.ci),d1.p))
-    names(tmp) <- c("est","loCI","upCI","p")
-    tmp$med <- "Efficacy"; tmp$eff <- "Treatment ¨ Med. ¨ Out."
-    res <- rbind(res,tmp)
-    
-    ## Direct Effect ##
-    # Security
-    tmp <- with(med.out$med.out[[2]], data.frame(z1,t(z1.ci),z1.p))
-    names(tmp) <- c("est","loCI","upCI","p")
-    tmp$med <- "Security"; tmp$eff <- "Treatment ¨ Outcome"
-    res <- rbind(res,tmp)
-    # Economy
-    tmp <- with(med.out$med.out[[1]], data.frame(z1,t(z1.ci),z1.p))
-    names(tmp) <- c("est","loCI","upCI","p")
-    tmp$med <- "Economy"; tmp$eff <- "Treatment ¨ Outcome"
-    res <- rbind(res,tmp)
-    # Reputation
-    tmp <- with(med.out$med.out[[3]], data.frame(z1,t(z1.ci),z1.p))
-    names(tmp) <- c("est","loCI","upCI","p")
-    tmp$med <- "Reputation"; tmp$eff <- "Treatment ¨ Outcome"
-    res <- rbind(res,tmp)
-    # Efficacy
-    tmp <- with(med.out$med.out[[4]], data.frame(z1,t(z1.ci),z1.p))
-    names(tmp) <- c("est","loCI","upCI","p")
-    tmp$med <- "Efficacy"; tmp$eff <- "Treatment ¨ Outcome"
-    res <- rbind(res,tmp)
-    
+    if (treated==TRUE) {
+      ## Mediated Effect ##
+      # Security
+      tmp <- with(med.out$med.out[[2]], data.frame(d1,t(d1.ci),d1.p))
+      names(tmp) <- c("est","loCI","upCI","p")
+      tmp$med <- "Security"; tmp$eff <- "Treatment ¨ Med. ¨ Out."
+      res <- rbind(res,tmp)
+      # Economy
+      tmp <- with(med.out$med.out[[1]], data.frame(d1,t(d1.ci),d1.p))
+      names(tmp) <- c("est","loCI","upCI","p")
+      tmp$med <- "Economy"; tmp$eff <- "Treatment ¨ Med. ¨ Out."
+      res <- rbind(res,tmp)
+      # Reputation
+      tmp <- with(med.out$med.out[[3]], data.frame(d1,t(d1.ci),d1.p))
+      names(tmp) <- c("est","loCI","upCI","p")
+      tmp$med <- "Reputation"; tmp$eff <- "Treatment ¨ Med. ¨ Out."
+      res <- rbind(res,tmp)
+      # Efficacy
+      tmp <- with(med.out$med.out[[4]], data.frame(d1,t(d1.ci),d1.p))
+      names(tmp) <- c("est","loCI","upCI","p")
+      tmp$med <- "Efficacy"; tmp$eff <- "Treatment ¨ Med. ¨ Out."
+      res <- rbind(res,tmp)
+      
+      ## Direct Effect ##
+      # Security
+      tmp <- with(med.out$med.out[[2]], data.frame(z1,t(z1.ci),z1.p))
+      names(tmp) <- c("est","loCI","upCI","p")
+      tmp$med <- "Security"; tmp$eff <- "Treatment ¨ Outcome"
+      res <- rbind(res,tmp)
+      # Economy
+      tmp <- with(med.out$med.out[[1]], data.frame(z1,t(z1.ci),z1.p))
+      names(tmp) <- c("est","loCI","upCI","p")
+      tmp$med <- "Economy"; tmp$eff <- "Treatment ¨ Outcome"
+      res <- rbind(res,tmp)
+      # Reputation
+      tmp <- with(med.out$med.out[[3]], data.frame(z1,t(z1.ci),z1.p))
+      names(tmp) <- c("est","loCI","upCI","p")
+      tmp$med <- "Reputation"; tmp$eff <- "Treatment ¨ Outcome"
+      res <- rbind(res,tmp)
+      # Efficacy
+      tmp <- with(med.out$med.out[[4]], data.frame(z1,t(z1.ci),z1.p))
+      names(tmp) <- c("est","loCI","upCI","p")
+      tmp$med <- "Efficacy"; tmp$eff <- "Treatment ¨ Outcome"
+      res <- rbind(res,tmp)
+    } else {
+      ## Mediated Effect ##
+      # Security
+      tmp <- with(med.out$med.out[[2]], data.frame(d0,t(d0.ci),d0.p))
+      names(tmp) <- c("est","loCI","upCI","p")
+      tmp$med <- "Security"; tmp$eff <- "Treatment ¨ Med. ¨ Out."
+      res <- rbind(res,tmp)
+      # Economy
+      tmp <- with(med.out$med.out[[1]], data.frame(d0,t(d0.ci),d0.p))
+      names(tmp) <- c("est","loCI","upCI","p")
+      tmp$med <- "Economy"; tmp$eff <- "Treatment ¨ Med. ¨ Out."
+      res <- rbind(res,tmp)
+      # Reputation
+      tmp <- with(med.out$med.out[[3]], data.frame(d0,t(d0.ci),d0.p))
+      names(tmp) <- c("est","loCI","upCI","p")
+      tmp$med <- "Reputation"; tmp$eff <- "Treatment ¨ Med. ¨ Out."
+      res <- rbind(res,tmp)
+      # Efficacy
+      tmp <- with(med.out$med.out[[4]], data.frame(d0,t(d0.ci),d0.p))
+      names(tmp) <- c("est","loCI","upCI","p")
+      tmp$med <- "Efficacy"; tmp$eff <- "Treatment ¨ Med. ¨ Out."
+      res <- rbind(res,tmp)
+      
+      ## Direct Effect ##
+      # Security
+      tmp <- with(med.out$med.out[[2]], data.frame(z0,t(z0.ci),z0.p))
+      names(tmp) <- c("est","loCI","upCI","p")
+      tmp$med <- "Security"; tmp$eff <- "Treatment ¨ Outcome"
+      res <- rbind(res,tmp)
+      # Economy
+      tmp <- with(med.out$med.out[[1]], data.frame(z0,t(z0.ci),z0.p))
+      names(tmp) <- c("est","loCI","upCI","p")
+      tmp$med <- "Economy"; tmp$eff <- "Treatment ¨ Outcome"
+      res <- rbind(res,tmp)
+      # Reputation
+      tmp <- with(med.out$med.out[[3]], data.frame(z0,t(z0.ci),z0.p))
+      names(tmp) <- c("est","loCI","upCI","p")
+      tmp$med <- "Reputation"; tmp$eff <- "Treatment ¨ Outcome"
+      res <- rbind(res,tmp)
+      # Efficacy
+      tmp <- with(med.out$med.out[[4]], data.frame(z0,t(z0.ci),z0.p))
+      names(tmp) <- c("est","loCI","upCI","p")
+      tmp$med <- "Efficacy"; tmp$eff <- "Treatment ¨ Outcome"
+      res <- rbind(res,tmp)
+    }
+  
     ## Total Effect ##
     # Security
     tmp <- with(med.out$med.out[[2]], data.frame(tau.coef,t(tau.ci),tau.p))

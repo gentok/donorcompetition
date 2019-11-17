@@ -1,18 +1,18 @@
 Analysis 2: Average Treatment Effect
 ================
 Gento Kato
-June 21, 2019
+November 17, 2019
 
 -   [Preparation](#preparation)
 -   [Average Treatment Effect](#average-treatment-effect)
     -   [Simple OLS](#simple-ols)
-        -   [Regression Table (Current Table 2)](#regression-table-current-table-2)
-        -   [Coefficient Plot (Intercept Dropped)](#coefficient-plot-intercept-dropped)
-    -   [Multinomial Logit](#multinomial-logit)
-        -   [Regression Table (Appendix)](#regression-table-appendix)
+        -   [Regression Table (Appendix III)](#regression-table-appendix-iii)
+        -   [Coefficient Plot without Intercept (Figure 3)](#coefficient-plot-without-intercept-figure-3)
+    -   [Multinomial Logit (Appendix II)](#multinomial-logit-appendix-ii)
+        -   [Regression Table](#regression-table)
         -   [Table with Only ATE](#table-with-only-ate)
         -   [Simulation of Predicted Probability](#simulation-of-predicted-probability)
-        -   [Plot of Predicted Probabilities (Appendix)](#plot-of-predicted-probabilities-appendix)
+        -   [Plot of Predicted Probabilities (Appendix II)](#plot-of-predicted-probabilities-appendix-ii)
 
 Preparation
 ===========
@@ -76,7 +76,7 @@ m0.PHL <- lm(as.numeric(out)~treat_China, data = d.PHL.sub)
 m1.PHL <- lm(update(as.numeric(out)~treat_China,fcv), data = d.PHL.sub)
 ```
 
-### Regression Table (Current Table 2)
+### Regression Table (Appendix III)
 
 ``` r
 # Export Table
@@ -415,7 +415,7 @@ Political Interest (High)
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">
-ODA Importance
+ODA Important
 </td>
 <td style="padding-right: 12px; border: none;">
 </td>
@@ -634,69 +634,68 @@ RMSE
 </table>
 </body>
 </html>
-### Coefficient Plot (Intercept Dropped)
+### Coefficient Plot without Intercept (Figure 3)
 
 ``` r
 ftset <- paste0("Note: Estimated by ordinary least square (OLS) regression with robust standard errors.",
                 "\nIntercepts are omitted from the output.",
                 " Myanmar: N = ", nobs(m1.MMR), ". Philippines: N = ", nobs(m1.PHL), ".")
-p <- plot_coef(list(m0.MMR,m1.MMR,m0.PHL,m1.PHL), 
-           vcov.est = "robust", # Stata HC1 Robust SE
-           overlap.names = rep(c(" Baseline Model "," Full Model "),2),
-           overlap.linetype.index = c(1,1),
-           overlap.shape.index = c(17,19),
-           facet.names = rep(c("Myanmar","Philippines"), each=2),
-           drop.intercept = TRUE,
-           custom.variable.names = basevn[-1],
-           title = NULL,
-           custom.footnote = ftset, footnote.caption = TRUE,
-           show.plot = FALSE) + 
+
+tmp0a <- matrix_coefci(m0.MMR, vcov.est="robust")
+tmp0a$mod <- "Treatment Only"
+tmp0a$country <- "Myanmar"
+tmp1a <- matrix_coefci(m1.MMR, vcov.est="robust")
+tmp1a$mod <- "With Covariates"
+tmp1a$country <- "Myanmar"
+tmp0b <- matrix_coefci(m0.PHL, vcov.est="robust")
+tmp0b$mod <- "Treatment Only"
+tmp0b$country <- "Philippines"
+tmp1b <- matrix_coefci(m1.PHL, vcov.est="robust")
+tmp1b$mod <- "With Covariates"
+tmp1b$country <- "Philippines"
+tmp <- rbind(tmp0a,tmp1a,tmp0b,tmp1b)
+tmp$mod <- factor(tmp$mod, levels=unique(tmp$mod))
+tmp$country <- factor(tmp$country, levels=unique(tmp$country))
+tmp$vn <- factor(c(basevn[1:2],basevn,basevn[1:2],basevn),
+                 levels=rev(basevn))
+tmp <- tmp[tmp$vn!="(Intercept)",]
+
+p <- ggplot(tmp, aes(x=vn, y=CF, ymin=lowerCI, ymax=upperCI)) + 
+  geom_hline(aes(yintercept=0), linetype=2, color="red1") + 
+  geom_point() + 
+  geom_errorbar(width=0.3) + 
+  facet_grid(mod~country, scales="free_y", space="free_y", switch = "y") + 
+  coord_flip() + 
+  ylab("Coefficient with 95% Confidence Interval") + xlab(NULL) +
+  #labs(caption=ftset) + 
   theme_bw() + 
   theme(legend.position="bottom", 
         legend.title = element_blank(),
         axis.text.y = element_text(face="bold"),
-        strip.text = element_text(face="bold", size=11),
-        plot.caption = element_text(hjust=0))
+        strip.text.x = element_text(face="bold", size=11),
+        strip.text.y = element_text(face="bold", size=11, angle=180),
+        strip.background.y = element_rect(color="black",fill=NA),
+        strip.placement = "outside",
+        panel.border = element_rect(color="black"),
+        plot.caption = element_text(hjust=-1))
+p <- plot_footnote(p, ftset, fontsize=9, bottom.expand.rate=7, align="right",
+              distance.from.side = 0.02)
 ```
 
-    ## Variable Manipulations: 
-    ##    Category Dropped    Original                             Final
-    ##        NA DROPPED (Intercept)                              <NA>
-    ##        NA    KEPT treat_China     Treatment (Donor Competition)
-    ##        NA    KEPT     threat1     Recipient's Threat (Moderate)
-    ##        NA    KEPT     threat2         Recipient's Threat (High)
-    ##        NA    KEPT        imp1 Recipient's Importance (Moderate)
-    ##        NA    KEPT        imp2     Recipient's Importance (High)
-    ##        NA    KEPT  potential1  Recipient's Potential (Moderate)
-    ##        NA    KEPT  potential2      Recipient's Potential (High)
-    ##        NA    KEPT     issint1     Political Interest (Moderate)
-    ##        NA    KEPT     issint2         Political Interest (High)
-    ##        NA    KEPT      odaimp                     ODA Important
-    ##        NA    KEPT         fem                   Gender (Female)
-    ##        NA    KEPT         age                               Age
-    ##        NA    KEPT       ide31               Ideology (Moderate)
-    ##        NA    KEPT       ide32                  Ideology (Right)
+![](analysis2_ate_files/figure-markdown_github/unnamed-chunk-5-1.png)
 
 ``` r
-p
+grid.draw(p)
 ```
-
-    ## Warning: position_dodge requires non-overlapping x intervals
-
-    ## Warning: position_dodge requires non-overlapping x intervals
-
-    ## Warning: Removed 26 rows containing missing values (geom_point).
-
-    ## Warning: Removed 26 rows containing missing values (geom_errorbar).
 
 ![](analysis2_ate_files/figure-markdown_github/unnamed-chunk-6-1.png)
 
 ``` r
-png_save(p,w=800,h=600,file="out/olsplot.png")
+png_save(p,w=900,h=550,file="out/olsplot.png")
 ```
 
-Multinomial Logit
------------------
+Multinomial Logit (Appendix II)
+-------------------------------
 
 ``` r
 # Define Outcome Variable and Drop Missing Values
@@ -728,7 +727,7 @@ m1.PHL <- mlogit(update(mFormula(out ~ 1 | treat_China), fcvml),
                  data = d.PHL.sub.mlogit, reflevel="1")
 ```
 
-### Regression Table (Appendix)
+### Regression Table
 
 ``` r
 # Variable Names
@@ -1372,10 +1371,10 @@ Neither: Treatment (Donor Competition)
 Cancel: Treatment (Donor Competition)
 </td>
 <td style="padding-right: 12px; border: none;">
--0.268<sup style="vertical-align: 0px;">†</sup>
+-0.268<sup style="vertical-align: 0px;"><U+0086></sup>
 </td>
 <td style="padding-right: 12px; border: none;">
--0.292<sup style="vertical-align: 0px;">†</sup>
+-0.292<sup style="vertical-align: 0px;"><U+0086></sup>
 </td>
 <td style="padding-right: 12px; border: none;">
 -0.351<sup style="vertical-align: 0px;">\*</sup>
@@ -1453,7 +1452,7 @@ Num. obs.
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;" colspan="6">
-<span style="font-size:0.8em"><sup style="vertical-align: 0px;">***</sup>p &lt; 0.001, <sup style="vertical-align: 0px;">**</sup>p &lt; 0.01, <sup style="vertical-align: 0px;">*</sup>p &lt; 0.05, <sup style="vertical-align: 0px;">†</sup>p &lt; 0.1 <br> Estimated by multinomial logit. Robust standard errors in parentheses. </span>
+<span style="font-size:0.8em"><sup style="vertical-align: 0px;">\*\*</sup>p &lt; 0.01, <sup style="vertical-align: 0px;">\*</sup>p &lt; 0.05, <sup style="vertical-align: 0px;"><U+0086></sup>p &lt; 0.1 <br> Estimated by multinomial logit. Robust standard errors in parentheses. </span>
 </td>
 </tr>
 </table>
@@ -1487,7 +1486,7 @@ simu.m1.mlogit$outrec <-
          levels=c("Myanmar","Philippines"))
 ```
 
-### Plot of Predicted Probabilities (Appendix)
+### Plot of Predicted Probabilities (Appendix II)
 
 ``` r
 # Plot Predicted Probabilities

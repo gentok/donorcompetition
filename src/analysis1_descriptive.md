@@ -1,18 +1,18 @@
 Analysis 1: Descriptive Statistics
 ================
 Gento Kato
-June 21, 2019
+November 17, 2019
 
 -   [Preparation](#preparation)
 -   [Variable Descriptions](#variable-descriptions)
     -   [Original Treatment Ns (for Table 1)](#original-treatment-ns-for-table-1)
     -   [Ns After NAs are dropped (for Table 1)](#ns-after-nas-are-dropped-for-table-1)
-    -   [Outcome Variable Distribution (Figure 1)](#outcome-variable-distribution-figure-1)
-    -   [Selected Pre-treatment Covariates Distributions (Appendix)](#selected-pre-treatment-covariates-distributions-appendix)
-    -   [Moderator (China Threat) Distributions (Appendix)](#moderator-china-threat-distributions-appendix)
--   [Mediator Distributions (Figure 3)](#mediator-distributions-figure-3)
--   [Relationship b/w Mediator and Outcome](#relationship-bw-mediator-and-outcome)
--   [Covariate Balance Between Treatment Groups (Appendix)](#covariate-balance-between-treatment-groups-appendix)
+    -   [Outcome Variable Distribution (Figure 2)](#outcome-variable-distribution-figure-2)
+    -   [Selected Pre-treatment Covariates Distributions (Extra)](#selected-pre-treatment-covariates-distributions-extra)
+    -   [Moderator (China Threat) Distributions (Figure 6)](#moderator-china-threat-distributions-figure-6)
+-   [Mediator Distributions (Figure 4)](#mediator-distributions-figure-4)
+-   [Relationship b/w Mediator and Outcome (Extra)](#relationship-bw-mediator-and-outcome-extra)
+-   [Covariate Balance Between Treatment Groups (Appendix I)](#covariate-balance-between-treatment-groups-appendix-i)
 
 Preparation
 ===========
@@ -92,7 +92,7 @@ table(d.PHL.sub$treat_China) # Philippines Cases
     ##   0   1 
     ## 846 768
 
-Outcome Variable Distribution (Figure 1)
+Outcome Variable Distribution (Figure 2)
 ----------------------------------------
 
 ``` r
@@ -117,8 +117,8 @@ p
 png_save(p, h=400, file="out/outdist.png")
 ```
 
-Selected Pre-treatment Covariates Distributions (Appendix)
-----------------------------------------------------------
+Selected Pre-treatment Covariates Distributions (Extra)
+-------------------------------------------------------
 
 ``` r
 pd <- data.frame(c = as.factor(rep(c("Myanmar","Philippines"),each=9)),
@@ -157,7 +157,7 @@ p
 png_save(p,h=500,file="out/perrecip.png")
 ```
 
-Moderator (China Threat) Distributions (Appendix)
+Moderator (China Threat) Distributions (Figure 6)
 -------------------------------------------------
 
 ``` r
@@ -169,16 +169,28 @@ d.MMR.sub.mod <- na.omit(d.MMR[,vars])
 d.PHL.sub.mod <- na.omit(d.PHL[,vars])
 
 pd <- data.frame(c = as.factor(rep(c("Myanmar Group","Philippines Group"),each=3)),
-                 x = factor(rep(rep(c("Neither/Not\n Threatened",
+                 x = factor(rep(rep(c("Not\nThreatened/\nNeutral",
                                       "Moderately\n Threatened",
                                       "Highly\n Threatened"),each=1),2),
-                            levels=c("Neither/Not\n Threatened",
+                            levels=c("Not\nThreatened/\nNeutral",
                                      "Moderately\n Threatened",
                                      "Highly\n Threatened")),
                  y = c(table(d.MMR.sub.mod$threat.CHN.3cat)/sum(table(d.MMR.sub.mod$threat.CHN.3cat)),
                        table(d.PHL.sub.mod$threat.CHN.3cat)/sum(table(d.PHL.sub.mod$threat.CHN.3cat)))
 )
 
+pd
+```
+
+    ##                   c                         x         y
+    ## 1     Myanmar Group Not\nThreatened/\nNeutral 0.1789137
+    ## 2     Myanmar Group   Moderately\n Threatened 0.3169329
+    ## 3     Myanmar Group       Highly\n Threatened 0.5041534
+    ## 4 Philippines Group Not\nThreatened/\nNeutral 0.2050805
+    ## 5 Philippines Group   Moderately\n Threatened 0.3308550
+    ## 6 Philippines Group       Highly\n Threatened 0.4640644
+
+``` r
 p <- ggplot(pd, aes(x=x,y=y)) + 
   geom_col(color="gray50") + 
   facet_grid(.~c) + theme_bw() + 
@@ -198,7 +210,7 @@ p
 png_save(p,h=500,file="out/threatCHN.png")
 ```
 
-Mediator Distributions (Figure 3)
+Mediator Distributions (Figure 4)
 =================================
 
 ``` r
@@ -224,7 +236,7 @@ td <- data.frame(c = factor(c(rep("Myanmar",nrow(d.MMR.sub)*4),
 p <- ggplot(td, aes(medval)) + geom_bar(aes(y=..prop.., group=1)) + 
   facet_grid(c~medname) + theme_bw() + 
   ylab("Proportion") + 
-  xlab("The Influence of Cancelling Aid on Given Interests\n(1=Positive; 3=Neutral; 5=Negative)") + 
+  xlab("Perceived Influence of Cancelling Aid on Given Interests\n(1=Positive; 3=Neutral; 5=Negative)") + 
   theme(axis.text.x = element_text(face="bold"),
         strip.text = element_text(face="bold",size=11))
 ```
@@ -239,8 +251,8 @@ p
 png_save(p,h=500,file="out/meddist.png")
 ```
 
-Relationship b/w Mediator and Outcome
-=====================================
+Relationship b/w Mediator and Outcome (Extra)
+=============================================
 
 ``` r
 td <- data.frame(c = factor(c(rep("Myanmar",nrow(d.MMR.sub)*4),
@@ -271,7 +283,7 @@ p <- ggboxplot(td, x = "medval", y = "out",
                      symnum.args = list(cutpoints = c(0, 0.001, 0.01, 0.05, 1), 
                                         symbols = c("p < .001", "p < .01", "p < .05", "p >= .1"))) + 
   ylab("Support for Cancelling Aid") + 
-  xlab("The Influence of Cancelling Aid on Given Interests") + 
+  xlab("Perceived Influence of Cancelling Aid on Given Interests") + 
   theme(axis.text.x = element_text(face="bold"))
 ```
 
@@ -285,8 +297,8 @@ p
 png_save(p,h=500,file="out/medoutrel.png")
 ```
 
-Covariate Balance Between Treatment Groups (Appendix)
-=====================================================
+Covariate Balance Between Treatment Groups (Appendix I)
+=======================================================
 
 ``` r
 pbal <- checkbal(dtlist =list(d.MMR.sub,d.PHL.sub),

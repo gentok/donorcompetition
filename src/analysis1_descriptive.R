@@ -1,7 +1,7 @@
 #' ---
 #' title: "Analysis 1: Descriptive Statistics"
 #' author: "Gento Kato"
-#' date: "June 21, 2019"
+#' date: "November 17, 2019"
 #' ---
 
 #'
@@ -64,7 +64,7 @@ table(d.MMR.sub$treat_China) # Myanmar Cases
 table(d.PHL.sub$treat_China) # Philippines Cases
 
 #'
-#' ## Outcome Variable Distribution (Figure 1)
+#' ## Outcome Variable Distribution (Figure 2)
 #' 
 pd <- data.frame(c = as.factor(rep(c("Myanmar","Philippines"),each=9)),
                  x = as.factor(rep(seq(1,9,1),2)),
@@ -83,7 +83,7 @@ p
 png_save(p, h=400, file="out/outdist.png")
 
 #'
-#' ## Selected Pre-treatment Covariates Distributions (Appendix)
+#' ## Selected Pre-treatment Covariates Distributions (Extra)
 #'
 pd <- data.frame(c = as.factor(rep(c("Myanmar","Philippines"),each=9)),
                  t = factor(rep(rep(c("Threatening",
@@ -116,7 +116,7 @@ p
 png_save(p,h=500,file="out/perrecip.png")
 
 #'
-#' ## Moderator (China Threat) Distributions (Appendix)
+#' ## Moderator (China Threat) Distributions (Figure 6)
 #'
 
 # Drop Cases with Missing Values in Relevant Variables
@@ -127,15 +127,17 @@ d.MMR.sub.mod <- na.omit(d.MMR[,vars])
 d.PHL.sub.mod <- na.omit(d.PHL[,vars])
 
 pd <- data.frame(c = as.factor(rep(c("Myanmar Group","Philippines Group"),each=3)),
-                 x = factor(rep(rep(c("Neither/Not\n Threatened",
+                 x = factor(rep(rep(c("Not\nThreatened/\nNeutral",
                                       "Moderately\n Threatened",
                                       "Highly\n Threatened"),each=1),2),
-                            levels=c("Neither/Not\n Threatened",
+                            levels=c("Not\nThreatened/\nNeutral",
                                      "Moderately\n Threatened",
                                      "Highly\n Threatened")),
                  y = c(table(d.MMR.sub.mod$threat.CHN.3cat)/sum(table(d.MMR.sub.mod$threat.CHN.3cat)),
                        table(d.PHL.sub.mod$threat.CHN.3cat)/sum(table(d.PHL.sub.mod$threat.CHN.3cat)))
 )
+
+pd
 
 p <- ggplot(pd, aes(x=x,y=y)) + 
   geom_col(color="gray50") + 
@@ -151,7 +153,7 @@ p
 png_save(p,h=500,file="out/threatCHN.png")
 
 #'
-#' # Mediator Distributions (Figure 3)
+#' # Mediator Distributions (Figure 4)
 #'
 
 td <- data.frame(c = factor(c(rep("Myanmar",nrow(d.MMR.sub)*4),
@@ -176,7 +178,7 @@ td <- data.frame(c = factor(c(rep("Myanmar",nrow(d.MMR.sub)*4),
 p <- ggplot(td, aes(medval)) + geom_bar(aes(y=..prop.., group=1)) + 
   facet_grid(c~medname) + theme_bw() + 
   ylab("Proportion") + 
-  xlab("The Influence of Cancelling Aid on Given Interests\n(1=Positive; 3=Neutral; 5=Negative)") + 
+  xlab("Perceived Influence of Cancelling Aid on Given Interests\n(1=Positive; 3=Neutral; 5=Negative)") + 
   theme(axis.text.x = element_text(face="bold"),
         strip.text = element_text(face="bold",size=11))
 
@@ -187,7 +189,7 @@ p
 png_save(p,h=500,file="out/meddist.png")
 
 #'
-#' # Relationship b/w Mediator and Outcome
+#' # Relationship b/w Mediator and Outcome (Extra)
 #' 
 
 td <- data.frame(c = factor(c(rep("Myanmar",nrow(d.MMR.sub)*4),
@@ -218,7 +220,7 @@ p <- ggboxplot(td, x = "medval", y = "out",
                      symnum.args = list(cutpoints = c(0, 0.001, 0.01, 0.05, 1), 
                                         symbols = c("p < .001", "p < .01", "p < .05", "p >= .1"))) + 
   ylab("Support for Cancelling Aid") + 
-  xlab("The Influence of Cancelling Aid on Given Interests") + 
+  xlab("Perceived Influence of Cancelling Aid on Given Interests") + 
   theme(axis.text.x = element_text(face="bold"))
 #+ fig.width=8, fig.height=6
 p
@@ -227,7 +229,7 @@ p
 png_save(p,h=500,file="out/medoutrel.png")
 
 #'
-#' # Covariate Balance Between Treatment Groups (Appendix)
+#' # Covariate Balance Between Treatment Groups (Appendix I)
 #' 
 pbal <- checkbal(dtlist =list(d.MMR.sub,d.PHL.sub),
                   dtnames = c("Myanmar","Philippines"))

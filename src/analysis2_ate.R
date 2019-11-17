@@ -1,7 +1,7 @@
 #' ---
 #' title: "Analysis 2: Average Treatment Effect"
 #' author: "Gento Kato"
-#' date: "June 21, 2019"
+#' date: "November 17, 2019"
 #' ---
 
 #' # Preparation
@@ -60,7 +60,7 @@ m0.PHL <- lm(as.numeric(out)~treat_China, data = d.PHL.sub)
 m1.PHL <- lm(update(as.numeric(out)~treat_China,fcv), data = d.PHL.sub)
 
 #'
-#' ### Regression Table (Current Table 2)
+#' ### Regression Table (Appendix III)
 #'
 #+ eval = FALSE
 # Export Table
@@ -78,38 +78,63 @@ adjpval("out/olsres.doc")
 cat(as.character(read_html(paste0(projdir,"/out/olsres.doc"))))
 
 #'
-#' ### Coefficient Plot (Intercept Dropped)
+#' ### Coefficient Plot without Intercept (Figure 3)
 #' 
 
 ftset <- paste0("Note: Estimated by ordinary least square (OLS) regression with robust standard errors.",
                 "\nIntercepts are omitted from the output.",
                 " Myanmar: N = ", nobs(m1.MMR), ". Philippines: N = ", nobs(m1.PHL), ".")
-p <- plot_coef(list(m0.MMR,m1.MMR,m0.PHL,m1.PHL), 
-           vcov.est = "robust", # Stata HC1 Robust SE
-           overlap.names = rep(c(" Baseline Model "," Full Model "),2),
-           overlap.linetype.index = c(1,1),
-           overlap.shape.index = c(17,19),
-           facet.names = rep(c("Myanmar","Philippines"), each=2),
-           drop.intercept = TRUE,
-           custom.variable.names = basevn[-1],
-           title = NULL,
-           custom.footnote = ftset, footnote.caption = TRUE,
-           show.plot = FALSE) + 
+
+tmp0a <- matrix_coefci(m0.MMR, vcov.est="robust")
+tmp0a$mod <- "Treatment Only"
+tmp0a$country <- "Myanmar"
+tmp1a <- matrix_coefci(m1.MMR, vcov.est="robust")
+tmp1a$mod <- "With Covariates"
+tmp1a$country <- "Myanmar"
+tmp0b <- matrix_coefci(m0.PHL, vcov.est="robust")
+tmp0b$mod <- "Treatment Only"
+tmp0b$country <- "Philippines"
+tmp1b <- matrix_coefci(m1.PHL, vcov.est="robust")
+tmp1b$mod <- "With Covariates"
+tmp1b$country <- "Philippines"
+tmp <- rbind(tmp0a,tmp1a,tmp0b,tmp1b)
+tmp$mod <- factor(tmp$mod, levels=unique(tmp$mod))
+tmp$country <- factor(tmp$country, levels=unique(tmp$country))
+tmp$vn <- factor(c(basevn[1:2],basevn,basevn[1:2],basevn),
+                 levels=rev(basevn))
+tmp <- tmp[tmp$vn!="(Intercept)",]
+
+p <- ggplot(tmp, aes(x=vn, y=CF, ymin=lowerCI, ymax=upperCI)) + 
+  geom_hline(aes(yintercept=0), linetype=2, color="red1") + 
+  geom_point() + 
+  geom_errorbar(width=0.3) + 
+  facet_grid(mod~country, scales="free_y", space="free_y", switch = "y") + 
+  coord_flip() + 
+  ylab("Coefficient with 95% Confidence Interval") + xlab(NULL) +
+  #labs(caption=ftset) + 
   theme_bw() + 
   theme(legend.position="bottom", 
         legend.title = element_blank(),
         axis.text.y = element_text(face="bold"),
-        strip.text = element_text(face="bold", size=11),
-        plot.caption = element_text(hjust=0))
+        strip.text.x = element_text(face="bold", size=11),
+        strip.text.y = element_text(face="bold", size=11, angle=180),
+        strip.background.y = element_rect(color="black",fill=NA),
+        strip.placement = "outside",
+        panel.border = element_rect(color="black"),
+        plot.caption = element_text(hjust=-1))
+p <- plot_footnote(p, ftset, fontsize=9, bottom.expand.rate=7, align="right",
+              distance.from.side = 0.02)
 
-#+ fig.width=8, fig.height=6
-p
+
+
+#+ fig.width=9, fig.height=5.5
+grid.draw(p)
 
 #+ eval=FALSE
-png_save(p,w=800,h=600,file="out/olsplot.png")
+png_save(p,w=900,h=550,file="out/olsplot.png")
 
 #'
-#' ## Multinomial Logit
+#' ## Multinomial Logit (Appendix II)
 #' 
 
 # Define Outcome Variable and Drop Missing Values
@@ -141,7 +166,7 @@ m1.PHL <- mlogit(update(mFormula(out ~ 1 | treat_China), fcvml),
                  data = d.PHL.sub.mlogit, reflevel="1")
 
 #'
-#' ### Regression Table (Appendix)
+#' ### Regression Table
 #'
 # Variable Names
 basevn.mlogit <- paste(c("Neither:","Cancel:"), rep(basevn,each=2))
@@ -223,7 +248,7 @@ simu.m1.mlogit$outrec <-
          levels=c("Myanmar","Philippines"))
 
 #'
-#' ### Plot of Predicted Probabilities (Appendix)
+#' ### Plot of Predicted Probabilities (Appendix II)
 #'
 
 # Plot Predicted Probabilities

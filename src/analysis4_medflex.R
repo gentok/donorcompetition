@@ -1,7 +1,7 @@
 #' ---
 #' title: "Analysis 4: Causal Mediation Analysis Using medflex Package"
 #' author: "Gento Kato"
-#' date: "June 21, 2019"
+#' date: "November 17, 2019"
 #' ---
 
 #' # Preparation
@@ -56,7 +56,7 @@ vars <- c("cancel_aid","treat_China","threat","imp","potential",
 d.MMR.sub <- na.omit(d.MMR[,vars])
 d.PHL.sub <- na.omit(d.PHL[,vars])
 
-#' # Joint Causal Mediation Analysis
+#' # Joint Causal Mediation Analysis (Appendix VI)
 #' 
 #' This analysis is based on VanderWeele and Vansteelandt (2013) which discusses 
 #' the estimation of "joint" mediation effect under potential outcome framework.
@@ -67,7 +67,7 @@ d.PHL.sub <- na.omit(d.PHL[,vars])
 library(medflex)
 
 #' 
-#' ## Check Single Mediators 
+#' ## Check Single Mediators (Appendix VI) 
 #' 
 #' Check if the one-by-one mediation analysis looks the same with the 
 #' results from <code>mediation</code> package (it is!).
@@ -176,7 +176,7 @@ m.PHL.sub.effi <- neModel(update(cancel_aid ~ treat_China0 + treat_China1, fcv),
                           family = "gaussian", expData = di.PHL.sub.effi, se = "robust")
 
 #'
-#' ## Joint Causal Mediation Analysis
+#' ## Joint Causal Mediation Analysis (Appendix VI)
 #'
 
 # 2p Mediator and 9p Outcome
@@ -204,10 +204,11 @@ m.PHL.sub <- neModel(update(cancel_aid ~ treat_China0 + treat_China1, fcv),
 summary(m.PHL.sub)
 
 #'
-#' ## Plotting Mediation Analysis Results (Appendix)
+#' ## Plotting Mediation Analysis Results (Appendix VI)
+#'
+#' ### 2p Mediator and 9p Outcome (Appendix VI-A)
 #'
 
-# 2p Mediator and 9p Outcome
 mainls <- list(m.MMR.main.secu,m.MMR.main.econ,m.MMR.main.repu,m.MMR.main.effi,m.MMR.main,
                m.PHL.main.secu,m.PHL.main.econ,m.PHL.main.repu,m.PHL.main.effi,m.PHL.main)
 dmain0 <- as.data.frame(t(sapply(mainls, estrow2, at=2)))
@@ -216,7 +217,7 @@ dmain <- rbind(dmain0,dmain1)
 dmain$pcat <- ifelse(dmain$p10==0,"p >= .1", ifelse(dmain$p05==0,"p < .1","p < .05"))
 dmain$pcat <- factor(dmain$pcat,levels=c("p < .05","p < .1", "p >= .1"))
 dmain$med <- rep(c("Security","Economy","Reputation","Efficacy","JOINT"),4)
-dmain$med <- factor(dmain$med, levels=unique(dmain$med))
+dmain$med <- factor(dmain$med, levels=rev(unique(dmain$med)))
 dmain$eff <- rep(c("Treatment → Outcome",
                    "Treatment → Med. → Out."), each = 10)
 dmain$eff <- factor(dmain$eff, levels=c("Treatment → Med. → Out.",
@@ -224,25 +225,26 @@ dmain$eff <- factor(dmain$eff, levels=c("Treatment → Med. → Out.",
 dmain$country <- rep(rep(c("Myanmar","Philippines"), each=5),2)
 
 captiontxt <- 
-  "Note: Lines represent 95% confidence intervals calculated using robust standard errors. The mediator models
-are estimated with binary mediators and the outcome model is estimated with linear regression through the
-imputation-based apporach used in the 'medflex' R package. 'JOINT' is the joint mediation effect of all mediators."
+"Note: Lines represent 95% confidence intervals calculated using robust standard errors. 
+The mediator models are estimated with binary mediators and the outcome model is estimated 
+with linear regression through the imputation-based apporach used in the 'medflex' R 
+package. 'JOINT' is the joint mediation effect of all mediators."
 
 p <- genplot(dmain, 
              captiontxt = captiontxt,
-             include.eff = c("Treatment → Med. → Out.",
-                             "Treatment → Outcome"), 
-             est.type=c("Av. Mediation Effect",
-                        "Av. Direct Effect"))
+             include.eff = c("Treatment → Med. → Out."), 
+             est.type=c("Av. Mediation Effect"))
 
-#+ fig.width=8, fig.height=5.5
+#+ fig.width=6, fig.height=5.5
 p
 
 #+ eval=FALSE
-png_save(p, w=850, h=550, file=c("out/medflex.med.out.main.plot.png"))
+png_save(p, w=700, h=550, file=c("out/medflex.med.out.main.plot.png"))
 
-#+
-# 5p Mediator and 9p Outcome
+#'
+#' ### 5p Mediator and 9p Outcome (Appendix VI-B)
+#' 
+
 subls <- list(m.MMR.sub.secu,m.MMR.sub.econ,m.MMR.sub.repu,m.MMR.sub.effi,m.MMR.sub,
                m.PHL.sub.secu,m.PHL.sub.econ,m.PHL.sub.repu,m.PHL.sub.effi,m.PHL.sub)
 dsub0 <- as.data.frame(t(sapply(subls, estrow2, at=2)))
@@ -251,7 +253,7 @@ dsub <- rbind(dsub0,dsub1)
 dsub$pcat <- ifelse(dsub$p10==0,"p >= .1", ifelse(dsub$p05==0,"p < .1","p < .05"))
 dsub$pcat <- factor(dsub$pcat,levels=c("p < .05","p < .1", "p >= .1"))
 dsub$med <- rep(c("Security","Economy","Reputation","Efficacy","JOINT"),4)
-dsub$med <- factor(dsub$med, levels=unique(dsub$med))
+dsub$med <- factor(dsub$med, levels=rev(unique(dsub$med)))
 dsub$eff <- rep(c("Treatment → Outcome",
                    "Treatment → Med. → Out."), each = 10)
 dsub$eff <- factor(dsub$eff, levels=c("Treatment → Med. → Out.",
@@ -259,22 +261,21 @@ dsub$eff <- factor(dsub$eff, levels=c("Treatment → Med. → Out.",
 dsub$country <- rep(rep(c("Myanmar","Philippines"), each=5),2)
 
 captiontxt <- 
-  "Note: Lines represent 95% confidence intervals calculated using robust standard errors. The mediator models
-are estimated with 5p mediators and the outcome model is estimated with linear regression through the
-imputation-based apporach used in the 'medflex' R package. 'JOINT' is the joint mediation effect of all mediators."
+  "Note: Lines represent 95% confidence intervals calculated using robust standard errors. 
+The mediator models are estimated with 5p mediators and the outcome model is estimated 
+with linear regression through the imputation-based apporach used in the 'medflex' R 
+package. 'JOINT' is the joint mediation effect of all mediators."
 
 p <- genplot(dsub, 
              captiontxt = captiontxt,
-             include.eff = c("Treatment → Med. → Out.",
-                             "Treatment → Outcome"), 
-             est.type=c("Av. Mediation Effect",
-                        "Av. Direct Effect"))
+             include.eff = c("Treatment → Med. → Out."), 
+             est.type=c("Av. Mediation Effect"))
 
-#+ fig.width=8, fig.height=5.5
+#+ fig.width=7, fig.height=5.5
 p
 
 #+ eval=FALSE
-png_save(p, w=850, h=550, file=c("out/medflex.med.out.sub.plot.png"))
+png_save(p, w=700, h=550, file=c("out/medflex.med.out.sub.plot.png"))
 
 #+ eval=FALSE, echo=FALSE
 # Exporting HTML File

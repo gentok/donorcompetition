@@ -1,15 +1,17 @@
 Analysis 4: Causal Mediation Analysis Using medflex Package
 ================
 Gento Kato
-June 21, 2019
+November 17, 2019
 
 -   [Preparation](#preparation)
--   [Joint Causal Mediation Analysis](#joint-causal-mediation-analysis)
-    -   [Check Single Mediators](#check-single-mediators)
+-   [Joint Causal Mediation Analysis (Appendix VI)](#joint-causal-mediation-analysis-appendix-vi)
+    -   [Check Single Mediators (Appendix VI)](#check-single-mediators-appendix-vi)
         -   [Myanmar](#myanmar)
         -   [Philippines](#philippines)
-    -   [Joint Causal Mediation Analysis](#joint-causal-mediation-analysis-1)
-    -   [Plotting Mediation Analysis Results](#plotting-mediation-analysis-results)
+    -   [Joint Causal Mediation Analysis (Appendix VI)](#joint-causal-mediation-analysis-appendix-vi-1)
+    -   [Plotting Mediation Analysis Results (Appendix VI)](#plotting-mediation-analysis-results-appendix-vi)
+        -   [2p Mediator and 9p Outcome (Appendix VI-A)](#p-mediator-and-9p-outcome-appendix-vi-a)
+        -   [5p Mediator and 9p Outcome (Appendix VI-B)](#p-mediator-and-9p-outcome-appendix-vi-b)
 
 Preparation
 ===========
@@ -66,8 +68,8 @@ d.MMR.sub <- na.omit(d.MMR[,vars])
 d.PHL.sub <- na.omit(d.PHL[,vars])
 ```
 
-Joint Causal Mediation Analysis
-===============================
+Joint Causal Mediation Analysis (Appendix VI)
+=============================================
 
 This analysis is based on VanderWeele and Vansteelandt (2013) which discusses the estimation of "joint" mediation effect under potential outcome framework. <code>mediation</code> package does not provide this functionality, thus <code>medflex</code> packages is used here.
 
@@ -75,8 +77,11 @@ This analysis is based on VanderWeele and Vansteelandt (2013) which discusses th
 library(medflex)
 ```
 
-Check Single Mediators
-----------------------
+    ## medflex 0.6-4: Flexible Mediation Analysis Using Natural Effect Models
+    ## Please report bugs here: github.com/jmpsteen/medflex/issues
+
+Check Single Mediators (Appendix VI)
+------------------------------------
 
 Check if the one-by-one mediation analysis looks the same with the results from <code>mediation</code> package (it is!).
 
@@ -184,8 +189,8 @@ m.PHL.sub.effi <- neModel(update(cancel_aid ~ treat_China0 + treat_China1, fcv),
                           family = "gaussian", expData = di.PHL.sub.effi, se = "robust")
 ```
 
-Joint Causal Mediation Analysis
--------------------------------
+Joint Causal Mediation Analysis (Appendix VI)
+---------------------------------------------
 
 ``` r
 # 2p Mediator and 9p Outcome
@@ -329,11 +334,12 @@ summary(m.PHL.sub)
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Plotting Mediation Analysis Results
------------------------------------
+Plotting Mediation Analysis Results (Appendix VI)
+-------------------------------------------------
+
+### 2p Mediator and 9p Outcome (Appendix VI-A)
 
 ``` r
-# 2p Mediator and 9p Outcome
 mainls <- list(m.MMR.main.secu,m.MMR.main.econ,m.MMR.main.repu,m.MMR.main.effi,m.MMR.main,
                m.PHL.main.secu,m.PHL.main.econ,m.PHL.main.repu,m.PHL.main.effi,m.PHL.main)
 dmain0 <- as.data.frame(t(sapply(mainls, estrow2, at=2)))
@@ -342,7 +348,7 @@ dmain <- rbind(dmain0,dmain1)
 dmain$pcat <- ifelse(dmain$p10==0,"p >= .1", ifelse(dmain$p05==0,"p < .1","p < .05"))
 dmain$pcat <- factor(dmain$pcat,levels=c("p < .05","p < .1", "p >= .1"))
 dmain$med <- rep(c("Security","Economy","Reputation","Efficacy","JOINT"),4)
-dmain$med <- factor(dmain$med, levels=unique(dmain$med))
+dmain$med <- factor(dmain$med, levels=rev(unique(dmain$med)))
 dmain$eff <- rep(c("Treatment → Outcome",
                    "Treatment → Med. → Out."), each = 10)
 dmain$eff <- factor(dmain$eff, levels=c("Treatment → Med. → Out.",
@@ -350,16 +356,15 @@ dmain$eff <- factor(dmain$eff, levels=c("Treatment → Med. → Out.",
 dmain$country <- rep(rep(c("Myanmar","Philippines"), each=5),2)
 
 captiontxt <- 
-  "Note: Lines represent 95% confidence intervals calculated using robust standard errors. The mediator models
-are estimated with binary mediators and the outcome model is estimated with linear regression through the
-imputation-based apporach used in the 'medflex' R package. 'JOINT' is the joint mediation effect of all mediators."
+"Note: Lines represent 95% confidence intervals calculated using robust standard errors. 
+The mediator models are estimated with binary mediators and the outcome model is estimated 
+with linear regression through the imputation-based apporach used in the 'medflex' R 
+package. 'JOINT' is the joint mediation effect of all mediators."
 
 p <- genplot(dmain, 
              captiontxt = captiontxt,
-             include.eff = c("Treatment → Med. → Out.",
-                             "Treatment → Outcome"), 
-             est.type=c("Av. Mediation Effect",
-                        "Av. Direct Effect"))
+             include.eff = c("Treatment → Med. → Out."), 
+             est.type=c("Av. Mediation Effect"))
 ```
 
 ``` r
@@ -369,11 +374,12 @@ p
 ![](analysis4_medflex_files/figure-markdown_github/unnamed-chunk-7-1.png)
 
 ``` r
-png_save(p, w=850, h=650, file=c("out/medflex.med.out.main.plot.png"))
+png_save(p, w=700, h=550, file=c("out/medflex.med.out.main.plot.png"))
 ```
 
+### 5p Mediator and 9p Outcome (Appendix VI-B)
+
 ``` r
-# 5p Mediator and 9p Outcome
 subls <- list(m.MMR.sub.secu,m.MMR.sub.econ,m.MMR.sub.repu,m.MMR.sub.effi,m.MMR.sub,
                m.PHL.sub.secu,m.PHL.sub.econ,m.PHL.sub.repu,m.PHL.sub.effi,m.PHL.sub)
 dsub0 <- as.data.frame(t(sapply(subls, estrow2, at=2)))
@@ -382,7 +388,7 @@ dsub <- rbind(dsub0,dsub1)
 dsub$pcat <- ifelse(dsub$p10==0,"p >= .1", ifelse(dsub$p05==0,"p < .1","p < .05"))
 dsub$pcat <- factor(dsub$pcat,levels=c("p < .05","p < .1", "p >= .1"))
 dsub$med <- rep(c("Security","Economy","Reputation","Efficacy","JOINT"),4)
-dsub$med <- factor(dsub$med, levels=unique(dsub$med))
+dsub$med <- factor(dsub$med, levels=rev(unique(dsub$med)))
 dsub$eff <- rep(c("Treatment → Outcome",
                    "Treatment → Med. → Out."), each = 10)
 dsub$eff <- factor(dsub$eff, levels=c("Treatment → Med. → Out.",
@@ -390,16 +396,15 @@ dsub$eff <- factor(dsub$eff, levels=c("Treatment → Med. → Out.",
 dsub$country <- rep(rep(c("Myanmar","Philippines"), each=5),2)
 
 captiontxt <- 
-  "Note: Lines represent 95% confidence intervals calculated using robust standard errors. The mediator models
-are estimated with 5p mediators and the outcome model is estimated with linear regression through the
-imputation-based apporach used in the 'medflex' R package. 'JOINT' is the joint mediation effect of all mediators."
+  "Note: Lines represent 95% confidence intervals calculated using robust standard errors. 
+The mediator models are estimated with 5p mediators and the outcome model is estimated 
+with linear regression through the imputation-based apporach used in the 'medflex' R 
+package. 'JOINT' is the joint mediation effect of all mediators."
 
 p <- genplot(dsub, 
              captiontxt = captiontxt,
-             include.eff = c("Treatment → Med. → Out.",
-                             "Treatment → Outcome"), 
-             est.type=c("Av. Mediation Effect",
-                        "Av. Direct Effect"))
+             include.eff = c("Treatment → Med. → Out."), 
+             est.type=c("Av. Mediation Effect"))
 ```
 
 ``` r
@@ -409,5 +414,5 @@ p
 ![](analysis4_medflex_files/figure-markdown_github/unnamed-chunk-10-1.png)
 
 ``` r
-png_save(p, w=850, h=650, file=c("out/medflex.med.out.sub.plot.png"))
+png_save(p, w=700, h=550, file=c("out/medflex.med.out.sub.plot.png"))
 ```
