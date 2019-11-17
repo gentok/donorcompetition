@@ -9,7 +9,6 @@ out/old/
 src/processing/*.RData
 
 # File extensions
-*.html
 *.knit.md
 *.spin.R
 *.spin.Rmd
