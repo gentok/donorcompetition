@@ -12,13 +12,13 @@ Previous research suggests that ideology, material interests, and moral values d
 
 ### Dataset
 
-* [Questionnaire](data/Questionnaire_English.pdf). Questionaire (translated to English) of experiment. The dataset contains only converted variables, so check Codebook for practical use.
+* [Questionnaire](data/PQR_Questionnaire_Eng_Jpn.pdf). Questionnaire (Original Japanese and English Translation) of experiment. The dataset contains only converted variables, so check Codebook for practical use.
 
 * [Codebook (4/12/2019)](src/data_recode.md). Also in [PDF](src/data_recode.pdf). The R code used to transform variables can be checked [here](src/data_recode.R).
 
-* Dataset in CSV format. Run in R: <br> <code>d <- read.csv("https://raw.githubusercontent.com/gentok/donorexp/master/data/donorexp.csv")</code> <br> (*This works after the repository becoming public*)
+* Dataset in CSV format. Run in R: <br> <code>d <- read.csv("https://raw.githubusercontent.com/gentok/donorexp/master/data/donorexp.csv")</code> <br>
 
-* Dataset in RDS format. Run in R: <br> <code>d <- readRDS("https://raw.githubusercontent.com/gentok/donorexp/master/data/donorexp.rds")</code> <br> (*This works after the repository becoming public*)
+* Dataset in RDS format. Run in R: <br> <code>d <- readRDS("https://raw.githubusercontent.com/gentok/donorexp/master/data/donorexp.rds")</code> <br>
 
 ### Code Files (in R)
 

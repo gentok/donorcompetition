@@ -1,18 +1,18 @@
 Analysis 2: Average Treatment Effect
 ================
 Gento Kato
-November 17, 2019
+November 20, 2019
 
 -   [Preparation](#preparation)
 -   [Average Treatment Effect](#average-treatment-effect)
     -   [Simple OLS](#simple-ols)
-        -   [Regression Table (Appendix III)](#regression-table-appendix-iii)
+        -   [Regression Table (Appendix IV)](#regression-table-appendix-iv)
         -   [Coefficient Plot without Intercept (Figure 3)](#coefficient-plot-without-intercept-figure-3)
-    -   [Multinomial Logit (Appendix II)](#multinomial-logit-appendix-ii)
+    -   [Multinomial Logit (Appendix III)](#multinomial-logit-appendix-iii)
         -   [Regression Table](#regression-table)
         -   [Table with Only ATE](#table-with-only-ate)
         -   [Simulation of Predicted Probability](#simulation-of-predicted-probability)
-        -   [Plot of Predicted Probabilities (Appendix II)](#plot-of-predicted-probabilities-appendix-ii)
+        -   [Plot of Predicted Probabilities (Appendix III)](#plot-of-predicted-probabilities-appendix-iii)
 
 Preparation
 ===========
@@ -76,7 +76,7 @@ m0.PHL <- lm(as.numeric(out)~treat_China, data = d.PHL.sub)
 m1.PHL <- lm(update(as.numeric(out)~treat_China,fcv), data = d.PHL.sub)
 ```
 
-### Regression Table (Appendix III)
+### Regression Table (Appendix IV)
 
 ``` r
 # Export Table
@@ -694,8 +694,8 @@ grid.draw(p)
 png_save(p,w=900,h=550,file="out/olsplot.png")
 ```
 
-Multinomial Logit (Appendix II)
--------------------------------
+Multinomial Logit (Appendix III)
+--------------------------------
 
 ``` r
 # Define Outcome Variable and Drop Missing Values
@@ -1486,7 +1486,7 @@ simu.m1.mlogit$outrec <-
          levels=c("Myanmar","Philippines"))
 ```
 
-### Plot of Predicted Probabilities (Appendix II)
+### Plot of Predicted Probabilities (Appendix III)
 
 ``` r
 # Plot Predicted Probabilities

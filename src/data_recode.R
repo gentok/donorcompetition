@@ -1,7 +1,7 @@
 #' ---
 #' title: "Donor Competition Experiment Dataset"
 #' author: "Gento Kato"
-#' date: "Apr 11, 2019"
+#' date: "November 20, 2019"
 #' ---
 
 
@@ -47,7 +47,7 @@ d <- data.frame(id = do$record_id)
 #' * *Values*: Raw values
 
 #+ echo = FALSE
-kable(t(summary(d$id)))
+kable(t(summary(d$id)),align="c")
 
 #' # Pre-treatment Covariates
 #' 
@@ -64,7 +64,7 @@ kable(t(summary(d$id)))
 d$issint <- ifelse(do$q01!=9,3-do$q01,NA)
 d$issint[d$issint==-1] <- 0
 d$issint <- as.factor(d$issint)
-kable(t(table(d$issint)))
+kable(t(table(d$issint)),align="c")
 
 #' ## <code>threat.MMR</code>
 #' * *Original*: <code>q04_8</code>
@@ -81,7 +81,7 @@ d$threat.MMR <- as.factor(ifelse(do$q04_8!=9,
                                         ifelse(do$q04_8%in%c(4,5),2,0)
                                  ),NA
 ))
-kable(t(table(d$threat.MMR)))
+kable(t(table(d$threat.MMR)),align="c")
 
 #' ## <code>threat.PHL</code>
 #' * *Original*: <code>q04_3</code>
@@ -98,7 +98,7 @@ d$threat.PHL <- as.factor(ifelse(do$q04_3!=9,
                                         ifelse(do$q04_3%in%c(4,5),2,0)
                                  ),NA
 ))
-kable(t(table(d$threat.PHL)))
+kable(t(table(d$threat.PHL)),align="c")
 
 
 #' ## <code>imp.MMR</code>
@@ -116,7 +116,7 @@ d$imp.MMR <- as.factor(ifelse(do$q05_8!=9,
                                      ifelse(do$q05_8%in%c(4,5),2,0)
                               ),NA
 ))
-kable(t(table(d$imp.MMR)))
+kable(t(table(d$imp.MMR)),align="c")
 
 #' ## <code>imp.PHL</code>
 #' * *Original*: <code>q05_3</code>
@@ -133,7 +133,7 @@ d$imp.PHL <- as.factor(ifelse(do$q05_3!=9,
                                      ifelse(do$q05_3%in%c(4,5),2,0)
                               ),NA
 ))
-kable(t(table(d$imp.PHL)))
+kable(t(table(d$imp.PHL)),align="c")
 
 #' ## <code>odaimp</code>
 #' * *Original*: <code>q06</code>
@@ -146,7 +146,7 @@ kable(t(table(d$imp.PHL)))
 ## ODA Importance (1=Important, 0=Not)
 #table(do$q06)
 d$odaimp <- ifelse(do$q06!=9,ifelse(do$q06%in%c(1,2,3),1,0),NA)
-kable(t(table(d$odaimp)))
+kable(t(table(d$odaimp)),align="c")
 
 #' ## <code>potential.MMR</code>
 #' * *Original*: <code>q07_5</code>
@@ -163,7 +163,7 @@ d$potential.MMR <- as.factor(ifelse(do$q07_5!=9,
                                            ifelse(do$q07_5%in%c(4,5),2,0)
                                     ),NA
 ))
-kable(t(table(d$potential.MMR)))
+kable(t(table(d$potential.MMR)),align="c")
 
 #' ## <code>potential.PHL</code>
 #' * *Original*: <code>q07_3</code>
@@ -180,7 +180,7 @@ d$potential.PHL <- as.factor(ifelse(do$q07_3!=9,
                                            ifelse(do$q07_3%in%c(4,5),2,0)
                                     ),NA
 ))
-kable(t(table(d$potential.PHL)))
+kable(t(table(d$potential.PHL)),align="c")
 
 #' # Pre-treatment Moderator
 #' 
@@ -196,7 +196,7 @@ kable(t(table(d$potential.PHL)))
 ## China Threat Perception (Binary)
 #table(do$q04_2) # CHN
 d$threat.CHN <- ifelse(do$q04_2!=9,ifelse(do$q04_2 %in% c(4,5),1,0),NA)
-kable(t(table(d$threat.CHN)))
+kable(t(table(d$threat.CHN)),align="c")
 
 #' ## <code>threat.CHN.3cat</code>
 #' * *Original*: <code>q04_2</code>
@@ -212,7 +212,7 @@ kable(t(table(d$threat.CHN)))
 d$threat.CHN.3cat <- d$threat.CHN
 d$threat.CHN.3cat[do$q04_2==5] <- 2
 d$threat.CHN.3cat <- as.factor(d$threat.CHN.3cat)
-kable(t(table(d$threat.CHN)))
+kable(t(table(d$threat.CHN)),align="c")
 
 #' # Treatment Variables
 #' 
@@ -223,7 +223,7 @@ kable(t(table(d$threat.CHN)))
 
 #+ echo = FALSE
 d$treatment <- do$pat_q08_q11
-kable(t(table(d$treatment)))
+kable(t(table(d$treatment)),align="c")
 
 #' ## <code>treat_China</code>
 #' * *Original*: <code>pat_q08_q11</code>
@@ -232,7 +232,7 @@ kable(t(table(d$treatment)))
 
 #+ echo = FALSE
 d$treat_China <- ifelse(do$pat_q08_q11 %in% c(2,3,4),1,0)
-kable(t(table(d$treat_China)))
+kable(t(table(d$treat_China)),align="c")
 
 #' ## <code>treat_MMR</code>
 #' * *Original*: <code>pat_q08_q11</code>
@@ -241,7 +241,7 @@ kable(t(table(d$treat_China)))
 
 #+ echo = FALSE
 d$treat_MMR <- ifelse(do$pat_q08_q11 %in% c(1,2),1,0)   
-kable(t(table(d$treat_MMR)))
+kable(t(table(d$treat_MMR)),align="c")
 
 #' ## <code>treat_PHL</code>
 #' * *Original*: <code>pat_q08_q11</code>
@@ -250,7 +250,7 @@ kable(t(table(d$treat_MMR)))
 
 #+ echo = FALSE
 d$treat_PHL <- ifelse(do$pat_q08_q11 %in% c(3,4,5,6),1,0)   
-kable(t(table(d$treat_PHL)))
+kable(t(table(d$treat_PHL)),align="c")
 
 #' # Mediator Variables
 #' 
@@ -266,7 +266,7 @@ kable(t(table(d$treat_PHL)))
 
 #+ echo = FALSE
 d$med_econ <- as.factor(ifelse(do$q09a!=9,6 - do$q09a,NA)) 
-kable(t(table(d$med_econ)))
+kable(t(table(d$med_econ)),align="c")
 
 #' ## <code>med_secu</code>
 #' * *Original*: <code>q09b</code>
@@ -280,7 +280,7 @@ kable(t(table(d$med_econ)))
 
 #+ echo = FALSE
 d$med_secu <- as.factor(ifelse(do$q09b!=9,6 - do$q09b,NA)) 
-kable(t(table(d$med_secu)))
+kable(t(table(d$med_secu)),align="c")
 
 #' ## <code>med_repu</code>
 #' * *Original*: <code>q09c</code>
@@ -294,7 +294,7 @@ kable(t(table(d$med_secu)))
 
 #+ echo = FALSE
 d$med_repu <- as.factor(ifelse(do$q09c!=9,6 - do$q09c,NA)) 
-kable(t(table(d$med_repu)))
+kable(t(table(d$med_repu)),align="c")
 
 #' ## <code>med_effi</code>
 #' * *Original*: <code>q09d</code>
@@ -308,7 +308,7 @@ kable(t(table(d$med_repu)))
 
 #+ echo = FALSE
 d$med_effi <- as.factor(ifelse(do$q09d!=9,do$q09d,NA))
-kable(t(table(d$med_effi)))
+kable(t(table(d$med_effi)),align="c")
 
 #' # Outcome Variable
 #' 
@@ -340,7 +340,7 @@ d$cancel_aid <- ifelse(do$q10==1,
                        )
 )
 d$cancel_aid <- as.factor(d$cancel_aid)
-kable(t(table(d$cancel_aid)))
+kable(t(table(d$cancel_aid)),align="c")
 
 #' ## <code>cancel_aid_3cat</code>
 #' * *Original*: <code>q10</code>
@@ -355,7 +355,7 @@ kable(t(table(d$cancel_aid)))
 d$cancel_aid_3cat <- as.factor(ifelse(do$q10!=9,4-do$q10,NA))
 #d$cancel_aid_3cat[do$q10sq2==1] <- 3
 #d$cancel_aid_3cat[do$q10sq2==2] <- 1
-kable(t(table(d$cancel_aid_3cat)))
+kable(t(table(d$cancel_aid_3cat)),align="c")
 
 #' ## <code>cancel_aid_2cat</code>
 #' * *Original*: <code>q10</code>
@@ -368,7 +368,7 @@ kable(t(table(d$cancel_aid_3cat)))
 # Outcome (Binary Scale. Cancel/DK=1, Keep=0)
 d$cancel_aid_2cat <- ifelse(do$q10!=9,ifelse(do$q10==3,0,1),NA)
 #d$cancel_aid_2cat[do$q10sq2==2] <- 0
-kable(t(table(d$cancel_aid_2cat)))
+kable(t(table(d$cancel_aid_2cat)),align="c")
 
 #' # Demographic and Ideology Variables
 #' 
@@ -381,7 +381,7 @@ kable(t(table(d$cancel_aid_2cat)))
 ## Gender (Female)
 #table(do$f01)
 d$fem <- ifelse(do$f01==2,1,0)
-kable(t(table(d$fem)))
+kable(t(table(d$fem)),align="c")
 
 #' ## <code>age</code>
 #' * *Original*: <code>f02</code>
@@ -391,7 +391,7 @@ kable(t(table(d$fem)))
 #+ echo = FALSE
 ## Age
 d$age <- do$f02
-kable(t(summary(d$age)))
+kable(t(summary(d$age)),align="c")
 
 ## Education (Turns Out Not to be Related with Mediators)
 #table(do$f04)
@@ -407,7 +407,7 @@ kable(t(summary(d$age)))
 ## Right-wing Ideology (Binary)
 #table(do$q25)
 d$right <- ifelse(do$q25==99,NA,ifelse(do$q25%in%c(6,7,8,9,10),1,0))
-kable(t(table(d$right)))
+kable(t(table(d$right)),align="c")
 
 #' ## <code>ide3</code>
 #' * *Original*: <code>q25</code>
@@ -423,18 +423,19 @@ kable(t(table(d$right)))
 d$ide3 <- d$right*2
 d$ide3[do$q25==5] <- 1
 d$ide3 <- as.factor(d$ide3)
-kable(t(table(d$ide3)))
+kable(t(table(d$ide3)),align="c")
 
-#' # Identifier of Compliers
+#' # Compliers
 #' 
 #' ## <code>comply</code>
 #' * *Original*: <code>q12</code>, <code>q24</code>
-#' * *Description*: Identifier of compliers. 
+#' * *Description*: Compliers and Non-compliers. 
 #' * *Values*: 1 Compliers; Not-1 Non-compliers
 
 #+ echo = FALSE
 d$comply <- do$comply
-kable(t(table(d$comply)))
+kable(t(table(d$comply)),align="c")
+
 # Drop Cases with missing values
 #d <- d[do$comply==1,]
 

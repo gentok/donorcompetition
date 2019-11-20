@@ -1,7 +1,7 @@
 #' ---
 #' title: "Analysis 4: Causal Mediation Analysis Using medflex Package"
 #' author: "Gento Kato"
-#' date: "November 17, 2019"
+#' date: "November 20, 2019"
 #' ---
 
 #' # Preparation
@@ -56,7 +56,7 @@ vars <- c("cancel_aid","treat_China","threat","imp","potential",
 d.MMR.sub <- na.omit(d.MMR[,vars])
 d.PHL.sub <- na.omit(d.PHL[,vars])
 
-#' # Joint Causal Mediation Analysis (Appendix VI)
+#' # Joint Causal Mediation Analysis (Appendix VIII)
 #' 
 #' This analysis is based on VanderWeele and Vansteelandt (2013) which discusses 
 #' the estimation of "joint" mediation effect under potential outcome framework.
@@ -67,7 +67,7 @@ d.PHL.sub <- na.omit(d.PHL[,vars])
 library(medflex)
 
 #' 
-#' ## Check Single Mediators (Appendix VI) 
+#' ## Check Single Mediators (Appendix VIII) 
 #' 
 #' Check if the one-by-one mediation analysis looks the same with the 
 #' results from <code>mediation</code> package (it is!).
@@ -176,7 +176,7 @@ m.PHL.sub.effi <- neModel(update(cancel_aid ~ treat_China0 + treat_China1, fcv),
                           family = "gaussian", expData = di.PHL.sub.effi, se = "robust")
 
 #'
-#' ## Joint Causal Mediation Analysis (Appendix VI)
+#' ## Joint Causal Mediation Analysis (Appendix VIII)
 #'
 
 # 2p Mediator and 9p Outcome
@@ -204,9 +204,9 @@ m.PHL.sub <- neModel(update(cancel_aid ~ treat_China0 + treat_China1, fcv),
 summary(m.PHL.sub)
 
 #'
-#' ## Plotting Mediation Analysis Results (Appendix VI)
+#' ## Plotting Mediation Analysis Results (Appendix VIII)
 #'
-#' ### 2p Mediator and 9p Outcome (Appendix VI-A)
+#' ### 2p Mediator and 9p Outcome (Appendix VIII-A)
 #'
 
 mainls <- list(m.MMR.main.secu,m.MMR.main.econ,m.MMR.main.repu,m.MMR.main.effi,m.MMR.main,
@@ -218,10 +218,10 @@ dmain$pcat <- ifelse(dmain$p10==0,"p >= .1", ifelse(dmain$p05==0,"p < .1","p < .
 dmain$pcat <- factor(dmain$pcat,levels=c("p < .05","p < .1", "p >= .1"))
 dmain$med <- rep(c("Security","Economy","Reputation","Efficacy","JOINT"),4)
 dmain$med <- factor(dmain$med, levels=rev(unique(dmain$med)))
-dmain$eff <- rep(c("Treatment → Outcome",
-                   "Treatment → Med. → Out."), each = 10)
-dmain$eff <- factor(dmain$eff, levels=c("Treatment → Med. → Out.",
-                                        "Treatment → Outcome"))
+dmain$eff <- rep(c("Treatment -> Outcome",
+                   "Treatment -> Med. -> Out."), each = 10)
+dmain$eff <- factor(dmain$eff, levels=c("Treatment -> Med. -> Out.",
+                                        "Treatment -> Outcome"))
 dmain$country <- rep(rep(c("Myanmar","Philippines"), each=5),2)
 
 captiontxt <- 
@@ -232,7 +232,7 @@ package. 'JOINT' is the joint mediation effect of all mediators."
 
 p <- genplot(dmain, 
              captiontxt = captiontxt,
-             include.eff = c("Treatment → Med. → Out."), 
+             include.eff = c("Treatment -> Med. -> Out."), 
              est.type=c("Av. Mediation Effect"))
 
 #+ fig.width=6, fig.height=5.5
@@ -242,7 +242,7 @@ p
 png_save(p, w=700, h=550, file=c("out/medflex.med.out.main.plot.png"))
 
 #'
-#' ### 5p Mediator and 9p Outcome (Appendix VI-B)
+#' ### 5p Mediator and 9p Outcome (Appendix VIII-B)
 #' 
 
 subls <- list(m.MMR.sub.secu,m.MMR.sub.econ,m.MMR.sub.repu,m.MMR.sub.effi,m.MMR.sub,
@@ -254,10 +254,10 @@ dsub$pcat <- ifelse(dsub$p10==0,"p >= .1", ifelse(dsub$p05==0,"p < .1","p < .05"
 dsub$pcat <- factor(dsub$pcat,levels=c("p < .05","p < .1", "p >= .1"))
 dsub$med <- rep(c("Security","Economy","Reputation","Efficacy","JOINT"),4)
 dsub$med <- factor(dsub$med, levels=rev(unique(dsub$med)))
-dsub$eff <- rep(c("Treatment → Outcome",
-                   "Treatment → Med. → Out."), each = 10)
-dsub$eff <- factor(dsub$eff, levels=c("Treatment → Med. → Out.",
-                                        "Treatment → Outcome"))
+dsub$eff <- rep(c("Treatment -> Outcome",
+                   "Treatment -> Med. -> Out."), each = 10)
+dsub$eff <- factor(dsub$eff, levels=c("Treatment -> Med. -> Out.",
+                                        "Treatment -> Outcome"))
 dsub$country <- rep(rep(c("Myanmar","Philippines"), each=5),2)
 
 captiontxt <- 
@@ -268,7 +268,7 @@ package. 'JOINT' is the joint mediation effect of all mediators."
 
 p <- genplot(dsub, 
              captiontxt = captiontxt,
-             include.eff = c("Treatment → Med. → Out."), 
+             include.eff = c("Treatment -> Med. -> Out."), 
              est.type=c("Av. Mediation Effect"))
 
 #+ fig.width=7, fig.height=5.5

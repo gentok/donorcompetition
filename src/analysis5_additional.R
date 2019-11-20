@@ -1,7 +1,7 @@
 #' ---
 #' title: "Analysis 5: Additional Checks"
 #' author: "Gento Kato"
-#' date: "November 17, 2019"
+#' date: "November 20, 2019"
 #' ---
 
 #' # Preparation
@@ -46,7 +46,7 @@ nrow(d.MMR)
 nrow(d.PHL)
 
 #'
-#' # Testing the difference between Myanmar and Philippines (Extra)
+#' # Testing the difference between Myanmar and Philippines (Appendix V)
 #'
 #'
 #' Load Mediation analysis results (Generated in Analysis 3 Codes)
@@ -107,7 +107,7 @@ grid.draw(p)
 png_save(p,w=850,h=500,file="out/nodifacme.png")
 
 #'
-#' # Mediation Analysis with Myanmar and Philippines Conditions Combined (Extra)
+#' # Mediation Analysis with Myanmar and Philippines Conditions Combined (Appendix VI)
 #'
 
 # Update Control Variable Formula to Include Target Country
@@ -161,9 +161,9 @@ quasi-Bayesian Monte Carlo method based on a normal approximation. We use the 'm
 # W/O Direct Effect
 p <- genplot(med.out.main.data,
              captiontxt=captiontxt,
-             include.eff = c("Treatment → Mediator",
-                             "Mediator → Outcome",
-                             "Treatment → Med. → Out."),
+             include.eff = c("Treatment -> Mediator",
+                             "Mediator -> Outcome",
+                             "Treatment -> Med. -> Out."),
              est.type = c("Logit Coefficient",
                           "OLS Coefficient",
                           "Av. Mediation Effect")) 
@@ -178,10 +178,10 @@ png_save(p, w=850, h=550, file=c("out/med.out.ALL.main.plot.woDE.png"))
 # W/ Direct Effect
 p <- genplot(med.out.main.data,
              captiontxt=captiontxt,
-             include.eff = c("Treatment → Mediator",
-                             "Mediator → Outcome",
-                             "Treatment → Med. → Out.",
-                             "Treatment → Outcome"),
+             include.eff = c("Treatment -> Mediator",
+                             "Mediator -> Outcome",
+                             "Treatment -> Med. -> Out.",
+                             "Treatment -> Outcome"),
              est.type = c("Logit Coefficient",
                           "OLS Coefficient",
                           "Av. Mediation Effect",
@@ -211,9 +211,9 @@ quasi-Bayesian Monte Carlo method based on a normal approximation. We use the 'm
 # W/O Direct Effect
 p <- genplot(med.out.sub.data,
              captiontxt=captiontxt,
-             include.eff = c("Treatment → Mediator",
-                             "Mediator → Outcome",
-                             "Treatment → Med. → Out."),
+             include.eff = c("Treatment -> Mediator",
+                             "Mediator -> Outcome",
+                             "Treatment -> Med. -> Out."),
              est.type = c("Logit Coefficient",
                           "OLS Coefficient",
                           "Av. Mediation Effect")) 
@@ -228,10 +228,10 @@ png_save(p, w=850, h=550, file=c("out/med.out.ALL.sub.plot.woDE.png"))
 # W/ Direct Effect
 p <- genplot(med.out.sub.data,
              captiontxt=captiontxt,
-             include.eff = c("Treatment → Mediator",
-                             "Mediator → Outcome",
-                             "Treatment → Med. → Out.",
-                             "Treatment → Outcome"),
+             include.eff = c("Treatment -> Mediator",
+                             "Mediator -> Outcome",
+                             "Treatment -> Med. -> Out.",
+                             "Treatment -> Outcome"),
              est.type = c("Logit Coefficient",
                           "OLS Coefficient",
                           "Av. Mediation Effect",

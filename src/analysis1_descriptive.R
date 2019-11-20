@@ -1,7 +1,7 @@
 #' ---
 #' title: "Analysis 1: Descriptive Statistics"
 #' author: "Gento Kato"
-#' date: "November 17, 2019"
+#' date: "November 20, 2019"
 #' ---
 
 #'
@@ -229,7 +229,7 @@ p
 png_save(p,h=500,file="out/medoutrel.png")
 
 #'
-#' # Covariate Balance Between Treatment Groups (Appendix I)
+#' # Covariate Balance Between Treatment Groups (Appendix II)
 #' 
 pbal <- checkbal(dtlist =list(d.MMR.sub,d.PHL.sub),
                   dtnames = c("Myanmar","Philippines"))

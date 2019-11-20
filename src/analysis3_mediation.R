@@ -1,7 +1,7 @@
 #' ---
 #' title: "Analysis 3: Causal Mediation Analysis"
 #' author: "Gento Kato"
-#' date: "November 17, 2019"
+#' date: "November 20, 2019"
 #' ---
 
 #' # Preparation
@@ -71,7 +71,7 @@ med.out.PHL.main <- gen.med.out(d.PHL,"cancel_aid",1000,
                                 models=c("logit","gaussian"),
                                 medcats=2)
 #'
-#' ## Simple Mediation with 5-cat Mediators (Mediation Model is OLS) (Appendix V)
+#' ## Simple Mediation with 5-cat Mediators (Mediation Model is OLS) (Appendix VII)
 #' 
 #+ eval=FALSE
 med.out.MMR.sub <- gen.med.out(d.MMR,"cancel_aid",1000,
@@ -226,7 +226,7 @@ med.mod2.out.PHL.main.3 <- gen.med.out(d.PHL,"cancel_aid",1000,
                                        modvar="threat.CHN.3cat",
                                        modfix=2)
 
-#' ## Moderated Mediation with 5-cat Mediators (Mediation Model is OLS) and 3-cat Moderator (China Threat) (Appendix VII)
+#' ## Moderated Mediation with 5-cat Mediators (Mediation Model is OLS) and 3-cat Moderator (China Threat) (Appendix IX)
 
 #+ eval=FALSE
 # Moderator = 0
@@ -325,9 +325,9 @@ quasi-Bayesian Monte Carlo method based on a normal approximation. We use the 'm
 # W/O Direct Effect
 p <- genplot(med.out.main.data,
              captiontxt=captiontxt,
-             include.eff = c("Treatment → Mediator",
-                             "Mediator → Outcome",
-                             "Treatment → Med. → Out."),
+             include.eff = c("Treatment -> Mediator",
+                             "Mediator -> Outcome",
+                             "Treatment -> Med. -> Out."),
              est.type = c("Logit Coefficient",
                           "OLS Coefficient",
                           "Av. Mediation Effect")) 
@@ -342,10 +342,10 @@ png_save(p, w=850, h=550, file=c("out/med.out.main.plot.woDE.png"))
 # W/ Direct Effect
 p <- genplot(med.out.main.data,
              captiontxt=captiontxt,
-             include.eff = c("Treatment → Mediator",
-                             "Mediator → Outcome",
-                             "Treatment → Med. → Out.",
-                             "Treatment → Outcome"),
+             include.eff = c("Treatment -> Mediator",
+                             "Mediator -> Outcome",
+                             "Treatment -> Med. -> Out.",
+                             "Treatment -> Outcome"),
              est.type = c("Logit Coefficient",
                           "OLS Coefficient",
                           "Av. Mediation Effect",
@@ -358,7 +358,7 @@ p
 png_save(p, w=850, h=550, file=c("out/med.out.main.plot.wDE.png"))
 
 #'
-#' ## Mediation Analysis (mediator model is OLS, outcome model is OLS) (Appendix V)
+#' ## Mediation Analysis (mediator model is OLS, outcome model is OLS) (Appendix VII)
 #' 
 
 # Plotting Data
@@ -379,9 +379,9 @@ quasi-Bayesian Monte Carlo method based on a normal approximation. We use the 'm
 # W/O Direct Effect
 p <- genplot(med.out.sub.data,
              captiontxt=captiontxt,
-             include.eff = c("Treatment → Mediator",
-                             "Mediator → Outcome",
-                             "Treatment → Med. → Out."),
+             include.eff = c("Treatment -> Mediator",
+                             "Mediator -> Outcome",
+                             "Treatment -> Med. -> Out."),
              est.type = c("Logit Coefficient",
                           "OLS Coefficient",
                           "Av. Mediation Effect")) 
@@ -396,10 +396,10 @@ png_save(p, w=850, h=550, file=c("out/med.out.sub.plot.woDE.png"))
 # W/ Direct Effect
 p <- genplot(med.out.sub.data,
              captiontxt=captiontxt,
-             include.eff = c("Treatment → Mediator",
-                             "Mediator → Outcome",
-                             "Treatment → Med. → Out.",
-                             "Treatment → Outcome"),
+             include.eff = c("Treatment -> Mediator",
+                             "Mediator -> Outcome",
+                             "Treatment -> Med. -> Out.",
+                             "Treatment -> Outcome"),
              est.type = c("Logit Coefficient",
                           "OLS Coefficient",
                           "Av. Mediation Effect",
@@ -420,17 +420,17 @@ med.out.main.data.treated <- gendata(med.out.MMR.main.interacted,
                                      med.out.PHL.main.interacted,
                                      mod=FALSE,treated=TRUE)
 med.out.main.data.treated$eff <- as.character(med.out.main.data.treated$eff)
-med.out.main.data.treated$eff[med.out.main.data.treated$eff=="Treatment → Med. → Out."] <- 
-  "Treatment → Med. → Out.\n[Treated]"
+med.out.main.data.treated$eff[med.out.main.data.treated$eff=="Treatment -> Med. -> Out."] <- 
+  "Treatment -> Med. -> Out.\n[Treated]"
 med.out.main.data.control <- gendata(med.out.MMR.main.interacted,
                                      med.out.PHL.main.interacted,
                                      mod=FALSE,treated=FALSE)
 med.out.main.data.control$eff <- as.character(med.out.main.data.control$eff)
-med.out.main.data.control$eff[med.out.main.data.control$eff=="Treatment → Med. → Out."] <- 
-  "Treatment → Med. → Out.\n[Control]"
+med.out.main.data.control$eff[med.out.main.data.control$eff=="Treatment -> Med. -> Out."] <- 
+  "Treatment -> Med. -> Out.\n[Control]"
 med.out.main.data.interacted <- 
   rbind(med.out.main.data.treated,
-        med.out.main.data.control[med.out.main.data.control$eff=="Treatment → Med. → Out.\n[Control]",])
+        med.out.main.data.control[med.out.main.data.control$eff=="Treatment -> Med. -> Out.\n[Control]",])
 med.out.main.data.interacted$eff <- factor(med.out.main.data.interacted$eff,
                                            levels=unique(med.out.main.data.interacted$eff))
 
@@ -444,8 +444,8 @@ quasi-Bayesian Monte Carlo method based on a normal approximation. We use the 'm
 # W/O Direct Effect
 p <- genplot(med.out.main.data.interacted,
              captiontxt=captiontxt,
-             include.eff = c("Treatment → Med. → Out.\n[Treated]",
-                             "Treatment → Med. → Out.\n[Control]"),
+             include.eff = c("Treatment -> Med. -> Out.\n[Treated]",
+                             "Treatment -> Med. -> Out.\n[Control]"),
              est.type = c("Av. Mediation Effect",
                           "Av. Mediation Effect")) + 
   scale_y_continuous(expand = c(0.05,0.05))
@@ -465,17 +465,17 @@ med.out.sub.data.treated <- gendata(med.out.MMR.sub.interacted,
                                      med.out.PHL.sub.interacted,
                                      mod=FALSE,treated=TRUE)
 med.out.sub.data.treated$eff <- as.character(med.out.sub.data.treated$eff)
-med.out.sub.data.treated$eff[med.out.sub.data.treated$eff=="Treatment → Med. → Out."] <- 
-  "Treatment → Med. → Out.\n[Treated]"
+med.out.sub.data.treated$eff[med.out.sub.data.treated$eff=="Treatment -> Med. -> Out."] <- 
+  "Treatment -> Med. -> Out.\n[Treated]"
 med.out.sub.data.control <- gendata(med.out.MMR.sub.interacted,
                                      med.out.PHL.sub.interacted,
                                      mod=FALSE,treated=FALSE)
 med.out.sub.data.control$eff <- as.character(med.out.sub.data.control$eff)
-med.out.sub.data.control$eff[med.out.sub.data.control$eff=="Treatment → Med. → Out."] <- 
-  "Treatment → Med. → Out.\n[Control]"
+med.out.sub.data.control$eff[med.out.sub.data.control$eff=="Treatment -> Med. -> Out."] <- 
+  "Treatment -> Med. -> Out.\n[Control]"
 med.out.sub.data.interacted <- 
   rbind(med.out.sub.data.treated,
-        med.out.sub.data.control[med.out.sub.data.control$eff=="Treatment → Med. → Out.\n[Control]",])
+        med.out.sub.data.control[med.out.sub.data.control$eff=="Treatment -> Med. -> Out.\n[Control]",])
 med.out.sub.data.interacted$eff <- factor(med.out.sub.data.interacted$eff,
                                            levels=unique(med.out.sub.data.interacted$eff))
 
@@ -488,8 +488,8 @@ quasi-Bayesian Monte Carlo method based on a normal approximation. We use the 'm
 # W/O Direct Effect
 p <- genplot(med.out.sub.data.interacted,
              captiontxt=captiontxt,
-             include.eff = c("Treatment → Med. → Out.\n[Treated]",
-                             "Treatment → Med. → Out.\n[Control]"),
+             include.eff = c("Treatment -> Med. -> Out.\n[Treated]",
+                             "Treatment -> Med. -> Out.\n[Control]"),
              est.type = c("Av. Mediation Effect",
                           "Av. Mediation Effect")) + 
   scale_y_continuous(expand = c(0.05,0.05))
@@ -529,9 +529,9 @@ quasi-Bayesian Monte Carlo method based on a normal approximation. We use the 'm
 # Plot W/O Direct Effect
 p <- genplot2(med.mod.out.main.1.data[med.mod.out.main.1.data$med=="Security",],
               captiontxt = captiontxt,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out."),
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out."),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
                            "Av. Mediation Effect"))
@@ -546,10 +546,10 @@ png_save(p, w=850, h=550, file=c("out/med.mod.out.main.1.secu.plot.woDE.png"))
 # Plot W/ Direct Effect
 p <- genplot2(med.mod.out.main.1.data[med.mod.out.main.1.data$med=="Security",],
               captiontxt = captiontxt,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out.",
-                              "Treatment → Outcome"),
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out.",
+                              "Treatment -> Outcome"),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
                            "Av. Mediation Effect",
@@ -565,9 +565,9 @@ png_save(p, w=850, h=550, file=c("out/med.mod.out.main.1.secu.plot.wDE.png"))
 # Plot W/ Total Effect
 p <- genplot2(med.mod.out.main.1.data[med.mod.out.main.1.data$med=="Security",],
               captiontxt = captiontxt,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out.",
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out.",
                               "Total"),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
@@ -587,9 +587,9 @@ png_save(p, w=850, h=550, file=c("out/med.mod.out.main.1.secu.plot.wTE.png"))
 # Plot W/O Direct Effect
 p <- genplot2(med.mod.out.main.1.data[med.mod.out.main.1.data$med=="Economy",],
               captiontxt = captiontxt,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out."),
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out."),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
                            "Av. Mediation Effect"))
@@ -604,10 +604,10 @@ png_save(p, w=850, h=550, file=c("out/med.mod.out.main.1.econ.plot.woDE.png"))
 # Plot W/ Direct Effect
 p <- genplot2(med.mod.out.main.1.data[med.mod.out.main.1.data$med=="Economy",],
               captiontxt = captiontxt,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out.",
-                              "Treatment → Outcome"),
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out.",
+                              "Treatment -> Outcome"),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
                            "Av. Mediation Effect",
@@ -623,9 +623,9 @@ png_save(p, w=850, h=550, file=c("out/med.mod.out.main.1.econ.plot.wDE.png"))
 # Plot W/ Total Effect
 p <- genplot2(med.mod.out.main.1.data[med.mod.out.main.1.data$med=="Economy",],
               captiontxt = captiontxt,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out.",
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out.",
                               "Total"),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
@@ -645,9 +645,9 @@ png_save(p, w=850, h=550, file=c("out/med.mod.out.main.1.econ.plot.wTE.png"))
 # Plot W/O Direct Effect
 p <- genplot2(med.mod.out.main.1.data[med.mod.out.main.1.data$med=="Reputation",],
               captiontxt = captiontxt,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out."),
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out."),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
                            "Av. Mediation Effect"))
@@ -662,10 +662,10 @@ png_save(p, w=850, h=550, file=c("out/med.mod.out.main.1.repu.plot.woDE.png"))
 # Plot W/ Direct Effect
 p <- genplot2(med.mod.out.main.1.data[med.mod.out.main.1.data$med=="Reputation",],
               captiontxt = captiontxt,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out.",
-                              "Treatment → Outcome"),
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out.",
+                              "Treatment -> Outcome"),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
                            "Av. Mediation Effect",
@@ -681,9 +681,9 @@ png_save(p, w=850, h=550, file=c("out/med.mod.out.main.1.repu.plot.wDE.png"))
 # Plot W/ Total Effect
 p <- genplot2(med.mod.out.main.1.data[med.mod.out.main.1.data$med=="Reputation",],
               captiontxt = captiontxt,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out.",
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out.",
                               "Total"),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
@@ -703,9 +703,9 @@ png_save(p, w=850, h=550, file=c("out/med.mod.out.main.1.repu.plot.wTE.png"))
 # Plot W/O Direct Effect
 p <- genplot2(med.mod.out.main.1.data[med.mod.out.main.1.data$med=="Efficacy",],
               captiontxt = captiontxt,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out."),
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out."),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
                            "Av. Mediation Effect"))
@@ -720,10 +720,10 @@ png_save(p, w=850, h=550, file=c("out/med.mod.out.main.1.effi.plot.woDE.png"))
 # Plot W/ Direct Effect
 p <- genplot2(med.mod.out.main.1.data[med.mod.out.main.1.data$med=="Efficacy",],
               captiontxt = captiontxt,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out.",
-                              "Treatment → Outcome"),
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out.",
+                              "Treatment -> Outcome"),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
                            "Av. Mediation Effect",
@@ -739,9 +739,9 @@ png_save(p, w=850, h=550, file=c("out/med.mod.out.main.1.effi.plot.wDE.png"))
 # Plot W/ Total Effect
 p <- genplot2(med.mod.out.main.1.data[med.mod.out.main.1.data$med=="Efficacy",],
               captiontxt = captiontxt,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out.",
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out.",
                               "Total"),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
@@ -782,9 +782,9 @@ quasi-Bayesian Monte Carlo method based on a normal approximation. We use the 'm
 # Plot W/O Direct Effect
 p <- genplot2(med.mod.out.sub.1.data[med.mod.out.sub.1.data$med=="Security",],
               captiontxt = captiontxt,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out."),
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out."),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
                            "Av. Mediation Effect"))
@@ -799,10 +799,10 @@ png_save(p, w=850, h=550, file=c("out/med.mod.out.sub.1.secu.plot.woDE.png"))
 # Plot W/ Direct Effect
 p <- genplot2(med.mod.out.sub.1.data[med.mod.out.sub.1.data$med=="Security",],
               captiontxt = captiontxt,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out.",
-                              "Treatment → Outcome"),
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out.",
+                              "Treatment -> Outcome"),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
                            "Av. Mediation Effect",
@@ -818,9 +818,9 @@ png_save(p, w=850, h=550, file=c("out/med.mod.out.sub.1.secu.plot.wDE.png"))
 # Plot W/ Total Effect
 p <- genplot2(med.mod.out.sub.1.data[med.mod.out.sub.1.data$med=="Security",],
               captiontxt = captiontxt,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out.",
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out.",
                               "Total"),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
@@ -840,9 +840,9 @@ png_save(p, w=850, h=550, file=c("out/med.mod.out.sub.1.secu.plot.wTE.png"))
 # Plot W/O Direct Effect
 p <- genplot2(med.mod.out.sub.1.data[med.mod.out.sub.1.data$med=="Economy",],
               captiontxt = captiontxt,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out."),
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out."),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
                            "Av. Mediation Effect"))
@@ -857,10 +857,10 @@ png_save(p, w=850, h=550, file=c("out/med.mod.out.sub.1.econ.plot.woDE.png"))
 # Plot W/ Direct Effect
 p <- genplot2(med.mod.out.sub.1.data[med.mod.out.sub.1.data$med=="Economy",],
               captiontxt = captiontxt,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out.",
-                              "Treatment → Outcome"),
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out.",
+                              "Treatment -> Outcome"),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
                            "Av. Mediation Effect",
@@ -876,9 +876,9 @@ png_save(p, w=850, h=550, file=c("out/med.mod.out.sub.1.econ.plot.wDE.png"))
 # Plot W/ Total Effect
 p <- genplot2(med.mod.out.sub.1.data[med.mod.out.sub.1.data$med=="Economy",],
               captiontxt = captiontxt,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out.",
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out.",
                               "Total"),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
@@ -898,9 +898,9 @@ png_save(p, w=850, h=550, file=c("out/med.mod.out.sub.1.econ.plot.wTE.png"))
 # Plot W/O Direct Effect
 p <- genplot2(med.mod.out.sub.1.data[med.mod.out.sub.1.data$med=="Reputation",],
               captiontxt = captiontxt,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out."),
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out."),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
                            "Av. Mediation Effect"))
@@ -915,10 +915,10 @@ png_save(p, w=850, h=550, file=c("out/med.mod.out.sub.1.repu.plot.woDE.png"))
 # Plot W/ Direct Effect
 p <- genplot2(med.mod.out.sub.1.data[med.mod.out.sub.1.data$med=="Reputation",],
               captiontxt = captiontxt,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out.",
-                              "Treatment → Outcome"),
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out.",
+                              "Treatment -> Outcome"),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
                            "Av. Mediation Effect",
@@ -934,9 +934,9 @@ png_save(p, w=850, h=550, file=c("out/med.mod.out.sub.1.repu.plot.wDE.png"))
 # Plot W/ Total Effect
 p <- genplot2(med.mod.out.sub.1.data[med.mod.out.sub.1.data$med=="Reputation",],
               captiontxt = captiontxt,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out.",
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out.",
                               "Total"),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
@@ -956,9 +956,9 @@ png_save(p, w=850, h=550, file=c("out/med.mod.out.sub.1.repu.plot.wTE.png"))
 # Plot W/O Direct Effect
 p <- genplot2(med.mod.out.sub.1.data[med.mod.out.sub.1.data$med=="Efficacy",],
               captiontxt = captiontxt,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out."),
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out."),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
                            "Av. Mediation Effect"))
@@ -973,10 +973,10 @@ png_save(p, w=850, h=550, file=c("out/med.mod.out.sub.1.effi.plot.woDE.png"))
 # Plot W/ Direct Effect
 p <- genplot2(med.mod.out.sub.1.data[med.mod.out.sub.1.data$med=="Efficacy",],
               captiontxt = captiontxt,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out.",
-                              "Treatment → Outcome"),
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out.",
+                              "Treatment -> Outcome"),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
                            "Av. Mediation Effect",
@@ -992,9 +992,9 @@ png_save(p, w=850, h=550, file=c("out/med.mod.out.sub.1.effi.plot.wDE.png"))
 # Plot W/ Total Effect
 p <- genplot2(med.mod.out.sub.1.data[med.mod.out.sub.1.data$med=="Efficacy",],
               captiontxt = captiontxt,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out.",
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out.",
                               "Total"),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
@@ -1038,9 +1038,9 @@ quasi-Bayesian Monte Carlo method based on a normal approximation. We use the 'm
 # Plot W/O Direct Effect
 p <- genplot2(med.mod.out.main.3.data[med.mod.out.main.3.data$med=="Security",],
               captiontxt = captiontxt, legendrow=3,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out."),
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out."),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
                            "Av. Mediation Effect"))
@@ -1055,10 +1055,10 @@ png_save(p, w=850, h=550, file=c("out/med.mod.out.main.3.secu.plot.woDE.png"))
 # Plot W/ Direct Effect
 p <- genplot2(med.mod.out.main.3.data[med.mod.out.main.3.data$med=="Security",],
               captiontxt = captiontxt, legendrow=3,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out.",
-                              "Treatment → Outcome"),
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out.",
+                              "Treatment -> Outcome"),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
                            "Av. Mediation Effect",
@@ -1074,9 +1074,9 @@ png_save(p, w=850, h=550, file=c("out/med.mod.out.main.3.secu.plot.wDE.png"))
 # Plot W/ Total Effect
 p <- genplot2(med.mod.out.main.3.data[med.mod.out.main.3.data$med=="Security",],
               captiontxt = captiontxt, legendrow=3,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out.",
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out.",
                               "Total"),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
@@ -1096,9 +1096,9 @@ png_save(p, w=850, h=550, file=c("out/med.mod.out.main.3.secu.plot.wTE.png"))
 # Plot W/O Direct Effect
 p <- genplot2(med.mod.out.main.3.data[med.mod.out.main.3.data$med=="Economy",],
               captiontxt = captiontxt, legendrow=3,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out."),
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out."),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
                            "Av. Mediation Effect"))
@@ -1113,10 +1113,10 @@ png_save(p, w=850, h=550, file=c("out/med.mod.out.main.3.econ.plot.woDE.png"))
 # Plot W/ Direct Effect
 p <- genplot2(med.mod.out.main.3.data[med.mod.out.main.3.data$med=="Economy",],
               captiontxt = captiontxt, legendrow=3,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out.",
-                              "Treatment → Outcome"),
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out.",
+                              "Treatment -> Outcome"),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
                            "Av. Mediation Effect",
@@ -1132,9 +1132,9 @@ png_save(p, w=850, h=550, file=c("out/med.mod.out.main.3.econ.plot.wDE.png"))
 # Plot W/ Total Effect
 p <- genplot2(med.mod.out.main.3.data[med.mod.out.main.3.data$med=="Economy",],
               captiontxt = captiontxt, legendrow=3,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out.",
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out.",
                               "Total"),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
@@ -1154,9 +1154,9 @@ png_save(p, w=850, h=550, file=c("out/med.mod.out.main.3.econ.plot.wTE.png"))
 # Plot W/O Direct Effect
 p <- genplot2(med.mod.out.main.3.data[med.mod.out.main.3.data$med=="Reputation",],
               captiontxt = captiontxt, legendrow=3,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out."),
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out."),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
                            "Av. Mediation Effect"))
@@ -1171,10 +1171,10 @@ png_save(p, w=850, h=550, file=c("out/med.mod.out.main.3.repu.plot.woDE.png"))
 # Plot W/ Direct Effect
 p <- genplot2(med.mod.out.main.3.data[med.mod.out.main.3.data$med=="Reputation",],
               captiontxt = captiontxt, legendrow=3,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out.",
-                              "Treatment → Outcome"),
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out.",
+                              "Treatment -> Outcome"),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
                            "Av. Mediation Effect",
@@ -1190,9 +1190,9 @@ png_save(p, w=850, h=550, file=c("out/med.mod.out.main.3.repu.plot.wDE.png"))
 # Plot W/ Total Effect
 p <- genplot2(med.mod.out.main.3.data[med.mod.out.main.3.data$med=="Reputation",],
               captiontxt = captiontxt, legendrow=3,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out.",
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out.",
                               "Total"),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
@@ -1212,9 +1212,9 @@ png_save(p, w=850, h=550, file=c("out/med.mod.out.main.3.repu.plot.wTE.png"))
 # Plot W/O Direct Effect
 p <- genplot2(med.mod.out.main.3.data[med.mod.out.main.3.data$med=="Efficacy",],
               captiontxt = captiontxt, legendrow=3,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out."),
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out."),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
                            "Av. Mediation Effect"))
@@ -1229,10 +1229,10 @@ png_save(p, w=850, h=550, file=c("out/med.mod.out.main.3.effi.plot.woDE.png"))
 # Plot W/ Direct Effect
 p <- genplot2(med.mod.out.main.3.data[med.mod.out.main.3.data$med=="Efficacy",],
               captiontxt = captiontxt, legendrow=3,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out.",
-                              "Treatment → Outcome"),
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out.",
+                              "Treatment -> Outcome"),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
                            "Av. Mediation Effect",
@@ -1248,9 +1248,9 @@ png_save(p, w=850, h=550, file=c("out/med.mod.out.main.3.effi.plot.wDE.png"))
 # Plot W/ Total Effect
 p <- genplot2(med.mod.out.main.3.data[med.mod.out.main.3.data$med=="Efficacy",],
               captiontxt = captiontxt, legendrow=3,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out.",
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out.",
                               "Total"),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
@@ -1264,7 +1264,7 @@ p
 png_save(p, w=850, h=550, file=c("out/med.mod.out.main.3.effi.plot.wTE.png"))
 
 #' 
-#' ## 3p Moderator with 5p Mediator (OLS) and 9p Outcome (OLS)  (Appendix VII)
+#' ## 3p Moderator with 5p Mediator (OLS) and 9p Outcome (OLS)  (Appendix IX)
 #' 
 
 
@@ -1289,15 +1289,15 @@ quasi-Bayesian Monte Carlo method based on a normal approximation. We use the 'm
 
 
 #'
-#' ### Only with Security Mediator (Appendix VII)
+#' ### Only with Security Mediator (Appendix IX)
 #' 
 
 # Plot W/O Direct Effect
 p <- genplot2(med.mod.out.sub.3.data[med.mod.out.sub.3.data$med=="Security",],
               captiontxt = captiontxt, legendrow=3,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out."),
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out."),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
                            "Av. Mediation Effect"))
@@ -1312,10 +1312,10 @@ png_save(p, w=850, h=550, file=c("out/med.mod.out.sub.3.secu.plot.woDE.png"))
 # Plot W/ Direct Effect
 p <- genplot2(med.mod.out.sub.3.data[med.mod.out.sub.3.data$med=="Security",],
               captiontxt = captiontxt, legendrow=3,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out.",
-                              "Treatment → Outcome"),
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out.",
+                              "Treatment -> Outcome"),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
                            "Av. Mediation Effect",
@@ -1331,9 +1331,9 @@ png_save(p, w=850, h=550, file=c("out/med.mod.out.sub.3.secu.plot.wDE.png"))
 # Plot W/ Total Effect
 p <- genplot2(med.mod.out.sub.3.data[med.mod.out.sub.3.data$med=="Security",],
               captiontxt = captiontxt, legendrow=3,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out.",
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out.",
                               "Total"),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
@@ -1353,9 +1353,9 @@ png_save(p, w=850, h=550, file=c("out/med.mod.out.sub.3.secu.plot.wTE.png"))
 # Plot W/O Direct Effect
 p <- genplot2(med.mod.out.sub.3.data[med.mod.out.sub.3.data$med=="Economy",],
               captiontxt = captiontxt, legendrow=3,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out."),
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out."),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
                            "Av. Mediation Effect"))
@@ -1370,10 +1370,10 @@ png_save(p, w=850, h=550, file=c("out/med.mod.out.sub.3.econ.plot.woDE.png"))
 # Plot W/ Direct Effect
 p <- genplot2(med.mod.out.sub.3.data[med.mod.out.sub.3.data$med=="Economy",],
               captiontxt = captiontxt, legendrow=3,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out.",
-                              "Treatment → Outcome"),
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out.",
+                              "Treatment -> Outcome"),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
                            "Av. Mediation Effect",
@@ -1389,9 +1389,9 @@ png_save(p, w=850, h=550, file=c("out/med.mod.out.sub.3.econ.plot.wDE.png"))
 # Plot W/ Total Effect
 p <- genplot2(med.mod.out.sub.3.data[med.mod.out.sub.3.data$med=="Economy",],
               captiontxt = captiontxt, legendrow=3,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out.",
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out.",
                               "Total"),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
@@ -1411,9 +1411,9 @@ png_save(p, w=850, h=550, file=c("out/med.mod.out.sub.3.econ.plot.wTE.png"))
 # Plot W/O Direct Effect
 p <- genplot2(med.mod.out.sub.3.data[med.mod.out.sub.3.data$med=="Reputation",],
               captiontxt = captiontxt, legendrow=3,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out."),
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out."),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
                            "Av. Mediation Effect"))
@@ -1428,10 +1428,10 @@ png_save(p, w=850, h=550, file=c("out/med.mod.out.sub.3.repu.plot.woDE.png"))
 # Plot W/ Direct Effect
 p <- genplot2(med.mod.out.sub.3.data[med.mod.out.sub.3.data$med=="Reputation",],
               captiontxt = captiontxt, legendrow=3,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out.",
-                              "Treatment → Outcome"),
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out.",
+                              "Treatment -> Outcome"),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
                            "Av. Mediation Effect",
@@ -1447,9 +1447,9 @@ png_save(p, w=850, h=550, file=c("out/med.mod.out.sub.3.repu.plot.wDE.png"))
 # Plot W/ Total Effect
 p <- genplot2(med.mod.out.sub.3.data[med.mod.out.sub.3.data$med=="Reputation",],
               captiontxt = captiontxt, legendrow=3,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out.",
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out.",
                               "Total"),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
@@ -1469,9 +1469,9 @@ png_save(p, w=850, h=550, file=c("out/med.mod.out.sub.3.repu.plot.wTE.png"))
 # Plot W/O Direct Effect
 p <- genplot2(med.mod.out.sub.3.data[med.mod.out.sub.3.data$med=="Efficacy",],
               captiontxt = captiontxt, legendrow=3,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out."),
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out."),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
                            "Av. Mediation Effect"))
@@ -1486,10 +1486,10 @@ png_save(p, w=850, h=550, file=c("out/med.mod.out.sub.3.effi.plot.woDE.png"))
 # Plot W/ Direct Effect
 p <- genplot2(med.mod.out.sub.3.data[med.mod.out.sub.3.data$med=="Efficacy",],
               captiontxt = captiontxt, legendrow=3,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out.",
-                              "Treatment → Outcome"),
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out.",
+                              "Treatment -> Outcome"),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",
                            "Av. Mediation Effect",
@@ -1505,9 +1505,9 @@ png_save(p, w=850, h=550, file=c("out/med.mod.out.sub.3.effi.plot.wDE.png"))
 # Plot W/ Total Effect
 p <- genplot2(med.mod.out.sub.3.data[med.mod.out.sub.3.data$med=="Efficacy",],
               captiontxt = captiontxt, legendrow=3,
-              include.eff = c("Treatment → Mediator",
-                              "Mediator → Outcome",
-                              "Treatment → Med. → Out.",
+              include.eff = c("Treatment -> Mediator",
+                              "Mediator -> Outcome",
+                              "Treatment -> Med. -> Out.",
                               "Total"),
               est.type = c("OLS Coefficient",
                            "OLS Coefficient",

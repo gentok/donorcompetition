@@ -1,11 +1,11 @@
 Analysis 5: Additional Checks
 ================
 Gento Kato
-November 17, 2019
+November 20, 2019
 
 -   [Preparation](#preparation)
--   [Testing the difference between Myanmar and Philippines (Extra)](#testing-the-difference-between-myanmar-and-philippines-extra)
--   [Mediation Analysis with Myanmar and Philippines Conditions Combined (Extra)](#mediation-analysis-with-myanmar-and-philippines-conditions-combined-extra)
+-   [Testing the difference between Myanmar and Philippines (Appendix V)](#testing-the-difference-between-myanmar-and-philippines-appendix-v)
+-   [Mediation Analysis with Myanmar and Philippines Conditions Combined (Appendix VI)](#mediation-analysis-with-myanmar-and-philippines-conditions-combined-appendix-vi)
     -   [Simple Mediation with Binary Mediators (Mediation Model is Logit)](#simple-mediation-with-binary-mediators-mediation-model-is-logit)
     -   [Simple Mediation with 5-cat Mediators (Mediation Model is OLS)](#simple-mediation-with-5-cat-mediators-mediation-model-is-ols)
     -   [Mediation Analysis (mediator model is Logit, outcome model is OLS)](#mediation-analysis-mediator-model-is-logit-outcome-model-is-ols)
@@ -70,8 +70,8 @@ nrow(d.PHL)
 
     ## [1] 1876
 
-Testing the difference between Myanmar and Philippines (Extra)
-==============================================================
+Testing the difference between Myanmar and Philippines (Appendix V)
+===================================================================
 
 Load Mediation analysis results (Generated in Analysis 3 Codes)
 
@@ -136,8 +136,8 @@ grid.draw(p)
 png_save(p,w=850,h=500,file="out/nodifacme.png")
 ```
 
-Mediation Analysis with Myanmar and Philippines Conditions Combined (Extra)
-===========================================================================
+Mediation Analysis with Myanmar and Philippines Conditions Combined (Appendix VI)
+=================================================================================
 
 ``` r
 # Update Control Variable Formula to Include Target Country
@@ -182,9 +182,9 @@ quasi-Bayesian Monte Carlo method based on a normal approximation. We use the 'm
 # W/O Direct Effect
 p <- genplot(med.out.main.data,
              captiontxt=captiontxt,
-             include.eff = c("Treatment → Mediator",
-                             "Mediator → Outcome",
-                             "Treatment → Med. → Out."),
+             include.eff = c("Treatment -> Mediator",
+                             "Mediator -> Outcome",
+                             "Treatment -> Med. -> Out."),
              est.type = c("Logit Coefficient",
                           "OLS Coefficient",
                           "Av. Mediation Effect")) 
@@ -204,10 +204,10 @@ png_save(p, w=850, h=550, file=c("out/med.out.ALL.main.plot.woDE.png"))
 # W/ Direct Effect
 p <- genplot(med.out.main.data,
              captiontxt=captiontxt,
-             include.eff = c("Treatment → Mediator",
-                             "Mediator → Outcome",
-                             "Treatment → Med. → Out.",
-                             "Treatment → Outcome"),
+             include.eff = c("Treatment -> Mediator",
+                             "Mediator -> Outcome",
+                             "Treatment -> Med. -> Out.",
+                             "Treatment -> Outcome"),
              est.type = c("Logit Coefficient",
                           "OLS Coefficient",
                           "Av. Mediation Effect",
@@ -242,9 +242,9 @@ quasi-Bayesian Monte Carlo method based on a normal approximation. We use the 'm
 # W/O Direct Effect
 p <- genplot(med.out.sub.data,
              captiontxt=captiontxt,
-             include.eff = c("Treatment → Mediator",
-                             "Mediator → Outcome",
-                             "Treatment → Med. → Out."),
+             include.eff = c("Treatment -> Mediator",
+                             "Mediator -> Outcome",
+                             "Treatment -> Med. -> Out."),
              est.type = c("Logit Coefficient",
                           "OLS Coefficient",
                           "Av. Mediation Effect")) 
@@ -264,10 +264,10 @@ png_save(p, w=850, h=550, file=c("out/med.out.ALL.sub.plot.woDE.png"))
 # W/ Direct Effect
 p <- genplot(med.out.sub.data,
              captiontxt=captiontxt,
-             include.eff = c("Treatment → Mediator",
-                             "Mediator → Outcome",
-                             "Treatment → Med. → Out.",
-                             "Treatment → Outcome"),
+             include.eff = c("Treatment -> Mediator",
+                             "Mediator -> Outcome",
+                             "Treatment -> Med. -> Out.",
+                             "Treatment -> Outcome"),
              est.type = c("Logit Coefficient",
                           "OLS Coefficient",
                           "Av. Mediation Effect",

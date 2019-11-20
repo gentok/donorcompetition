@@ -1,17 +1,17 @@
 Analysis 4: Causal Mediation Analysis Using medflex Package
 ================
 Gento Kato
-November 17, 2019
+November 20, 2019
 
 -   [Preparation](#preparation)
--   [Joint Causal Mediation Analysis (Appendix VI)](#joint-causal-mediation-analysis-appendix-vi)
-    -   [Check Single Mediators (Appendix VI)](#check-single-mediators-appendix-vi)
+-   [Joint Causal Mediation Analysis (Appendix VIII)](#joint-causal-mediation-analysis-appendix-viii)
+    -   [Check Single Mediators (Appendix VIII)](#check-single-mediators-appendix-viii)
         -   [Myanmar](#myanmar)
         -   [Philippines](#philippines)
-    -   [Joint Causal Mediation Analysis (Appendix VI)](#joint-causal-mediation-analysis-appendix-vi-1)
-    -   [Plotting Mediation Analysis Results (Appendix VI)](#plotting-mediation-analysis-results-appendix-vi)
-        -   [2p Mediator and 9p Outcome (Appendix VI-A)](#p-mediator-and-9p-outcome-appendix-vi-a)
-        -   [5p Mediator and 9p Outcome (Appendix VI-B)](#p-mediator-and-9p-outcome-appendix-vi-b)
+    -   [Joint Causal Mediation Analysis (Appendix VIII)](#joint-causal-mediation-analysis-appendix-viii-1)
+    -   [Plotting Mediation Analysis Results (Appendix VIII)](#plotting-mediation-analysis-results-appendix-viii)
+        -   [2p Mediator and 9p Outcome (Appendix VIII-A)](#p-mediator-and-9p-outcome-appendix-viii-a)
+        -   [5p Mediator and 9p Outcome (Appendix VIII-B)](#p-mediator-and-9p-outcome-appendix-viii-b)
 
 Preparation
 ===========
@@ -68,8 +68,8 @@ d.MMR.sub <- na.omit(d.MMR[,vars])
 d.PHL.sub <- na.omit(d.PHL[,vars])
 ```
 
-Joint Causal Mediation Analysis (Appendix VI)
-=============================================
+Joint Causal Mediation Analysis (Appendix VIII)
+===============================================
 
 This analysis is based on VanderWeele and Vansteelandt (2013) which discusses the estimation of "joint" mediation effect under potential outcome framework. <code>mediation</code> package does not provide this functionality, thus <code>medflex</code> packages is used here.
 
@@ -77,11 +77,8 @@ This analysis is based on VanderWeele and Vansteelandt (2013) which discusses th
 library(medflex)
 ```
 
-    ## medflex 0.6-4: Flexible Mediation Analysis Using Natural Effect Models
-    ## Please report bugs here: github.com/jmpsteen/medflex/issues
-
-Check Single Mediators (Appendix VI)
-------------------------------------
+Check Single Mediators (Appendix VIII)
+--------------------------------------
 
 Check if the one-by-one mediation analysis looks the same with the results from <code>mediation</code> package (it is!).
 
@@ -189,8 +186,8 @@ m.PHL.sub.effi <- neModel(update(cancel_aid ~ treat_China0 + treat_China1, fcv),
                           family = "gaussian", expData = di.PHL.sub.effi, se = "robust")
 ```
 
-Joint Causal Mediation Analysis (Appendix VI)
----------------------------------------------
+Joint Causal Mediation Analysis (Appendix VIII)
+-----------------------------------------------
 
 ``` r
 # 2p Mediator and 9p Outcome
@@ -334,10 +331,10 @@ summary(m.PHL.sub)
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Plotting Mediation Analysis Results (Appendix VI)
--------------------------------------------------
+Plotting Mediation Analysis Results (Appendix VIII)
+---------------------------------------------------
 
-### 2p Mediator and 9p Outcome (Appendix VI-A)
+### 2p Mediator and 9p Outcome (Appendix VIII-A)
 
 ``` r
 mainls <- list(m.MMR.main.secu,m.MMR.main.econ,m.MMR.main.repu,m.MMR.main.effi,m.MMR.main,
@@ -349,10 +346,10 @@ dmain$pcat <- ifelse(dmain$p10==0,"p >= .1", ifelse(dmain$p05==0,"p < .1","p < .
 dmain$pcat <- factor(dmain$pcat,levels=c("p < .05","p < .1", "p >= .1"))
 dmain$med <- rep(c("Security","Economy","Reputation","Efficacy","JOINT"),4)
 dmain$med <- factor(dmain$med, levels=rev(unique(dmain$med)))
-dmain$eff <- rep(c("Treatment → Outcome",
-                   "Treatment → Med. → Out."), each = 10)
-dmain$eff <- factor(dmain$eff, levels=c("Treatment → Med. → Out.",
-                                        "Treatment → Outcome"))
+dmain$eff <- rep(c("Treatment -> Outcome",
+                   "Treatment -> Med. -> Out."), each = 10)
+dmain$eff <- factor(dmain$eff, levels=c("Treatment -> Med. -> Out.",
+                                        "Treatment -> Outcome"))
 dmain$country <- rep(rep(c("Myanmar","Philippines"), each=5),2)
 
 captiontxt <- 
@@ -363,7 +360,7 @@ package. 'JOINT' is the joint mediation effect of all mediators."
 
 p <- genplot(dmain, 
              captiontxt = captiontxt,
-             include.eff = c("Treatment → Med. → Out."), 
+             include.eff = c("Treatment -> Med. -> Out."), 
              est.type=c("Av. Mediation Effect"))
 ```
 
@@ -377,7 +374,7 @@ p
 png_save(p, w=700, h=550, file=c("out/medflex.med.out.main.plot.png"))
 ```
 
-### 5p Mediator and 9p Outcome (Appendix VI-B)
+### 5p Mediator and 9p Outcome (Appendix VIII-B)
 
 ``` r
 subls <- list(m.MMR.sub.secu,m.MMR.sub.econ,m.MMR.sub.repu,m.MMR.sub.effi,m.MMR.sub,
@@ -389,10 +386,10 @@ dsub$pcat <- ifelse(dsub$p10==0,"p >= .1", ifelse(dsub$p05==0,"p < .1","p < .05"
 dsub$pcat <- factor(dsub$pcat,levels=c("p < .05","p < .1", "p >= .1"))
 dsub$med <- rep(c("Security","Economy","Reputation","Efficacy","JOINT"),4)
 dsub$med <- factor(dsub$med, levels=rev(unique(dsub$med)))
-dsub$eff <- rep(c("Treatment → Outcome",
-                   "Treatment → Med. → Out."), each = 10)
-dsub$eff <- factor(dsub$eff, levels=c("Treatment → Med. → Out.",
-                                        "Treatment → Outcome"))
+dsub$eff <- rep(c("Treatment -> Outcome",
+                   "Treatment -> Med. -> Out."), each = 10)
+dsub$eff <- factor(dsub$eff, levels=c("Treatment -> Med. -> Out.",
+                                        "Treatment -> Outcome"))
 dsub$country <- rep(rep(c("Myanmar","Philippines"), each=5),2)
 
 captiontxt <- 
@@ -403,7 +400,7 @@ package. 'JOINT' is the joint mediation effect of all mediators."
 
 p <- genplot(dsub, 
              captiontxt = captiontxt,
-             include.eff = c("Treatment → Med. → Out."), 
+             include.eff = c("Treatment -> Med. -> Out."), 
              est.type=c("Av. Mediation Effect"))
 ```
 

@@ -1,7 +1,7 @@
 #' ---
 #' title: "Analysis 2: Average Treatment Effect"
 #' author: "Gento Kato"
-#' date: "November 17, 2019"
+#' date: "November 20, 2019"
 #' ---
 
 #' # Preparation
@@ -60,7 +60,7 @@ m0.PHL <- lm(as.numeric(out)~treat_China, data = d.PHL.sub)
 m1.PHL <- lm(update(as.numeric(out)~treat_China,fcv), data = d.PHL.sub)
 
 #'
-#' ### Regression Table (Appendix III)
+#' ### Regression Table (Appendix IV)
 #'
 #+ eval = FALSE
 # Export Table
@@ -134,7 +134,7 @@ grid.draw(p)
 png_save(p,w=900,h=550,file="out/olsplot.png")
 
 #'
-#' ## Multinomial Logit (Appendix II)
+#' ## Multinomial Logit (Appendix III)
 #' 
 
 # Define Outcome Variable and Drop Missing Values
@@ -248,7 +248,7 @@ simu.m1.mlogit$outrec <-
          levels=c("Myanmar","Philippines"))
 
 #'
-#' ### Plot of Predicted Probabilities (Appendix II)
+#' ### Plot of Predicted Probabilities (Appendix III)
 #'
 
 # Plot Predicted Probabilities

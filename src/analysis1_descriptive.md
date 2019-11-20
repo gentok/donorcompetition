@@ -1,7 +1,7 @@
 Analysis 1: Descriptive Statistics
 ================
 Gento Kato
-November 17, 2019
+November 20, 2019
 
 -   [Preparation](#preparation)
 -   [Variable Descriptions](#variable-descriptions)
@@ -12,7 +12,7 @@ November 17, 2019
     -   [Moderator (China Threat) Distributions (Figure 6)](#moderator-china-threat-distributions-figure-6)
 -   [Mediator Distributions (Figure 4)](#mediator-distributions-figure-4)
 -   [Relationship b/w Mediator and Outcome (Extra)](#relationship-bw-mediator-and-outcome-extra)
--   [Covariate Balance Between Treatment Groups (Appendix I)](#covariate-balance-between-treatment-groups-appendix-i)
+-   [Covariate Balance Between Treatment Groups (Appendix II)](#covariate-balance-between-treatment-groups-appendix-ii)
 
 Preparation
 ===========
@@ -297,8 +297,8 @@ p
 png_save(p,h=500,file="out/medoutrel.png")
 ```
 
-Covariate Balance Between Treatment Groups (Appendix I)
-=======================================================
+Covariate Balance Between Treatment Groups (Appendix II)
+========================================================
 
 ``` r
 pbal <- checkbal(dtlist =list(d.MMR.sub,d.PHL.sub),
