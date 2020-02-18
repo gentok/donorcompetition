@@ -1,8 +1,12 @@
-# Donor Competition and Public Support for Foreign Aid Sanctions
+# Replication Files for Donor Competition and Public Support for Foreign Aid Sanctions
 
 <!--
 [Working paper (6/4/2019)](paper/DonorCompetition_v5-2.pdf)
 -->
+
+### Reference 
+
+Kohno, Masaru, Gabriella R. Montinola, Matthew S. Winters, and Gento Kato (2020) “Donor Competition and Public Support for Foreign Aid Sanctions,” <em>Political Research Quarterly</em>. URL: <a href="https://journals.sagepub.com/doi/10.1177/1065912919897837" target="_blank">https://journals.sagepub.com/doi/10.1177/1065912919897837</a>.
 
 ### Authors 
 Masaru Kohno, Gabriella Montinola, Matthew Winters, and Gento Kato
